@@ -1,0 +1,44 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "robot local",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "runtimeArgs": ["-r", "dotenv/config"],
+      "args": ["dotenv_config_path=.env.local"],
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}/src/robot.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "my_local",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "runtimeArgs": ["-r", "dotenv/config"],
+      "args": ["dotenv_config_path=.env.local"],
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}/src/my.js"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "try_jack-pot",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "runtimeArgs": ["-r", "dotenv/config"],
+      "args": ["dotenv_config_path=.env.local"],
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}/test/jack-pot.js"
+    },
+  ]
+}

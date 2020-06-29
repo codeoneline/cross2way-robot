@@ -1,0 +1,354 @@
+const rp = require('request-promise');
+const requestOptions = {
+  method: 'GET',
+  uri: 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest',
+  qs: {
+    'start': '1',
+    'limit': '1',
+    'convert': 'USD'
+  },
+  headers: {
+    'X-CMC_PRO_API_KEY': '899c3d91-f0be-4351-80fc-21bac6f6ee40'
+  },
+  json: true,
+  gzip: true
+};
+
+// rp(requestOptions).then(response => {
+//   console.log('API call response:', response);
+// }).catch((err) => {
+//   console.log('API call error:', err.message);
+// });
+
+async function getDate(requestOptions) {
+  return await rp(requestOptions);
+}
+
+// 每5分10秒，执行一次
+setInterval(async () => {
+  const response = await getDate(requestOptions);
+  console.log('API call response:', response);
+}, 5 * 60 * 1000 + 10000);
+
+const Symbols = "BTC,USDC,TUSD,MKR,GUSD,ETH,SAI,LINK,LRC,ZXC,EURS,EOS,USDT,RVX,FNX,WAN";
+
+// curl -H "X-CMC_PRO_API_KEY: 899c3d91-f0be-4351-80fc-21bac6f6ee40" -H "Accept: application/json" -d "symbol=BTC,USDC,TUSD,MKR,GUSD,ETH,SAI,LINK,LRC,ZXC,EURS,EOS,USDT,RVX,FNX,WAN&aux=cmc_rank&convert=USD" -G https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest
+// {
+//   "status":{
+//       "timestamp":"2020-06-29T04:14:47.622Z",
+//       "error_code":0,
+//       "error_message":null,
+//       "elapsed":14,
+//       "credit_count":1,
+//       "notice":null
+//   },
+//   "data":{
+//       "BTC":{
+//           "id":1,
+//           "name":"Bitcoin",
+//           "symbol":"BTC",
+//           "slug":"bitcoin",
+//           "cmc_rank":1,
+//           "last_updated":"2020-06-29T04:13:35.000Z",
+//           "quote":{
+//               "USD":{
+//                   "price":9107.9165014,
+//                   "volume_24h":14708751971.5769,
+//                   "percent_change_1h":-0.289599,
+//                   "percent_change_24h":1.04698,
+//                   "percent_change_7d":-2.73841,
+//                   "market_cap":167746299949.09518,
+// mei               "last_updated":"2020-06-29T04:13:35.000Z"
+//               }
+//           }
+//       },
+//       "EOS":{
+//           "id":1765,
+//           "name":"EOS",
+//           "symbol":"EOS",
+//           "slug":"eos",
+//           "cmc_rank":9,
+//           "last_updated":"2020-06-29T04:14:12.000Z",
+//           "quote":{
+//               "USD":{
+//                   "price":2.35369304569,
+//                   "volume_24h":1105005442.23745,
+//                   "percent_change_1h":-0.21555,
+//                   "percent_change_24h":0.649131,
+//                   "percent_change_7d":-6.84966,
+//                   "market_cap":2198087816.1331244,
+//                   "last_updated":"2020-06-29T04:14:12.000Z"
+//               }
+//           }
+//       },
+//       "ETH":{
+//           "id":1027,
+//           "name":"Ethereum",
+//           "symbol":"ETH",
+//           "slug":"ethereum",
+//           "cmc_rank":2,
+//           "last_updated":"2020-06-29T04:13:24.000Z",
+//           "quote":{
+//               "USD":{
+//                   "price":225.070471818,
+//                   "volume_24h":6152989118.73981,
+//                   "percent_change_1h":-0.333234,
+//                   "percent_change_24h":1.82696,
+//                   "percent_change_7d":-3.17012,
+//                   "market_cap":25105442565.183147,
+//                   "last_updated":"2020-06-29T04:13:24.000Z"
+//               }
+//           }
+//       },
+//       "EURS":{
+//           "id":2989,
+//           "name":"STASIS EURO",
+//           "symbol":"EURS",
+//           "slug":"stasis-euro",
+//           "cmc_rank":129,
+//           "last_updated":"2020-06-29T04:14:15.000Z",
+//           "quote":{
+//               "USD":{
+//                   "price":1.10945038201,
+//                   "volume_24h":1258832.2538231,
+//                   "percent_change_1h":0.112449,
+//                   "percent_change_24h":0.472244,
+//                   "percent_change_7d":-0.295466,
+//                   "market_cap":35479343.422526866,
+//                   "last_updated":"2020-06-29T04:14:15.000Z"
+//               }
+//           }
+//       },
+//       "FNX":{
+//           "id":5712,
+//           "name":"FinNexus",
+//           "symbol":"FNX",
+//           "slug":"finnexus",
+//           "cmc_rank":2192,
+//           "last_updated":"2020-06-29T04:13:20.000Z",
+//           "quote":{
+//               "USD":{
+//                   "price":0.0854662555357,
+//                   "volume_24h":278420.604565932,
+//                   "percent_change_1h":-0.541045,
+//                   "percent_change_24h":2.59277,
+//                   "percent_change_7d":0.089457,
+//                   "market_cap":null,
+//                   "last_updated":"2020-06-29T04:13:20.000Z"
+//               }
+//           }
+//       },
+//       "GUSD":{
+//           "id":3306,
+//           "name":"Gemini Dollar",
+//           "symbol":"GUSD",
+//           "slug":"gemini-dollar",
+//           "cmc_rank":367,
+//           "last_updated":"2020-06-29T04:14:16.000Z",
+//           "quote":{
+//               "USD":{
+//                   "price":1.00164679542,
+//                   "volume_24h":10301015.3305503,
+//                   "percent_change_1h":-0.300844,
+//                   "percent_change_24h":-0.0901014,
+//                   "percent_change_7d":0.393024,
+//                   "market_cap":10053108.444388162,
+//                   "last_updated":"2020-06-29T04:14:16.000Z"
+//               }
+//           }
+//       },
+//       "LINK":{
+//           "id":1975,
+//           "name":"Chainlink",
+//           "symbol":"LINK",
+//           "slug":"chainlink",
+//           "cmc_rank":13,
+//           "last_updated":"2020-06-29T04:14:12.000Z",
+//           "quote":{
+//               "USD":{
+//                   "price":4.57520218302,
+//                   "volume_24h":346311942.265561,
+//                   "percent_change_1h":-0.347,
+//                   "percent_change_24h":3.84793,
+//                   "percent_change_7d":6.73094,
+//                   "market_cap":1601320764.057,
+//                   "last_updated":"2020-06-29T04:14:12.000Z"
+//               }
+//           }
+//       },
+//       "LRC":{
+//           "id":1934,
+//           "name":"Loopring",
+//           "symbol":"LRC",
+//           "slug":"loopring",
+//           "cmc_rank":74,
+//           "last_updated":"2020-06-29T04:14:11.000Z",
+//           "quote":{
+//               "USD":{
+//                   "price":0.0765830201214,
+//                   "volume_24h":9669351.3736016,
+//                   "percent_change_1h":-0.176654,
+//                   "percent_change_24h":3.4807,
+//                   "percent_change_7d":-14.0047,
+//                   "market_cap":81939833.39954475,
+//                   "last_updated":"2020-06-29T04:14:11.000Z"
+//               }
+//           }
+//       },
+//       "MKR":{
+//           "id":1518,
+//           "name":"Maker",
+//           "symbol":"MKR",
+//           "slug":"maker",
+//           "cmc_rank":28,
+//           "last_updated":"2020-06-29T04:14:10.000Z",
+//           "quote":{
+//               "USD":{
+//                   "price":451.33566779,
+//                   "volume_24h":8853801.21643199,
+//                   "percent_change_1h":0.198675,
+//                   "percent_change_24h":2.69241,
+//                   "percent_change_7d":-11.6233,
+//                   "market_cap":453852652.32102215,
+//                   "last_updated":"2020-06-29T04:14:10.000Z"
+//               }
+//           }
+//       },
+//       "RVX":{
+//           "id":4697,
+//           "name":"Rivex",
+//           "symbol":"RVX",
+//           "slug":"rivex",
+//           "cmc_rank":2254,
+//           "last_updated":"2020-06-29T04:14:18.000Z",
+//           "quote":{
+//               "USD":{
+//                   "price":0.14039982367,
+//                   "volume_24h":89412.504505681,
+//                   "percent_change_1h":-0.151253,
+//                   "percent_change_24h":17.283,
+//                   "percent_change_7d":1.44626,
+//                   "market_cap":null,
+//                   "last_updated":"2020-06-29T04:14:18.000Z"
+//               }
+//           }
+//       },
+//       "SAI":{
+//           "id":2308,
+//           "name":"Single Collateral DAI ",
+//           "symbol":"SAI",
+//           "slug":"single-collateral-dai",
+//           "cmc_rank":419,
+//           "last_updated":"2020-06-10T16:46:03.000Z",
+//           "quote":{
+//               "USD":{
+//                   "price":1.28570184227,
+//                   "volume_24h":901.782952239787,
+//                   "percent_change_1h":-0.11124,
+//                   "percent_change_24h":5.18811,
+//                   "percent_change_7d":20.6772,
+//                   "market_cap":8562910.584283661,
+//                   "last_updated":"2020-06-10T16:46:03.000Z"
+//               }
+//           }
+//       },
+//       "TUSD":{
+//           "id":2563,
+//           "name":"TrueUSD",
+//           "symbol":"TUSD",
+//           "slug":"trueusd",
+//           "cmc_rank":54,
+//           "last_updated":"2020-06-29T04:14:14.000Z",
+//           "quote":{
+//               "USD":{
+//                   "price":1.00218887207,
+//                   "volume_24h":63845014.2084274,
+//                   "percent_change_1h":-0.804054,
+//                   "percent_change_24h":-0.431676,
+//                   "percent_change_7d":0.269148,
+//                   "market_cap":144634425.33936158,
+//                   "last_updated":"2020-06-29T04:14:14.000Z"
+//               }
+//           }
+//       },
+//       "USDC":{
+//           "id":3408,
+//           "name":"USD Coin",
+//           "symbol":"USDC",
+//           "slug":"usd-coin",
+//           "cmc_rank":18,
+//           "last_updated":"2020-06-29T04:14:17.000Z",
+//           "quote":{
+//               "USD":{
+//                   "price":1.00063342125,
+//                   "volume_24h":227089265.018476,
+//                   "percent_change_1h":-0.251115,
+//                   "percent_change_24h":-0.37001,
+//                   "percent_change_7d":0.0953085,
+//                   "market_cap":927507019.9524034,
+//                   "last_updated":"2020-06-29T04:14:17.000Z"
+//               }
+//           }
+//       },
+//       "USDT":{
+//           "id":825,
+//           "name":"Tether",
+//           "symbol":"USDT",
+//           "slug":"tether",
+//           "cmc_rank":3,
+//           "last_updated":"2020-06-29T04:13:10.000Z",
+//           "quote":{
+//               "USD":{
+//                   "price":1.00060714651,
+//                   "volume_24h":17970214138.1509,
+//                   "percent_change_1h":-0.20566,
+//                   "percent_change_24h":-0.334455,
+//                   "percent_change_7d":0.155858,
+//                   "market_cap":9193570119.679512,
+//                   "last_updated":"2020-06-29T04:13:10.000Z"
+//               }
+//           }
+//       },
+//       "WAN":{
+//           "id":2606,
+//           "name":"Wanchain",
+//           "symbol":"WAN",
+//           "slug":"wanchain",
+//           "cmc_rank":152,
+//           "last_updated":"2020-06-29T04:14:13.000Z",
+//           "quote":{
+//               "USD":{
+//                   "price":0.201250380927,
+//                   "volume_24h":759485.141819393,
+//                   "percent_change_1h":-1.36682,
+//                   "percent_change_24h":5.78187,
+//                   "percent_change_7d":-19.0786,
+//                   "market_cap":24934921.60485718,
+//                   "last_updated":"2020-06-29T04:14:13.000Z"
+//               }
+//           }
+//       },
+//       "ZXC":{
+//           "id":2920,
+//           "name":"0xcert",
+//           "symbol":"ZXC",
+//           "slug":"0xcert",
+//           "cmc_rank":1247,
+//           "last_updated":"2020-06-29T04:14:14.000Z",
+//           "quote":{
+//               "USD":{
+//                   "price":0.000999979991625,
+//                   "volume_24h":26454.2851660458,
+//                   "percent_change_1h":0.586509,
+//                   "percent_change_24h":0.153362,
+//                   "percent_change_7d":-22.0228,
+//                   "market_cap":342619.47865312546,
+//                   "last_updated":"2020-06-29T04:14:14.000Z"
+//               }
+//           }
+//       }
+//   }
+// }
+
+
+curl -H "X-CMC_PRO_API_KEY: 899c3d91-f0be-4351-80fc-21bac6f6ee40" -H "Accept: application/json" -d "amount=100000000&symbol=USD&convert=" -G https://pro-api.coinmarketcap.com/v1/tools/price-conversion
