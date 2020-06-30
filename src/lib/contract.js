@@ -62,15 +62,17 @@ class Oracle extends Contract {
       let decimal = 0;
 
       const priceRawSplit = (priceRaw + "").split('.');
+      let priceStr = priceRawSplit[0];
       if (priceRawSplit.length > 0) {
         decimal = priceRawSplit[1].length;
+        priceStr += priceRawSplit[1];
       }
-      const price = priceRaw * Math.pow(10, decimal);
+      const price = web3.utils.toBN(priceStr);
       if (decimal > 18) {
         throw `${it} decimal > 18, price = ${symbolPriceMap[it]}`;
       }
-      symbolByteArray.push(web3.utils.hexToBytes(web3.utils.toHex(it)));
-      priceUintArray.push('0x' + web3.utils.toBN(price).mul(web3.utils.toBN(Math.pow(10, 18 - decimal))).toString('hex'));
+      symbolByteArray.push(web3.utils.toHex(it));
+      priceUintArray.push('0x' + price.mul(web3.utils.toBN(Math.pow(10, 18 - decimal))).toString('hex'));
     })
 
     const data = this.contract.methods.updatePrice(symbolByteArray, priceUintArray).encodeABI();
