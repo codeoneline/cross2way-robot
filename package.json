@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "crypto_local": "node -r dotenv/config src/lib/crypto_compare.js dotenv_config_path=.env.local",
+    "cmc_local": "node -r dotenv/config src/lib/cmc.js dotenv_config_path=.env.local",
+    "test_cmc_crypto": "node -r dotenv/config node_modules/.bin/_mocha ./test/cmc_crypto_test.js dotenv_config_path=.env.local"
   },
   "repository": {
     "type": "git",
@@ -22,12 +24,16 @@
   },
   "dependencies": {
     "axios": "^0.19.2",
+    "bignumber.js": "^9.0.0",
     "crypto": "^1.0.1",
     "dotenv": "^8.2.0",
+    "ethereumjs-util": "^7.0.2",
     "iwan-sdk": "^1.2.1",
     "log4js": "^6.3.0",
     "lowdb": "^1.0.0",
+    "nodemailer": "^6.4.10",
     "request-promise": "^4.2.5",
+    "secp256k1": "^4.0.1",
     "wanchainjs-tx": "^1.5.0",
     "web3": "^1.2.9"
   }
