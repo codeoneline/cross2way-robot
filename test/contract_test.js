@@ -2,8 +2,9 @@ const assert = require("assert");
 const { oracle } = require('../src/lib/contract');
 const getPrices_cmc = require("../src/lib/cmc");
 
-before(function () {
+before(async function () {
   console.log("test contract begin");
+  await oracle.addWhitelist(process.env.ORACLE_PV_ADDRESS, {from: process.env.ORACLE_OWNER_PV_ADDRESS});
 });
 
 after(function () {
