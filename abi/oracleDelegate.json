@@ -130,7 +130,7 @@
       {
         "indexed": false,
         "name": "keys",
-        "type": "bytes[]"
+        "type": "bytes32[]"
       },
       {
         "indexed": false,
@@ -142,11 +142,52 @@
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "smgID",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "UpdateDeposit",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "a",
+        "type": "address"
+      }
+    ],
+    "name": "AddWhitelist",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "a",
+        "type": "address"
+      }
+    ],
+    "name": "RemoveWhitelist",
+    "type": "event"
+  },
+  {
     "constant": false,
     "inputs": [
       {
         "name": "keys",
-        "type": "bytes[]"
+        "type": "bytes32[]"
       },
       {
         "name": "prices",
@@ -201,7 +242,7 @@
     "inputs": [
       {
         "name": "key",
-        "type": "bytes"
+        "type": "bytes32"
       }
     ],
     "name": "getValue",
@@ -220,7 +261,7 @@
     "inputs": [
       {
         "name": "keys",
-        "type": "bytes[]"
+        "type": "bytes32[]"
       }
     ],
     "name": "getValues",

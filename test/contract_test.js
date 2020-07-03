@@ -11,7 +11,7 @@ after(function () {
 });
 
 describe('oracle', function() {
-  this.timeout(16000);
+  this.timeout(300000);
 
   it.only('updatePrice', async function() {
     const prices = await getPrices_cmc("BTC,ETH");

@@ -51,6 +51,11 @@ class Oracle extends Contract {
     super(process.env.ORACLE_ADDRESS, process.env.ORACLE_PV_KEY, process.env.ORACLE_PV_ADDRESS, abiOracle);
   }
 
+  async addWhitelist(whiterAddress) {
+    const data = this.contract.methods.addWhitelist(whiterAddress).encodeABI();
+    return await this.doOperator(this.addWhitelist.name, data, null, '0x00', 7, this.pv_key, this.pv_address);
+  }
+
   async updatePrice(symbolPriceMap) {
     const keys = Object.keys(symbolPriceMap);
     const priceUintArray = [];
