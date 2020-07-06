@@ -51,12 +51,12 @@ class IWan {
     }
   }
   async getScVar(name, contract, abi) {
-    const result = await this.apiClient.getScVar(process.env.IWAN_CHAINTYPE, process.env.JACKPOT_ADDRESS, name, abi);
+    const result = await this.apiClient.getScVar(process.env.IWAN_CHAINTYPE, contract._address.toLowerCase(), name, abi);
     return this.web0ToWeb1(name, result, contract);
   }
 
   async getScFun(name, args, contract, abi) {
-    const result = await this.apiClient.callScFunc(process.env.IWAN_CHAINTYPE, process.env.JACKPOT_ADDRESS, name, args, abi);
+    const result = await this.apiClient.callScFunc(process.env.IWAN_CHAINTYPE, contract._address.toLowerCase(), name, args, abi);
     return this.web0ToWeb1(name, result, contract);
   }
 
@@ -85,7 +85,7 @@ class IWan {
     }
   }
 
-  async getBlock(blockNumber, bTxDetails) {
+  async getBlock(blockNumber) {
     return await this.apiClient.getBlockByNumber(process.env.IWAN_CHAINTYPE, blockNumber);
   }
 

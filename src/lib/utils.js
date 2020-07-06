@@ -6,6 +6,8 @@ function sleep(ms) {
 	})
 };
 
+// const sleep = (ms) => { return new Promise(resolve => setTimeout(resolve, ms)) };
+
 function promisify(func, paras=[], obj=null){
   return new Promise(function(success, fail){
       function _cb(err, result){

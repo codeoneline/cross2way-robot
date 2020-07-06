@@ -1,4 +1,4 @@
-const WanTx = require('wanchainjs-tx');
+const EthTx = require('ethereumjs-tx');
 const crypto = require('crypto');
 const secp256k1 = require('secp256k1');
 const log = require('./log');
@@ -6,7 +6,6 @@ const util = require('ethereumjs-util');
 
 function signTx(gasLimit, nonce, data, prvKey, value='0x00', to) {
   const txParams = {
-    Txtype: 0x01,
     nonce: nonce,
     gasPrice: process.env.GASPRICE,
     gasLimit: gasLimit,

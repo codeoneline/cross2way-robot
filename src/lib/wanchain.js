@@ -29,17 +29,8 @@ class WanChain {
     return await this.web3.eth.getTransactionCount(addr);
   };
 
-  async unlockAccount(addr, password, duration) {
-    return await this.web3.eth.personal.unlockAccount(addr, password, duration);
-  }
-
   async getBalance(addr) {
     return await this.web3.eth.getBalance(addr);
-  };
-
-  // iWan don't have this interface
-  async getBalanceByBlockNumber(addr, blockNumber) {
-    return await this.web3.eth.getBalance(addr, blockNumber);
   };
 
   async getScVar(name, contract, abi) {
@@ -62,11 +53,15 @@ class WanChain {
     return await this.web3.pos.getStakerInfo(blockNumber);
   };
 
-  async estimateGas(from, to, value, data) {
-    return await this.web3.eth.estimateGas({from, to, value, data});
+  closeEngine() {
   }
 
-  closeEngine() {
+  async getBlock(blockNumber) {
+    return await this.web3.eth.getBlock(blockNumber);
+  }
+
+  async estimateGas(from, to, value, data) {
+    return await this.web3.eth.estimateGas({from, to, value, data});
   }
 
   // get txs on address between [fromBlock, toBlock]
@@ -122,19 +117,6 @@ class WanChain {
 
   async getTimeByEpochID(epochId) {
     return await this.web3.pos.getTimeByEpochID(epochId);
-  }
-
-  // warning: iWan don't support this method
-  async getScMap(key, slt) {
-    const sltStr = slt.toString();
-    const slot = "0".repeat(64 - sltStr.length) + sltStr;
-    
-    const result = await this.web3.eth.getStorageAt(
-        this.address,
-        slot
-    );
-
-    return result;
   }
 }
 
