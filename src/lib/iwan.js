@@ -2,9 +2,7 @@ const iWanClient = require('iwan-sdk');
 const Web3 = require('web3');
 const BigNumber = require("bignumber.js");
 const { promisify, sleep } = require("./utils");
-// require("dotenv").config({path: `${__dirname}/../../.env.local`});
-
-//Subject to https://iwan.wanchain.org
+const { signTx } = require('./wanchain-helper');
 
 class IWan {
   constructor() {
@@ -72,19 +70,6 @@ class IWan {
     }
   }
 
-  async getStakerInfo(blockNumber) {
-    return await this.apiClient.getStakerInfo(process.env.IWAN_CHAINTYPE, blockNumber);
-  };
-
-  closeEngine() {
-    if (!this.apiClient.isClosing() && !this.apiClient.isClosed()) {
-      if (this.apiClient.isOpen()) {
-        return this.apiClient.close();
-      }
-      // return this.apiClient.close();
-    }
-  }
-
   async getBlock(blockNumber) {
     return await this.apiClient.getBlockByNumber(process.env.IWAN_CHAINTYPE, blockNumber);
   }
@@ -118,6 +103,19 @@ class IWan {
     }
     return receipts;
   }
+
+  async getStakerInfo(blockNumber) {
+    return await this.apiClient.getStakerInfo(process.env.IWAN_CHAINTYPE, blockNumber);
+  };
+
+  closeEngine() {
+    if (!this.apiClient.isClosing() && !this.apiClient.isClosed()) {
+      if (this.apiClient.isOpen()) {
+        return this.apiClient.close();
+      }
+      // return this.apiClient.close();
+    }
+  }
   ///////////////////////////////////////////////////////////
   // those are used for test
   async getRandom(epochId, blockNumber) {
@@ -136,6 +134,7 @@ class IWan {
 const iWan = new IWan();
 
 module.exports = {
-  wanChain: iWan,
+  chain: iWan,
   web3: iWan.web3,
+  signTx: signTx,
 };

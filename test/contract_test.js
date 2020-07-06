@@ -52,7 +52,7 @@ const ContractTest = (C) => class extends C {
 
 class OracleTest extends ContractTest(Oracle) {
   async getValue(key) {
-    return await this.wanChain.getScFun("getValue", [this.web3.utils.toHex(key)], this.contract, this.abi);
+    return await this.chain.getScFun("getValue", [this.web3.utils.toHex(key)], this.contract, this.abi);
   }
 }
 

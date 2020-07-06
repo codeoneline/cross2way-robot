@@ -4,7 +4,7 @@ const secp256k1 = require('secp256k1');
 const log = require('./log');
 const util = require('ethereumjs-util');
 
-function signTx(gasLimit, nonce, data, prvKey, value='0x00', to) {
+function signTx(gasLimit, nonce, data, prvKey, value, to) {
   const txParams = {
     Txtype: 0x01,
     nonce: nonce,

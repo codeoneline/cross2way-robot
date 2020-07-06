@@ -1,8 +1,7 @@
 const abiOracle = require('../../abi/oracleDelegate');
 const log = require('./log');
-const wanHelper = require('./wanchain-helper');
-const wanChain = require(`./${process.env.CHAIN_ENGINE}`).wanChain;
-const web3 = require(`./${process.env.CHAIN_ENGINE}`).web3;
+const {chain, web3, signTx} = require(`./${process.env.CHAIN_ENGINE}`);
+
 const { sleep } = require('./utils');
 
 log.info("contract init");
@@ -17,25 +16,26 @@ class Contract {
 
     this.contract = new web3.eth.Contract(abi, this.address);
     this.web3 = web3;
-    this.wanChain = wanChain;
+    this.chain = chain;
+    this.signTx = signTx;
   }
 
   async doOperator(opName, data, gasLimit, value, count, privateKey, pkAddress) {
     log.debug(`do operator: ${opName}`);
-    const nonce = await wanChain.getTxCount(pkAddress);
-    let gas = gasLimit ? gasLimit : await wanChain.estimateGas(pkAddress, this.address, value, data) + 200000;
+    const nonce = await chain.getTxCount(pkAddress);
+    let gas = gasLimit ? gasLimit : await chain.estimateGas(pkAddress, this.address, value, data) + 200000;
     const maxGas = parseInt(process.env.GASLIMIT);
     if (gas > maxGas) {
       gas = maxGas;
     }
-    const rawTx = wanHelper.signTx(gas, nonce, data, privateKey, value, this.address);
-    const txHash = await wanChain.sendRawTxByWeb3(rawTx);
+    const rawTx = signTx(gas, nonce, data, privateKey, value, this.address);
+    const txHash = await chain.sendRawTxByWeb3(rawTx);
     log.info(`${opName} hash: ${txHash}`);
     let receipt = null;
     let tryTimes = 0;
     do {
         await sleep(5000);
-        receipt = await wanChain.getTransactionReceipt(txHash);
+        receipt = await chain.getTransactionReceipt(txHash);
         tryTimes ++;
     } while (!receipt && tryTimes < count);
     if (!receipt) {

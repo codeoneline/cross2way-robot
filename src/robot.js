@@ -24,3 +24,5 @@ setTimeout(async () => {
   const usd = await getData(`https://min-api.cryptocompare.com/data/pricemulti?fsyms=${Symbols}&tsyms=USD`);
   log.info(JSON.stringify(usd));
 }, 0);
+
+// TODO：扫链，跟踪

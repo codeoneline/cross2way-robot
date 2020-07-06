@@ -4,7 +4,7 @@ const secp256k1 = require('secp256k1');
 const log = require('./log');
 const util = require('ethereumjs-util');
 
-function signTx(gasLimit, nonce, data, prvKey, value='0x00', to) {
+function signTx(gasLimit, nonce, data, prvKey, value, to) {
   const txParams = {
     nonce: nonce,
     gasPrice: process.env.GASPRICE,
@@ -17,7 +17,7 @@ function signTx(gasLimit, nonce, data, prvKey, value='0x00', to) {
   log.info(JSON.stringify(txParams));
   const privateKey = Buffer.from(prvKey, 'hex');
 
-  const tx = new WanTx(txParams);
+  const tx = new EthTx(txParams);
   tx.sign(privateKey);
   const serializedTx = tx.serialize();
   return '0x' + serializedTx.toString('hex');
