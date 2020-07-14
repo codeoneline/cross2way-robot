@@ -12,6 +12,10 @@ class OracleTest extends Oracle {
   async getValue(key) {
     return await this.core.getScFun("getValue", [this.web3.utils.toHex(key)], this.contract, this.abi);
   }
+
+  async getDeposit(smgID) {
+    return await this.core.getScFun("getDeposit", [smgID], this.contract, this.abi);
+  }
 }
 
 const oracle = new OracleTest(chain);
@@ -39,6 +43,16 @@ describe('oracle', function() {
   });
 
   it('updateDeposit', async function() {
-    
+    console.log("updateDeposit begin");
+    // const smgID = web3.utils.hexToBytes("0x6b175474e89094c44da98b954eedeac495271d0f");
+    const smgID = "0x6b175474e89094c44da98b954eedeac495271d0f";
+    const amount = 80000;
+    await oracle.updateDeposit(smgID, amount);
+    const deposit = oracle.web3.utils.toBN(await oracle.getDeposit(smgID)).toNumber();
+    assert.equal(amount === deposit, true);
+  });
+
+  it('', async function() {
+
   });
 })

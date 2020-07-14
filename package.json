@@ -6,7 +6,11 @@
   "scripts": {
     "crypto_local": "node -r dotenv/config src/lib/crypto_compare.js dotenv_config_path=.env.local",
     "cmc_local": "node -r dotenv/config src/lib/cmc.js dotenv_config_path=.env.local",
-    "test_cmc_crypto": "node -r dotenv/config node_modules/.bin/_mocha ./test/cmc_crypto_test.js dotenv_config_path=.env.local"
+    "test_cmc_crypto": "node -r dotenv/config node_modules/.bin/_mocha ./test/cmc_crypto_test.js dotenv_config_path=.env.local",
+    "robot_local": "node -r dotenv/config src/robot.js dotenv_config_path=.env.local",
+    "robot_testnet": "node -r dotenv/config src/robot.js dotenv_config_path=.env.testnet",
+    "robot_mainnet": "node -r dotenv/config src/robot.js dotenv_config_path=.env.mainnet",
+    "test": "nyc mocha --recursive"
   },
   "repository": {
     "type": "git",
@@ -32,6 +36,7 @@
     "iwan-sdk": "^1.2.1",
     "log4js": "^6.3.0",
     "lowdb": "^1.0.0",
+    "node-schedule": "^1.3.2",
     "nodemailer": "^6.4.10",
     "request-promise": "^4.2.5",
     "secp256k1": "^4.0.1",

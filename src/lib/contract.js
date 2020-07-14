@@ -88,6 +88,21 @@ class Oracle extends Contract {
     const data = this.contract.methods.updatePrice(symbolByteArray, priceUintArray).encodeABI();
     return await this.doOperator(this.updatePrice.name, data, null, '0x00', 7, this.pv_key, this.pv_address);
   }
+
+  async updateDeposit(smgID, amount) {
+    const data = this.contract.methods.updateDeposit(smgID, amount).encodeABI();
+    return await this.doOperator(this.updateDeposit.name, data, null, '0x00', 7, this.pv_key, this.pv_address);
+  }
+
+  async setStoremanGroupStatus(id, status) {
+    const data = this.contract.methods.setStoremanGroupStatus(id, status).encodeABI();
+    return await this.doOperator(this.setStoremanGroupStatus.name, data, null, '0x00', 7, this.pv_key, this.pv_address);
+  }
+
+  async setStoremanGroupConfig(id, status, deposit, chain, curve, gpk1, gpk2, startTime, endTime) {
+    const data = this.contract.methods.setStoremanGroupConfig(id, status, deposit, chain, curve, gpk1, gpk2, startTime, endTime).encodeABI();
+    return await this.doOperator(this.setStoremanGroupConfig.name, data, null, '0x00', 7, this.pv_key, this.pv_address);
+  }
 }
 
 class TokenManager extends Contract {
