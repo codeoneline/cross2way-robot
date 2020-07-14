@@ -103,6 +103,18 @@ class Oracle extends Contract {
     const data = this.contract.methods.setStoremanGroupConfig(id, status, deposit, chain, curve, gpk1, gpk2, startTime, endTime).encodeABI();
     return await this.doOperator(this.setStoremanGroupConfig.name, data, null, '0x00', 7, this.pv_key, this.pv_address);
   }
+
+  async getValue(key) {
+    return await this.core.getScFun("getValue", [this.web3.utils.toHex(key)], this.contract, this.abi);
+  }
+
+  async getDeposit(smgID) {
+    return await this.core.getScFun("getDeposit", [smgID], this.contract, this.abi);
+  }
+
+  async getStoremanGroupConfig(id) {
+    return await this.core.getScFun("getStoremanGroupConfig", [id], this.contract, this.abi);
+  }
 }
 
 class TokenManager extends Contract {

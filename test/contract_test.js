@@ -8,14 +8,6 @@ class OracleTest extends Oracle {
   constructor(chain) {
     super(chain);
   }
-
-  async getValue(key) {
-    return await this.core.getScFun("getValue", [this.web3.utils.toHex(key)], this.contract, this.abi);
-  }
-
-  async getDeposit(smgID) {
-    return await this.core.getScFun("getDeposit", [smgID], this.contract, this.abi);
-  }
 }
 
 const oracle = new OracleTest(chain);
@@ -52,7 +44,18 @@ describe('oracle', function() {
     assert.equal(amount === deposit, true);
   });
 
-  it('', async function() {
-
+  it('setStoremanGroupConfig setStoremanGroupStatus', async function() {
+    const smgID = "0x6b175474e89094c44da98b954eedeac495271d0f";
+    const status = 1;
+    const deposit = 2;
+    const chain1 = 3;
+    const chain2 = 4;
+    const curve1 = 5;
+    const curve2 = 6;
+    const gpk1 = oracle.web3.utils.hexToBytes("0x1234");
+    const gpk2 = oracle.web3.utils.hexToBytes("0x5678");
+    const deposit = 2;
+    await oracle.setStoremanGroupStatus(smgID, amount);
+    
   });
 })
