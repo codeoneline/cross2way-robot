@@ -12,75 +12,51 @@
         "<node_internals>/**"
       ],
       "runtimeArgs": ["-r", "dotenv/config"],
-      "args": ["dotenv_config_path=.env.local"],
       "cwd": "${workspaceRoot}",
-      "program": "${workspaceFolder}/src/robot.js"
+      "program": "${workspaceFolder}/src/robot.js",
+      "args": ["dotenv_config_path=.env.local"]
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "crypto local",
+      "name": "my local",
       "skipFiles": [
         "<node_internals>/**"
       ],
       "runtimeArgs": ["-r", "dotenv/config"],
-      "args": ["dotenv_config_path=.env.local"],
       "cwd": "${workspaceRoot}",
-      "program": "${workspaceFolder}/src/lib/crypto_compare.js"
+      "program": "${workspaceFolder}/src/my.js",
+      "args": ["dotenv_config_path=.env.local"]
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "my_local",
+      "name": "test cmc_crypto local",
       "skipFiles": [
         "<node_internals>/**"
       ],
       "runtimeArgs": ["-r", "dotenv/config"],
-      "args": ["dotenv_config_path=.env.local"],
-      "cwd": "${workspaceRoot}",
-      "program": "${workspaceFolder}/src/my.js"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "try_jack-pot",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "runtimeArgs": ["-r", "dotenv/config"],
-      "args": ["dotenv_config_path=.env.local"],
-      "cwd": "${workspaceRoot}",
-      "program": "${workspaceFolder}/test/jack-pot.js"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "cmc_crypto test",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "runtimeArgs": ["-r", "dotenv/config"],
-      "args": ["./test/cmc_crypto_test.js", "dotenv_config_path=.env.local"],
       "cwd": "${workspaceRoot}",
 			"stopOnEntry": false,
 			"runtimeExecutable": null,
 			"env": { "NODE_ENV": "develop"},
-      "program": "${workspaceFolder}/node_modules/.bin/_mocha"
+      "program": "${workspaceFolder}/node_modules/.bin/_mocha",
+      "args": ["./test/cmc_crypto_test.js", "dotenv_config_path=.env.local"]
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "contract local test",
+      "name": "test contract local",
       "skipFiles": [
         "<node_internals>/**"
       ],
       "runtimeArgs": ["-r", "dotenv/config"],
-      "args": ["./test/contract_test.js", "dotenv_config_path=.env.local"],
       "cwd": "${workspaceRoot}",
 			"stopOnEntry": false,
 			"runtimeExecutable": null,
 			"env": { "NODE_ENV": "develop"},
-      "program": "${workspaceFolder}/node_modules/.bin/_mocha"
+      "program": "${workspaceFolder}/node_modules/.bin/_mocha",
+      "args": ["./test/contract_test.js", "dotenv_config_path=.env.local"]
     },
   ]
 }

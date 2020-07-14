@@ -31,7 +31,7 @@ class WanChain extends BaseChain {
 const wanChain = new WanChain();
 
 module.exports = {
-  chain: wanChain,
+  core: wanChain,
   web3: wanChain.web3,
   signTx: signTx,
 };

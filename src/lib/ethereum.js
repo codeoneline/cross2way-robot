@@ -10,7 +10,7 @@ class EthChain extends BaseChain {
 const ethChain = new EthChain();
 
 module.exports = {
-  chain: ethChain,
+  core: ethChain,
   web3: ethChain.web3,
   signTx: signTx,
 }

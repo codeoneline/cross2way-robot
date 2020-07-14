@@ -11,7 +11,7 @@ after(function () {
 });
 
 describe("getPrices", function () {
-  this.timeout(16000);
+  this.timeout(160000);
 
   it("getPrices", async function() {
     let btc_cmc_price = await getPrices_cmc("BTC");
@@ -29,6 +29,5 @@ describe("getPrices", function () {
     assert.equal(btc_crypto_price.BTC > 0, true);
     assert.equal(btc_cmc_price.ETH > 0, true);
     assert.equal(btc_crypto_price.ETH > 0, true);
-
   });
 })

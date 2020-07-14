@@ -1,41 +1,42 @@
-const abiOracle = require('../../abi/oracleDelegate');
+const abiOracle = require('../../abi/oracleDelegate.json');
+const abiTokenManager = require('../../abi/tokenManagerDelegate.json');
 const log = require('./log');
-const {chain, web3, signTx} = require(`./${process.env.CHAIN_ENGINE}`);
+// const {chain, web3, signTx} = require(`./${process.env.CHAIN_ENGINE}`);
 
 const { sleep } = require('./utils');
 
 log.info("contract init");
 
 class Contract {
-  constructor(contractAddress, ownerPrivateKey, ownerPrivateAddress, abi) {
+  constructor(chain, abi, contractAddress, ownerPrivateKey, ownerPrivateAddress) {
     this.address = contractAddress.toLowerCase();
     this.pv_key = ownerPrivateKey.toLowerCase();
     this.pv_address = ownerPrivateAddress.toLowerCase();
     this.price_decimal = parseInt(process.env.PRICE_DECIMAL);
     this.abi = abi;
 
-    this.contract = new web3.eth.Contract(abi, this.address);
-    this.web3 = web3;
-    this.chain = chain;
-    this.signTx = signTx;
+    this.contract = new chain.web3.eth.Contract(abi, this.address);
+    this.web3 = chain.web3;
+    this.core = chain.core;
+    this.signTx = chain.signTx;
   }
 
   async doOperator(opName, data, gasLimit, value, count, privateKey, pkAddress) {
     log.debug(`do operator: ${opName}`);
-    const nonce = await chain.getTxCount(pkAddress);
-    let gas = gasLimit ? gasLimit : await chain.estimateGas(pkAddress, this.address, value, data) + 200000;
+    const nonce = await this.core.getTxCount(pkAddress);
+    let gas = gasLimit ? gasLimit : await this.core.estimateGas(pkAddress, this.address, value, data) + 200000;
     const maxGas = parseInt(process.env.GASLIMIT);
     if (gas > maxGas) {
       gas = maxGas;
     }
-    const rawTx = signTx(gas, nonce, data, privateKey, value, this.address);
-    const txHash = await chain.sendRawTxByWeb3(rawTx);
+    const rawTx = this.signTx(gas, nonce, data, privateKey, value, this.address);
+    const txHash = await this.core.sendRawTxByWeb3(rawTx);
     log.info(`${opName} hash: ${txHash}`);
     let receipt = null;
     let tryTimes = 0;
     do {
         await sleep(5000);
-        receipt = await chain.getTransactionReceipt(txHash);
+        receipt = await this.core.getTransactionReceipt(txHash);
         tryTimes ++;
     } while (!receipt && tryTimes < count);
     if (!receipt) {
@@ -50,13 +51,8 @@ class Contract {
 }
 
 class Oracle extends Contract {
-  constructor() {
-    super(process.env.ORACLE_ADDRESS, process.env.ORACLE_PV_KEY, process.env.ORACLE_PV_ADDRESS, abiOracle);
-  }
-
-  async addWhitelist(whiterAddress, owner_pv_key, owner_pv_address) {
-    const data = this.contract.methods.addWhitelist(whiterAddress).encodeABI();
-    return await this.doOperator(this.addWhitelist.name, data, null, '0x00', 7, owner_pv_key, owner_pv_address);
+  constructor(chain) {
+    super(chain, abiOracle, process.env.ORACLE_ADDRESS, process.env.ORACLE_PV_KEY, process.env.ORACLE_PV_ADDRESS);
   }
 
   fractionToDecimalString(priceRaw, price_decimal) {
@@ -69,12 +65,12 @@ class Oracle extends Contract {
       decimal = priceRawSplit[1].length;
       priceStr += priceRawSplit[1];
     }
-    const price = web3.utils.toBN(priceStr);
+    const price = this.web3.utils.toBN(priceStr);
     if (decimal > price_decimal) {
       throw `${it} decimal > ${price_decimal}, price = ${symbolPriceMap[it]}`;
     }
 
-    return '0x' + price.mul(web3.utils.toBN(Math.pow(10, price_decimal - decimal))).toString('hex');
+    return '0x' + price.mul(this.web3.utils.toBN(Math.pow(10, price_decimal - decimal))).toString('hex');
   }
 
   async updatePrice(symbolPriceMap) {
@@ -85,7 +81,7 @@ class Oracle extends Contract {
     keys.map(it => {
       const priceRaw = symbolPriceMap[it];
       const priceUnit = this.fractionToDecimalString(priceRaw, this.price_decimal)
-      symbolByteArray.push(web3.utils.toHex(it));
+      symbolByteArray.push(this.web3.utils.toHex(it));
       priceUintArray.push(priceUnit);
     })
 
@@ -94,6 +90,14 @@ class Oracle extends Contract {
   }
 }
 
+class TokenManager extends Contract {
+  constructor(chain) {
+    super(chain, abiTokenManager, process.env.TOKEN_MANAGER_ADDRESS, process.env.TOKEN_MANAGER_PV_KEY, process.env.TOKEN_MANAGER_PV_ADDRESS);
+  }
+}
+
 module.exports = {
-  Oracle
+  Contract,
+  Oracle,
+  TokenManager
 }

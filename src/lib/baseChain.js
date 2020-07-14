@@ -94,6 +94,50 @@ class BaseChain {
     }
     return receipts;
   }
+
+  ////////////////////////////////////////////////////////////////////
+  // only rpc support, iWan not support
+  getSlot(key, slot, offset = 0) {
+    const dynSlot = this.web3.utils.soliditySha3(this.web3.utils.toBN(key), this.web3.utils.toBN(slot));
+    const newSlot = this.web3.utils.toBN(dynSlot).add(this.web3.utils.toBN(offset));
+    return "0x" + newSlot.toString("hex");
+  }
+
+  async unlockAccount(addr, password, duration) {
+    return await this.web3.eth.personal.unlockAccount(addr, password, duration);
+  }
+
+  async getScMap(key, slt) {
+    const sltStr = slt.toString();
+    const slot = "0".repeat(64 - sltStr.length) + sltStr;
+
+    const result = await this.web3.eth.getStorageAt(
+        this.address,
+        slot
+    );
+
+    return result;
+  }
+
+  async getBalanceByBlockNumber(addr, blockNumber) {
+    return await this.web3.eth.getBalance(addr, blockNumber);
+  };
+
+  async getScMember(slot, blockNumber) {
+    const result = await this.web3.eth.getStorageAt(
+      this.address,
+      slot,
+      blockNumber
+    );
+  
+    return result;
+  }
+
+  async getScPositionMember(position, blockNumber) {
+    const positionSlot = "0x" + this.web3.utils.leftPad(position.toString(16).replace(/^0x/i,''), 64);
+    const result = await getScMember(positionSlot, blockNumber);
+    return result;
+  }
 }
 
 module.exports = BaseChain;
