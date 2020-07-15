@@ -42,7 +42,7 @@ class Contract {
     if (!receipt) {
         const content = `${opName} failed to get receipt, tx=${txHash} receipt, data: ${data}, nonce:${nonce}`;
         log.error(content);
-        throw content;
+        throw new Error(content);
     }
 
     log.debug(`${opName} receipt: ${JSON.stringify(receipt)}`);
@@ -55,32 +55,36 @@ class Oracle extends Contract {
     super(chain, abiOracle, process.env.ORACLE_ADDRESS, process.env.ORACLE_PV_KEY, process.env.ORACLE_PV_ADDRESS);
   }
 
-  fractionToDecimalString(priceRaw, price_decimal) {
-    let leftDecimal = price_decimal;
-    let decimal = 0;
+  // fractionToDecimalString(priceRaw, price_decimal) {
+  //   let leftDecimal = price_decimal;
+  //   let decimal = 0;
 
-    const priceRawSplit = (priceRaw + "").split('.');
-    let priceStr = priceRawSplit[0];
-    if (priceRawSplit.length > 0) {
-      decimal = priceRawSplit[1].length;
-      priceStr += priceRawSplit[1];
-    }
-    const price = this.web3.utils.toBN(priceStr);
-    if (decimal > price_decimal) {
-      throw `${it} decimal > ${price_decimal}, price = ${symbolPriceMap[it]}`;
-    }
+  //   const priceRawSplit = (priceRaw + "").split('.');
+  //   let priceStr = priceRawSplit[0];
+  //   if (priceRawSplit.length > 0) {
+  //     decimal = priceRawSplit[1].length;
+  //     priceStr += priceRawSplit[1];
+  //   }
+  //   const price = this.web3.utils.toBN(priceStr);
+  //   if (decimal > price_decimal) {
+  //     throw new Error(`${it} decimal > ${price_decimal}, price = ${symbolPriceMap[it]}`);
+  //   }
 
-    return '0x' + price.mul(this.web3.utils.toBN(Math.pow(10, price_decimal - decimal))).toString('hex');
-  }
+  //   return '0x' + price.mul(this.web3.utils.toBN(Math.pow(10, price_decimal - decimal))).toString('hex');
+  // }
 
   async updatePrice(symbolPriceMap) {
     const keys = Object.keys(symbolPriceMap);
+    if (keys.length === 0) {
+      return ;
+    }
     const priceUintArray = [];
     const symbolByteArray = [];
 
-    keys.map(it => {
-      const priceRaw = symbolPriceMap[it];
-      const priceUnit = this.fractionToDecimalString(priceRaw, this.price_decimal)
+    keys.forEach(it => {
+      // const priceRaw = symbolPriceMap[it];
+      // const priceUnit = this.fractionToDecimalString(priceRaw, this.price_decimal)
+      const priceUnit = symbolPriceMap[it];
       symbolByteArray.push(this.web3.utils.toHex(it));
       priceUintArray.push(priceUnit);
     })
@@ -106,6 +110,12 @@ class Oracle extends Contract {
 
   async getValue(key) {
     return await this.core.getScFun("getValue", [this.web3.utils.toHex(key)], this.contract, this.abi);
+  }
+
+  async getValues(keys) {
+    const symbolsStringArray = keys.replace(/\s+/g,"").split(',');
+    const symbolsArray = symbolsStringArray.map(i => {return this.web3.utils.toHex(i);})
+    return await this.core.getScFun("getValues", [symbolsArray], this.contract, this.abi);
   }
 
   async getDeposit(smgID) {

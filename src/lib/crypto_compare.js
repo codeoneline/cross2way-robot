@@ -1,5 +1,6 @@
 const axios = require('axios');
 const log = require('./log');
+const { fractionToDecimalString } = require('./utils');
 
 const getData = async url => {
   try {
@@ -18,14 +19,14 @@ const getData = async url => {
 
 async function getPrices(symbolsStr) {
   const symbols = symbolsStr.replace(/\s+/g,"").split(',');
-
   const priceMap = {};
   const data = await getData(`${process.env.CRYPTO_URL}fsyms=${symbolsStr}&tsyms=USD`);
-  symbols.map(it => {
+  symbols.forEach(it => {
     if (data[it]) {
-      priceMap[it] = data[it].USD;
+      // priceMap[it] = { price : data[it].USD, time: Date.now() };
+      priceMap[it] = fractionToDecimalString(data[it].USD, process.env.PRICE_DECIMAL);
     } else {
-      priceMap[it] = null;
+      // priceMap[it] = null;
     }
   });
   log.info(JSON.stringify(priceMap));

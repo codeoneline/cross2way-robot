@@ -13,21 +13,21 @@ after(function () {
 describe("getPrices", function () {
   this.timeout(160000);
 
-  it.only("getPrices", async function() {
+  it("getPrices", async function() {
     let btc_cmc_price = await getPrices_cmc("BTC");
     let btc_crypto_price = await getPrices_crypto("BTC");
     console.log(JSON.stringify(btc_cmc_price));
     console.log(JSON.stringify(btc_crypto_price));
-    assert.equal(btc_cmc_price.BTC > 0, true);
-    assert.equal(btc_crypto_price.BTC > 0, true);
+    assert.equal(btc_cmc_price.BTC.price > 0, true);
+    assert.equal(btc_crypto_price.BTC.price > 0, true);
 
     btc_cmc_price = await getPrices_cmc("BTC,ETH");
     btc_crypto_price = await getPrices_crypto("BTC,ETH");
     console.log(JSON.stringify(btc_cmc_price));
     console.log(JSON.stringify(btc_crypto_price));
-    assert.equal(btc_cmc_price.BTC > 0, true);
-    assert.equal(btc_crypto_price.BTC > 0, true);
-    assert.equal(btc_cmc_price.ETH > 0, true);
-    assert.equal(btc_crypto_price.ETH > 0, true);
+    assert.equal(btc_cmc_price.BTC.price > 0, true);
+    assert.equal(btc_crypto_price.BTC.price > 0, true);
+    assert.equal(btc_cmc_price.ETH.price > 0, true);
+    assert.equal(btc_crypto_price.ETH.price > 0, true);
   });
 })

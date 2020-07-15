@@ -26,7 +26,7 @@ const transporter = nodeMailer.createTransport({
   });
 
 // send mail with defined transport object
-const sendMail = async (subject, content, from = process.env.EMAIL_FROM_NAME) => {
+const sendMail = async (subject, content, from) => {
     log.error(`email: ${subject} : ${content}`);
     const mailOptions = {
         from: from, // sender address
@@ -39,4 +39,15 @@ const sendMail = async (subject, content, from = process.env.EMAIL_FROM_NAME) =>
     log.info('Message sent: %s', info.messageId);
 };
 
-module.exports = sendMail;
+const logAndSendMail = async (subject, content, isSend = true, from = process.env.EMAIL_FROM_NAME) => {
+    log.error(subject + " : " + content);
+    try {
+        if (isSend) {
+            await sendMail(subject, content, from);
+        }
+    } catch (e) {
+        log.error(`send mail failed, sub = ${subject}, content = ${content}, err=${e instanceof Error ? e.stack : e}`);
+    }
+}
+
+module.exports = logAndSendMail;

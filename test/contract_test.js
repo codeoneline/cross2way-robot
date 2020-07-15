@@ -4,13 +4,7 @@ const getPrices_cmc = require("../src/lib/cmc");
 const getPrices_crypto = require("../src/lib/crypto_compare");
 const chain = require(`../src/lib/${process.env.CHAIN_ENGINE}`);
 
-class OracleTest extends Oracle {
-  constructor(chain) {
-    super(chain);
-  }
-}
-
-const oracle = new OracleTest(chain);
+const oracle = new Oracle(chain);
 
 before("init", async function () {
   this.timeout(1000);
@@ -25,13 +19,21 @@ describe('oracle', function() {
   this.timeout(300000);
   console.log("oracle begin");
 
-  it('updatePrice', async function() {
+  it.only('updatePrice', async function() {
     console.log("updatePrice begin");
     const prices = await getPrices_crypto("BTC,ETH");
     await oracle.updatePrice(prices);
     const btcPrice = '0x' + oracle.web3.utils.toBN(await oracle.getValue("BTC")).toString('hex');
-    const btcTruePrice = oracle.fractionToDecimalString(prices.BTC, oracle.price_decimal);
+    const btcTruePrice = prices.BTC;
     assert.equal(btcPrice === btcTruePrice, true);
+
+    const prices_get = await oracle.getValues("BTC,ETH");
+    const btcPrice2 = '0x' + oracle.web3.utils.toBN(prices_get[0]).toString('hex');
+    const ethPrice = '0x' + oracle.web3.utils.toBN(prices_get[1]).toString('hex');
+    const ethTruePrice = prices.ETH;
+    assert.equal(ethPrice === ethTruePrice, true);
+    assert.equal(btcPrice === btcPrice2, true);
+
   });
 
   it('updateDeposit', async function() {

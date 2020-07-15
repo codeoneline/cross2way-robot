@@ -11,8 +11,8 @@ const prvKey = "b6a03207128827eaae0d31d97a7a6243de31f2baf99eabd764e33389ecf436fc
 const prvAddress = "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8";
 
 setTimeout( async () => {
-  // const result = await chain.core.unlockAccount(process.env.ORACLE_PV_ADDRESS, "wanglu", 36000);
-  // console.log(result);
+  const result = await chain.core.unlockAccount("0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8", "wanglu", 36000);
+  console.log(result);
 
 }, 0);
 

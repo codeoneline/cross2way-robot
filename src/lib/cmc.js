@@ -1,5 +1,6 @@
 const rp = require('request-promise');
 const log = require('./log');
+const { fractionToDecimalString } = require('./utils');
 
 
 async function getPrices(symbolsStr) {
@@ -25,10 +26,17 @@ async function getPrices(symbolsStr) {
   const priceMap = {};
   if (response.status.error_code === 0) {
     const data = response.data;
-    symbols.map(it => { priceMap[it] = data[it].quote.USD.price; });
+    // const milliSeconds = new Date(data[it].quote.USD.last_updated).getTime();
+    symbols.forEach(it => {
+      // priceMap[it] = { 
+      //   price : data[it].quote.USD.price,
+      //   time: milliSeconds
+      // }; 
+      priceMap[it] = fractionToDecimalString(data[it].quote.USD.price, process.env.PRICE_DECIMAL);
+    });
     log.info(JSON.stringify(priceMap));
   } else {
-    throw response.error_message;
+    throw new Error(response.error_message);
   }
   return priceMap;
 }
