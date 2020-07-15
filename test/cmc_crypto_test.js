@@ -13,7 +13,7 @@ after(function () {
 describe("getPrices", function () {
   this.timeout(160000);
 
-  it("getPrices", async function() {
+  it.only("getPrices", async function() {
     let btc_cmc_price = await getPrices_cmc("BTC");
     let btc_crypto_price = await getPrices_crypto("BTC");
     console.log(JSON.stringify(btc_cmc_price));

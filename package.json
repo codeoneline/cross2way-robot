@@ -10,7 +10,8 @@
     "robot_local": "node -r dotenv/config src/robot.js dotenv_config_path=.env.local",
     "robot_testnet": "node -r dotenv/config src/robot.js dotenv_config_path=.env.testnet",
     "robot_mainnet": "node -r dotenv/config src/robot.js dotenv_config_path=.env.mainnet",
-    "test": "nyc mocha --recursive"
+    "test": "nyc mocha --recursive",
+    "test_cmc_local": "node -r dotenv/config node_modules/.bin/_mocha ./test/cmc_crypto_test.js dotenv_config_path=.env.local",
   },
   "repository": {
     "type": "git",
