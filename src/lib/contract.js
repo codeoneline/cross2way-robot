@@ -84,6 +84,7 @@ class Oracle extends Contract {
     keys.forEach(it => {
       // const priceRaw = symbolPriceMap[it];
       // const priceUnit = this.fractionToDecimalString(priceRaw, this.price_decimal)
+
       const priceUnit = symbolPriceMap[it];
       symbolByteArray.push(this.web3.utils.toHex(it));
       priceUintArray.push(priceUnit);
