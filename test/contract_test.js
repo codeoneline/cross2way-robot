@@ -22,7 +22,7 @@ after("end", function () {
 });
 
 describe('oracle', function() {
-  this.timeout(30000);
+  this.timeout(300000);
   console.log("oracle begin");
 
   it('updatePrice', async function() {
@@ -36,7 +36,6 @@ describe('oracle', function() {
 
   it('updateDeposit', async function() {
     console.log("updateDeposit begin");
-    // const smgID = web3.utils.hexToBytes("0x6b175474e89094c44da98b954eedeac495271d0f");
     const smgID = "0x6b175474e89094c44da98b954eedeac495271d0f";
     const amount = 80000;
     await oracle.updateDeposit(smgID, amount);
@@ -54,8 +53,26 @@ describe('oracle', function() {
     const curve2 = 6;
     const gpk1 = oracle.web3.utils.hexToBytes("0x1234");
     const gpk2 = oracle.web3.utils.hexToBytes("0x5678");
-    const deposit = 2;
-    await oracle.setStoremanGroupStatus(smgID, amount);
+    const startTime = 7;
+    const endTime = 8;
+    await oracle.setStoremanGroupConfig(smgID, status, deposit, [chain1, chain2], [curve1, curve2], gpk1, gpk2, startTime, endTime);
     
+    let config = await oracle.getStoremanGroupConfig(smgID);
+    assert.equal(oracle.web3.utils.padRight(smgID, 64), config.groupId);
+    assert.equal(status.toString(), config.status);
+    assert.equal(deposit.toString(), config.deposit);
+    assert.equal(chain1.toString(), config.chain1);
+    assert.equal(chain2.toString(), config.chain2);
+    assert.equal(curve1.toString(), config.curve1);
+    assert.equal(curve2.toString(), config.curve2);
+    assert.equal(oracle.web3.utils.bytesToHex(gpk1), config.gpk1);
+    assert.equal(oracle.web3.utils.bytesToHex(gpk2), config.gpk2);
+    assert.equal(startTime.toString(), config.startTime);
+    assert.equal(endTime.toString(), config.endTime);
+
+    const status_new = 20;
+    await oracle.setStoremanGroupStatus(smgID, status_new);
+    config = await oracle.getStoremanGroupConfig(smgID);
+    assert.equal(status_new.toString(), config.status);
   });
 })
