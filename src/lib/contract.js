@@ -51,27 +51,9 @@ class Contract {
 }
 
 class Oracle extends Contract {
-  constructor(chain) {
-    super(chain, abiOracle, process.env.ORACLE_ADDRESS, process.env.ORACLE_PV_KEY, process.env.ORACLE_PV_ADDRESS);
+  constructor(chain, address, ownerPV, ownerAddress) {
+    super(chain, abiOracle, address, ownerPV, ownerAddress);
   }
-
-  // fractionToDecimalString(priceRaw, price_decimal) {
-  //   let leftDecimal = price_decimal;
-  //   let decimal = 0;
-
-  //   const priceRawSplit = (priceRaw + "").split('.');
-  //   let priceStr = priceRawSplit[0];
-  //   if (priceRawSplit.length > 0) {
-  //     decimal = priceRawSplit[1].length;
-  //     priceStr += priceRawSplit[1];
-  //   }
-  //   const price = this.web3.utils.toBN(priceStr);
-  //   if (decimal > price_decimal) {
-  //     throw new Error(`${it} decimal > ${price_decimal}, price = ${symbolPriceMap[it]}`);
-  //   }
-
-  //   return '0x' + price.mul(this.web3.utils.toBN(Math.pow(10, price_decimal - decimal))).toString('hex');
-  // }
 
   async updatePrice(symbolPriceMap) {
     const keys = Object.keys(symbolPriceMap);

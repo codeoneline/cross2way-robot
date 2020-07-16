@@ -5,9 +5,12 @@ const getPrices_cmc = require("./lib/cmc");
 const getPrices_crypto = require("./lib/crypto_compare");
 const { sleep } = require('./lib/utils');
 const logAndSendMail = require('./lib/email');
-const chain = require(`./lib/${process.env.CHAIN_ENGINE}`);
+const chain = require(`./lib/wanchain`);
+const chainEth = require(`./lib/ethereum`);
 
-const oracle = new Oracle(chain);
+
+const oracle = new Oracle(chain, process.env.ORACLE_ADDRESS, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);
+const oracleEth = new Oracle(chainEth, process.env.ORACLE_ADDRESS_ETH, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);
 
 async function doSchedule(func, args, tryTimes = process.env.RETRY_TIMES) {
   log.info(`${func.name} begin`);
@@ -60,8 +63,14 @@ async function updatePrice() {
         }
       })
       await oracle.updatePrice(needUpdateMap);
+      await oracleEth.updatePrice(needUpdateMap);
     }
   }
+}
+
+//
+async function updateDeposit() {
+
 }
 
 const robotSchedules = ()=>{
