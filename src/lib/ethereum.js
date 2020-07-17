@@ -1,9 +1,9 @@
-const BaseChain = require('./baseChain');
+const BaseChain = require('./rpc_chain');
 const { signTx } = require('./ethereum-helper');
 
 class EthChain extends BaseChain {
   constructor() {
-    super();
+    super(process.env.RPC_URL_ETH);
   }
 }
 

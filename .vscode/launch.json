@@ -31,6 +31,18 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "my development",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "runtimeArgs": ["-r", "dotenv/config"],
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}/src/my.js",
+      "args": ["dotenv_config_path=.env.development"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "test cmc_crypto local",
       "skipFiles": [
         "<node_internals>/**"

@@ -2,9 +2,11 @@ const assert = require("assert");
 const { Oracle } = require('../src/lib/contract');
 const getPrices_cmc = require("../src/lib/cmc");
 const getPrices_crypto = require("../src/lib/crypto_compare");
-const chain = require(`../src/lib/${process.env.CHAIN_ENGINE}`);
 
-const oracle = new Oracle(chain);
+const wanChain = require(`../src/lib/${process.env.CHAIN_ENGINE}`);
+
+// wan oracle
+const oracle = new Oracle(wanChain, process.env.ORACLE_ADDRESS, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);
 
 before("init", async function () {
   this.timeout(1000);

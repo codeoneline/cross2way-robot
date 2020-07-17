@@ -4,15 +4,19 @@ const secp256k1 = require('secp256k1');
 const log = require('./log');
 const util = require('ethereumjs-util');
 
+const maxGas = parseInt(process.env.GASLIMIT_ETH);
+
 function signTx(gasLimit, nonce, data, prvKey, value, to) {
+  const gas = gasLimit > maxGas ? maxGas : gasLimit;
+
   const txParams = {
     nonce: nonce,
-    gasPrice: process.env.GASPRICE,
-    gasLimit: gasLimit,
+    gasPrice: process.env.GASPRICE_ETH,
+    gasLimit: gas,
     to: to,
     value: value,
     data: data,
-    chainId: parseInt(process.env.CHAIN_ID, 16),
+    chainId: parseInt(process.env.CHAIN_ID_ETH, 16),
   };
   log.info(JSON.stringify(txParams));
   const privateKey = Buffer.from(prvKey, 'hex');

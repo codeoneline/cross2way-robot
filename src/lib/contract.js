@@ -1,7 +1,6 @@
 const abiOracle = require('../../abi/oracleDelegate.json');
 const abiTokenManager = require('../../abi/tokenManagerDelegate.json');
 const log = require('./log');
-// const {chain, web3, signTx} = require(`./${process.env.CHAIN_ENGINE}`);
 
 const { sleep } = require('./utils');
 
@@ -24,11 +23,7 @@ class Contract {
   async doOperator(opName, data, gasLimit, value, count, privateKey, pkAddress) {
     log.debug(`do operator: ${opName}`);
     const nonce = await this.core.getTxCount(pkAddress);
-    let gas = gasLimit ? gasLimit : await this.core.estimateGas(pkAddress, this.address, value, data) + 200000;
-    const maxGas = parseInt(process.env.GASLIMIT);
-    if (gas > maxGas) {
-      gas = maxGas;
-    }
+    const gas = gasLimit ? gasLimit : await this.core.estimateGas(pkAddress, this.address, value, data) + 200000;
     const rawTx = this.signTx(gas, nonce, data, privateKey, value, this.address);
     const txHash = await this.core.sendRawTxByWeb3(rawTx);
     log.info(`${opName} hash: ${txHash}`);

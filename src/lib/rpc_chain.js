@@ -1,9 +1,9 @@
 const Web3 = require("web3");
 const { promisify } = require("./utils");
 
-class BaseChain {
-  constructor() {
-    this.web3 = new Web3(new Web3.providers.HttpProvider(process.env.RPC_URL));
+class RpcChain {
+  constructor(rpc_url) {
+    this.web3 = new Web3(new Web3.providers.HttpProvider(rpc_url));
   }
 
   sendRawTxByWeb3(singedData) {
@@ -140,4 +140,4 @@ class BaseChain {
   }
 }
 
-module.exports = BaseChain;
+module.exports = RpcChain;
