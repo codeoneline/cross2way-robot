@@ -1,4 +1,4 @@
-const EthTx = require('ethereumjs-tx');
+const EthTx = require('ethereumjs-tx').Transaction;
 const crypto = require('crypto');
 const secp256k1 = require('secp256k1');
 const log = require('./log');
@@ -29,20 +29,3 @@ function signTx(gasLimit, nonce, data, prvKey, value, to) {
   return '0x' + serializedTx.toString('hex');
 }
 
-function generateKeyPair() {
-  const randomBuf = crypto.randomBytes(32);
-  if (secp256k1.privateKeyVerify(randomBuf)) {
-    const address = util.privateToAddress(randomBuf);
-    return { 
-      privateKey: util.bufferToHex(randomBuf, 'hex').replace(/^0x/i,''),
-      address: util.bufferToHex(address,'hex')
-    };
-  } else {
-    return generateKeyPair();
-  }
-}
-
-module.exports = {
-  signTx,
-  generateKeyPair
-};

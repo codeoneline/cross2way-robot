@@ -30,7 +30,7 @@ class Contract {
     let receipt = null;
     let tryTimes = 0;
     do {
-        await sleep(5000);
+        await sleep(process.env.RETRY_INTERVAL);
         receipt = await this.core.getTransactionReceipt(txHash);
         tryTimes ++;
     } while (!receipt && tryTimes < count);

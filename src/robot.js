@@ -9,7 +9,7 @@ const logAndSendMail = require('./lib/email');
 const chainWan = require(`./lib/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./lib/${process.env.ETH_CHAIN_ENGINE}`);
 
-const oracle = new Oracle(chainWan, process.env.ORACLE_ADDRESS, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);
+const oracleWan = new Oracle(chainWan, process.env.ORACLE_ADDRESS, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);
 const oracleEth = new Oracle(chainEth, process.env.ORACLE_ADDRESS_ETH, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);
 
 async function doSchedule(func, args, tryTimes = process.env.RETRY_TIMES) {
@@ -31,13 +31,12 @@ async function doSchedule(func, args, tryTimes = process.env.RETRY_TIMES) {
   }
 }
 
-const times = oracle.web3.utils.toBN(process.env.THRESHOLD_TIMES);
-const threshold = oracle.web3.utils.toBN(process.env.THRESHOLD);
-const zero = oracle.web3.utils.toBN(0);
+const times = oracleWan.web3.utils.toBN(process.env.THRESHOLD_TIMES);
+const threshold = oracleWan.web3.utils.toBN(process.env.THRESHOLD);
+const zero = oracleWan.web3.utils.toBN(0);
 
-async function updatePrice() {
-  const pricesMap = await doSchedule(getPrices_cmc, [process.env.SYMBOLS]);
-  log.info(`prices: ${pricesMap}`);
+async function updatePrice(oracle, pricesMap) {
+  log.info(`updatePrice$ begin`);
   if (pricesMap) {
     const symbols = Object.keys(pricesMap);
 
@@ -63,7 +62,6 @@ async function updatePrice() {
         }
       })
       await oracle.updatePrice(needUpdateMap);
-      await oracleEth.updatePrice(needUpdateMap);
     }
   }
 }
@@ -74,9 +72,20 @@ async function updateDeposit() {
 }
 
 const robotSchedules = ()=>{
-  schedule.scheduleJob('0 */5 * * * *', async () => {
-    await updatePrice();
+  schedule.scheduleJob('0 * * * * *', async () => {
+    const pricesMap = await doSchedule(getPrices_crypto, [process.env.SYMBOLS]);
+    
+    log.info(`prices: ${JSON.stringify(pricesMap)}`);
+
+    await updatePrice(oracleWan, pricesMap);
+    // await updatePrice(oracleEth, pricesMap);
   });
 };
 
-robotSchedules();
+// robotSchedules();
+
+setTimeout(async () => {
+  const pricesMap = await doSchedule(getPrices_crypto, [process.env.SYMBOLS]);
+  // await updatePrice(oracleWan, pricesMap);
+  await updatePrice(oracleEth, pricesMap);
+}, 0);

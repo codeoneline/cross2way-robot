@@ -6,7 +6,6 @@
   "scripts": {
     "robot_local": "node -r dotenv/config src/robot.js dotenv_config_path=.env.local",
     "robot_development": "node -r dotenv/config src/robot.js dotenv_config_path=.env.development",
-
     "test": "nyc mocha --recursive",
     "test_cmc_crypto": "node -r dotenv/config node_modules/.bin/_mocha ./test/cmc_crypto_test.js dotenv_config_path=.env.local"
   },
@@ -29,7 +28,7 @@
     "bignumber.js": "^9.0.0",
     "crypto": "^1.0.1",
     "dotenv": "^8.2.0",
-    "ethereumjs-tx": "^2.1.2",
+    "ethereumjs-tx": "^1.3.7",
     "ethereumjs-util": "^7.0.2",
     "iwan-sdk": "^1.2.1",
     "log4js": "^6.3.0",
