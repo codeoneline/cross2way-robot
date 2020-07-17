@@ -6,8 +6,8 @@ const getPrices_crypto = require("./lib/crypto_compare");
 const { sleep } = require('./lib/utils');
 const logAndSendMail = require('./lib/email');
 
-const chainWan = require(`./lib/wanchain`);
-const chainEth = require(`./lib/ethereum`);
+const chainWan = require(`./lib/${process.env.WAN_CHAIN_ENGINE}`);
+const chainEth = require(`./lib/${process.env.ETH_CHAIN_ENGINE}`);
 
 const oracle = new Oracle(chainWan, process.env.ORACLE_ADDRESS, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);
 const oracleEth = new Oracle(chainEth, process.env.ORACLE_ADDRESS_ETH, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);

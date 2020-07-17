@@ -19,6 +19,18 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "robot development",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "runtimeArgs": ["-r", "dotenv/config"],
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}/src/robot.js",
+      "args": ["dotenv_config_path=.env.development"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "my local",
       "skipFiles": [
         "<node_internals>/**"
