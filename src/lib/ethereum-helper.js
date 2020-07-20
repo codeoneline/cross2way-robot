@@ -3,8 +3,7 @@ const crypto = require('crypto');
 const secp256k1 = require('secp256k1');
 const log = require('./log');
 const util = require('ethereumjs-util');
-const Web3 = require('web3');
-const web3 = new Web3();
+const { web3 } = require('./utils');
 
 const maxGas = parseInt(process.env.GASLIMIT_ETH);
 
@@ -18,7 +17,7 @@ function signTx(gasLimit, nonce, data, prvKey, value, to) {
     to: to,
     value: value,
     data: data,
-    // chainId: web3.utils.toHex(parseInt(process.env.CHAIN_ID_ETH)),
+    chainId: web3.utils.toHex(parseInt(process.env.CHAIN_ID_ETH)),
   };
   log.info(JSON.stringify(txParams));
   const privateKey = Buffer.from(prvKey, 'hex');

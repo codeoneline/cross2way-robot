@@ -1,8 +1,10 @@
 const abiOracle = require('../../abi/oracleDelegate.json');
 const abiTokenManager = require('../../abi/tokenManagerDelegate.json');
+const abiStoremanGroupAdmin = require('../../abi/smg.json');
+
 const log = require('./log');
 
-const { sleep } = require('./utils');
+const { sleep, web3 } = require('./utils');
 
 log.info("contract init");
 
@@ -59,11 +61,8 @@ class Oracle extends Contract {
     const symbolByteArray = [];
 
     keys.forEach(it => {
-      // const priceRaw = symbolPriceMap[it];
-      // const priceUnit = this.fractionToDecimalString(priceRaw, this.price_decimal)
-
       const priceUnit = symbolPriceMap[it];
-      symbolByteArray.push(this.web3.utils.toHex(it));
+      symbolByteArray.push(web3.utils.toHex(it));
       priceUintArray.push(priceUnit);
     })
 
@@ -87,12 +86,12 @@ class Oracle extends Contract {
   }
 
   async getValue(key) {
-    return await this.core.getScFun("getValue", [this.web3.utils.toHex(key)], this.contract, this.abi);
+    return await this.core.getScFun("getValue", [web3.utils.toHex(key)], this.contract, this.abi);
   }
 
   async getValues(keys) {
     const symbolsStringArray = keys.replace(/\s+/g,"").split(',');
-    const symbolsArray = symbolsStringArray.map(i => {return this.web3.utils.toHex(i);})
+    const symbolsArray = symbolsStringArray.map(i => {return web3.utils.toHex(i);})
     return await this.core.getScFun("getValues", [symbolsArray], this.contract, this.abi);
   }
 
@@ -106,13 +105,34 @@ class Oracle extends Contract {
 }
 
 class TokenManager extends Contract {
-  constructor(chain) {
-    super(chain, abiTokenManager, process.env.TOKEN_MANAGER_ADDRESS, process.env.TOKEN_MANAGER_PV_KEY, process.env.TOKEN_MANAGER_PV_ADDRESS);
+  constructor(chain, address, ownerPV, ownerAddress) {
+    super(chain, abiTokenManager, address, ownerPV, ownerAddress);
+  }
+}
+
+class StoremanGroupAdmin extends Contract {
+  constructor(chain, address, ownerPV, ownerAddress) {
+    super(chain, abiStoremanGroupAdmin, address, ownerPV, ownerAddress);
+  }
+
+  async setStoremanGroupConfig(id, status, deposit, chain, curve, gpk1, gpk2, startTime, endTime) {
+    const data = this.contract.methods.setStoremanGroupConfig(id, status, deposit, chain, curve, gpk1, gpk2, startTime, endTime).encodeABI();
+    return await this.doOperator(this.setStoremanGroupConfig.name, data, null, '0x00', 7, this.pv_key, this.pv_address);
+  }
+
+  async registerStart(id, workStart, workDuration, registerDuration,  preGroupId) {
+    const data = this.contract.methods.registerStart(id, workStart, workDuration, registerDuration,  preGroupId).encodeABI();
+    return await this.doOperator(this.registerStart.name, data, null, '0x00', 7, this.pv_key, this.pv_address);
+  }
+
+  async getStoremanGroupConfig(id) {
+    return await this.core.getScFun("getStoremanGroupConfig", [id], this.contract, this.abi);
   }
 }
 
 module.exports = {
   Contract,
   Oracle,
-  TokenManager
+  TokenManager,
+  StoremanGroupAdmin
 }

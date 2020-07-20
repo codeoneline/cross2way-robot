@@ -61,5 +61,6 @@ module.exports = {
   sleep,
   promisify,
   promiseEvent,
-  fractionToDecimalString
+  fractionToDecimalString,
+  web3
 }

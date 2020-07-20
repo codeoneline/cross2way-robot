@@ -3,8 +3,7 @@ const crypto = require('crypto');
 const secp256k1 = require('secp256k1');
 const log = require('./log');
 const util = require('ethereumjs-util');
-const Web3 = require('web3');
-const web3 = new Web3();
+const { web3 } = require('./lib/utils');
 
 const maxGas = parseInt(process.env.GASLIMIT_ETH);
 

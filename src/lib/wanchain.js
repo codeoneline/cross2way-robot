@@ -5,6 +5,7 @@ class WanChain extends RpcChain {
   constructor() {
     super(process.env.RPC_URL);
     this.web3.pos = new (require('./wanchain-pos'))(this.web3);
+    this.chainName = "wan_rpc_chain";
   }
   // pos
   async getStakerInfo(blockNumber) {

@@ -1,7 +1,6 @@
 const iWanClient = require('iwan-sdk');
-const Web3 = require('web3');
 const BigNumber = require("bignumber.js");
-const { promisify, sleep } = require("./utils");
+const { promisify, sleep, web3 } = require("./utils");
 const { signTx } = require('./wanchain-helper');
 
 class IWan {
@@ -14,7 +13,8 @@ class IWan {
       timeout: parseInt(process.env.IWAN_TIMEOUT),
     };
     this.apiClient = new iWanClient(process.env.IWAN_APIKEY, process.env.IWAN_SECRETKEY, option);
-    this.web3 = new Web3();
+    this.web3 = web3;
+    this.chainName = "wan_iWan_chain";
   }
 
   async sendRawTxByWeb3(singedData) {
