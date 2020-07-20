@@ -30,6 +30,8 @@ async function setStoremanGroupConfig(sga, id, status, deposit, chain, curve, gp
   
   await sga.setStoremanGroupConfig(id, status, _deposit, _chain, _curve, gpk1, gpk2, _startTime, _endTime);
 }
+// {"0":"0x111122223333444455556666777788889999aaaabbbbccccddddeeeeffffcccc","1":"1","2":"2","3":"3","4":"4","5":"5","6":"6","7":"0x111122223333444455556666777788889999aaaabbbbccccddddeeeeffff0000","8":"0x111122223333444455556666777788889999aaaabbbbccccddddeeee00000000","9":"1595234554","10":"2595234554",
+// "groupId":"0x111122223333444455556666777788889999aaaabbbbccccddddeeeeffffcccc","status":"1","deposit":"2","chain1":"3","chain2":"4","curve1":"5","curve2":"6","gpk1":"0x111122223333444455556666777788889999aaaabbbbccccddddeeeeffff0000","gpk2":"0x111122223333444455556666777788889999aaaabbbbccccddddeeee00000000","startTime":"1595234554","endTime":"2595234554"}
 
 async function registerStart(sga, id, workStart, workDuration, registerDuration,  preGroupId) {
   log.info(`registerStart begin`);
@@ -77,7 +79,7 @@ setTimeout( async () => {
   // await unlockAccount();
   // await mySetStoremanGroupConfig();
   // await myRegisterStart();
-  await myGetStoremanGroupConfig();
+  // await myGetStoremanGroupConfig();
 }, 0);
 
 process.on('unhandledRejection', (err) => {
