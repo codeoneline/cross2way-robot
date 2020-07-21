@@ -55,6 +55,18 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "scan register development",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "runtimeArgs": ["-r", "dotenv/config"],
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}/src/scan_register.js",
+      "args": ["dotenv_config_path=.env.development"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "test cmc_crypto local",
       "skipFiles": [
         "<node_internals>/**"

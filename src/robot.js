@@ -1,13 +1,13 @@
 const schedule = require('node-schedule');
 const log = require('./lib/log');
-const { Oracle } = require('./lib/contract');
+const Oracle = require('./contract/oracle');
 const getPrices_cmc = require("./lib/cmc");
 const getPrices_crypto = require("./lib/crypto_compare");
 const { sleep, web3 } = require('./lib/utils');
 const logAndSendMail = require('./lib/email');
 
-const chainWan = require(`./lib/${process.env.WAN_CHAIN_ENGINE}`);
-const chainEth = require(`./lib/${process.env.ETH_CHAIN_ENGINE}`);
+const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
+const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
 
 const oracleWan = new Oracle(chainWan, process.env.ORACLE_ADDRESS, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);
 const oracleEth = new Oracle(chainEth, process.env.ORACLE_ADDRESS_ETH, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);
@@ -89,9 +89,9 @@ const robotSchedules = ()=>{
 // helper functions
 
 setTimeout(async () => {
-  // const pricesMap = await doSchedule(getPrices_crypto, [process.env.SYMBOLS]);
-  // await updatePrice(oracleWan, pricesMap);
-  // await updatePrice(oracleEth, pricesMap);
+  const pricesMap = await doSchedule(getPrices_crypto, [process.env.SYMBOLS]);
+  await updatePrice(oracleWan, pricesMap);
+  await updatePrice(oracleEth, pricesMap);
 
   // const smgID = "0x111122223333444455556666777788889999AAAABBBBCCCCDDDDEEEEFFFFCCCC";
   // const amount = 500;

@@ -1,10 +1,9 @@
 const iWanClient = require('iwan-sdk');
 const BigNumber = require("bignumber.js");
 const { promisify, sleep, web3 } = require("./utils");
-const { signTx } = require('./wanchain-helper');
 
 class IWan {
-  constructor() {
+  constructor(chainType) {
     const option = {
       url: process.env.IWAN_URL,
       port: parseInt(process.env.IWAN_PORT),
@@ -14,19 +13,19 @@ class IWan {
     };
     this.apiClient = new iWanClient(process.env.IWAN_APIKEY, process.env.IWAN_SECRETKEY, option);
     this.web3 = web3;
-    this.chainName = "wan_iWan_chain";
+    this.chainType = chainType;
   }
 
   async sendRawTxByWeb3(singedData) {
-      return await this.apiClient.sendRawTransaction(process.env.IWAN_CHAINTYPE, singedData);
+      return await this.apiClient.sendRawTransaction(this.chainType, singedData);
   };
 
   async getTxCount(addr) {
-    return parseInt(await this.apiClient.getNonce(process.env.IWAN_CHAINTYPE, addr), 16);
+    return parseInt(await this.apiClient.getNonce(this.chainType, addr), 16);
   }
 
   async getBalance(addr) {
-    return await this.apiClient.getBalance(process.env.IWAN_CHAINTYPE, addr);
+    return await this.apiClient.getBalance(this.chainType, addr);
   }
 
   web0ToWeb1(name, result, contract) {
@@ -55,42 +54,42 @@ class IWan {
     }
   }
   async getScVar(name, contract, abi) {
-    const result = await this.apiClient.getScVar(process.env.IWAN_CHAINTYPE, contract._address.toLowerCase(), name, abi);
+    const result = await this.apiClient.getScVar(this.chainType, contract._address.toLowerCase(), name, abi);
     return this.web0ToWeb1(name, result, contract);
   }
 
   async getScFun(name, args, contract, abi) {
-    const result = await this.apiClient.callScFunc(process.env.IWAN_CHAINTYPE, contract._address.toLowerCase(), name, args, abi);
+    const result = await this.apiClient.callScFunc(this.chainType, contract._address.toLowerCase(), name, args, abi);
     return this.web0ToWeb1(name, result, contract);
   }
 
   async getBlockNumber() {
-    return await this.apiClient.getBlockNumber(process.env.IWAN_CHAINTYPE);
+    return await this.apiClient.getBlockNumber(this.chainType);
   };
 
   async getTransactionReceipt(txHash) {
     try {
-      return await this.apiClient.getTransactionReceipt(process.env.IWAN_CHAINTYPE, txHash);
+      return await this.apiClient.getTransactionReceipt(this.chainType, txHash);
     } catch (e) {
       return null;
     }
   }
 
   async getBlock(blockNumber) {
-    return await this.apiClient.getBlockByNumber(process.env.IWAN_CHAINTYPE, blockNumber);
+    return await this.apiClient.getBlockByNumber(this.chainType, blockNumber);
   }
 
   async estimateGas(from, to, value, data) {
-    return Number(await this.apiClient.estimateGas(process.env.IWAN_CHAINTYPE, {from, to, value, data}))
+    return Number(await this.apiClient.estimateGas(this.chainType, {from, to, value, data}))
   }
 
   async getTxsBetween(address, fromBlock, toBlock) {
-    const txs = await this.apiClient.getTransByAddressBetweenBlocks(process.env.IWAN_CHAINTYPE, address, fromBlock, toBlock);
+    const txs = await this.apiClient.getTransByAddressBetweenBlocks(this.chainType, address, fromBlock, toBlock);
     const receiptsPromise = [];
     if (txs) {
       txs.forEach(tx => {
         if (address === tx.to.toLowerCase()) {
-          receiptsPromise.push(new promisify(this.apiClient.getTransactionReceipt, [process.env.IWAN_CHAINTYPE, tx.hash], this.apiClient));
+          receiptsPromise.push(new promisify(this.apiClient.getTransactionReceipt, [this.chainType, tx.hash], this.apiClient));
         }
       })
     }
@@ -110,8 +109,18 @@ class IWan {
     return receipts;
   }
 
+  async getPastEvents(address, from, to, contract, eventName = 'allEvents') {
+    const options = {
+      fromBlock: from, 
+      toBlock: to, 
+      address: address, 
+    }
+
+    // this.apiClient.getScEvent
+  }
+
   async getStakerInfo(blockNumber) {
-    return await this.apiClient.getStakerInfo(process.env.IWAN_CHAINTYPE, blockNumber);
+    return await this.apiClient.getStakerInfo(this.chainType, blockNumber);
   };
 
   closeEngine() {
@@ -125,22 +134,16 @@ class IWan {
   ///////////////////////////////////////////////////////////
   // those are used for test
   async getRandom(epochId, blockNumber) {
-    return await this.apiClient.getRandom(process.env.IWAN_CHAINTYPE, epochId, blockNumber);
+    return await this.apiClient.getRandom(this.chainType, epochId, blockNumber);
   }
 
   async getEpochID() {
-    return await this.apiClient.getEpochID(process.env.IWAN_CHAINTYPE);
+    return await this.apiClient.getEpochID(this.chainType);
   }
 
   async getTimeByEpochID(epochId) {
-    return await this.apiClient.getTimeByEpochID(process.env.IWAN_CHAINTYPE, epochId);
+    return await this.apiClient.getTimeByEpochID(this.chainType, epochId);
   }
 }
 
-const iWan = new IWan();
-
-module.exports = {
-  core: iWan,
-  web3: iWan.web3,
-  signTx: signTx,
-};
+module.exports = IWan;

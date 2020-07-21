@@ -1,9 +1,9 @@
 const assert = require("assert");
-const { Oracle } = require('../src/lib/contract');
+const { Oracle } = require('../src/contract/oracle');
 const getPrices_cmc = require("../src/lib/cmc");
 const getPrices_crypto = require("../src/lib/crypto_compare");
 
-const wanChain = require(`../src/lib/${process.env.CHAIN_ENGINE}`);
+const wanChain = require(`../src/lib/${process.env.WAN_CHAIN_ENGINE}`);
 
 // wan oracle
 const oracle = new Oracle(wanChain, process.env.ORACLE_ADDRESS, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);

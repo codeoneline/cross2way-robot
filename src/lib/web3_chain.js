@@ -94,7 +94,6 @@ class RpcChain {
     }
     return receipts;
   }
-
   ////////////////////////////////////////////////////////////////////
   // only rpc support, iWan not support
   getSlot(key, slot, offset = 0) {
@@ -137,6 +136,46 @@ class RpcChain {
     const positionSlot = "0x" + this.web3.utils.leftPad(position.toString(16).replace(/^0x/i,''), 64);
     const result = await getScMember(positionSlot, blockNumber);
     return result;
+  }
+
+  // console.log(JSON.stringify(results, null, 2));
+  // [
+  //   {
+  //     "address": "0x0C04A1FbF7ede6C23e5Da17FD3EfFA20544212EF",
+  //     "blockNumber": 354690,
+  //     "transactionHash": "0x37517fc99c6d6590d908afd60ff7e2ab5054cc353a3b58a59ab6a95f4a055790",
+  //     "transactionIndex": 0,
+  //     "blockHash": "0xd6e11252333949eb78d19f163c4bb0bb10fe4385300fcc2e40d6169bfe04222e",
+  //     "logIndex": 0,
+  //     "removed": false,
+  //     "id": "log_18dcd1d7",
+  //     "returnValues": {
+  //       "groupId": "0x111122223333444455556666777788889999aaaabbbbccccddddeeeeffffcccc",
+  //       "workStart": "1",
+  //       "workDuration": "2",
+  //       "registerDuration": "3",
+  //       "preGroupId": "0x0000000000000000000000000000000000000000000000000000000000000000"
+  //     },
+  //     "event": "registerStartEvent",
+  //     "signature": "0x7f783b8887d89cbb332b296a95486e5b866f88434833c836c184970f6c8db1bf",
+  //     "raw": {
+  //       "data": "0x000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000003",
+  //       "topics": [
+  //         "0x7f783b8887d89cbb332b296a95486e5b866f88434833c836c184970f6c8db1bf",
+  //         "0x111122223333444455556666777788889999aaaabbbbccccddddeeeeffffcccc",
+  //         "0x0000000000000000000000000000000000000000000000000000000000000000"
+  //       ]
+  //     }
+  //   }
+  // ]
+// web3--1.20, new interface, only web3 support
+  async getPastEvents(address, from, to, contract, eventName = 'allEvents') {
+    const options = {
+      fromBlock: from, 
+      toBlock: to, 
+      address: address, 
+    }
+    return await contract.getPastEvents(eventName, options);
   }
 }
 
