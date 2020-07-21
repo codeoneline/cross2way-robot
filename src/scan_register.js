@@ -1,5 +1,6 @@
 const log = require('./lib/log');
 const StoremanGroupAdmin = require('./contract/storeman_group_admin');
+const Oracle = require('./contract/oracle');
 const { web3 } = require('./lib/utils');
 const db = require('./lib/sqlite_db');
 const logAndSendMail = require('./lib/email');
@@ -9,7 +10,8 @@ const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
 
 const sgaWan = new StoremanGroupAdmin(chainWan, process.env.STOREMANGROUPADMIN_ADDRESS, process.env.STOREMANGROUPADMIN_OWNER_PV_KEY, process.env.STOREMANGROUPADMIN_OWNER_PV_ADDRESS);
-const sgaEth = new StoremanGroupAdmin(chainEth, process.env.STOREMANGROUPADMIN_ADDRESS_ETH, process.env.STOREMANGROUPADMIN_OWNER_PV_KEY, process.env.STOREMANGROUPADMIN_OWNER_PV_ADDRESS);
+const oracleEth = new Oracle(chainEth, process.env.ORACLE_ADDRESS_ETH, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);
+const oracleWan = new Oracle(chainWan, process.env.ORACLE_ADDRESS, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);
 
 // 将scan提炼成一个模块
 // 将wan上(blockNumber - 6)时的store_man_admin的register信息，同步到其他链上
@@ -48,6 +50,8 @@ setTimeout(async () => {
   const to = await chainWan.core.getBlockNumber();
   const events = await sgaWan.core.getPastEvents(sgaWan.address, from, to, sgaWan.contract, 'registerStartEvent');
   const returnValues = events.returnValues;
+
+  // await oracleEth.
   console.log(JSON.stringify(events));
 }, 0)
 
