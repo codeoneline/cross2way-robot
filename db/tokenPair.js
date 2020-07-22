@@ -23,7 +23,7 @@ module.exports = {
       fromChainID: 0x8000003c,
       fromAccount: fromAccount,
       toChainID: 0x8057414e,
-      tokenAddress: '0x48E5149f9510293E0343a551767F740d0EE0FfC7',
+      tokenAddress: '0x36FfEcE47A3BaF210b26cc469E37eef2212d9812',
     },
   },
 
@@ -38,7 +38,7 @@ module.exports = {
       fromChainID: 0x8057414e,
       fromAccount: fromAccount,
       toChainID: 0x8000003c,
-      tokenAddress: '0xD2a5712141Ace6Be136670c06b7385f98F5b0F3d',
+      tokenAddress: '0xe87627630583e5411486982268b01DaBcaB5CeC0',
     },
   },
 
@@ -53,7 +53,7 @@ module.exports = {
       fromChainID: 0x8000003c,
       fromAccount: hexToBytes("0x64993826cDf00B4355C4f366e2C38da140Eb5f0D"),
       toChainID: 0x8057414e,
-      tokenAddress: '0x0022149E0342be55e7604E949f6Aa2B662E4f7e3',
+      tokenAddress: '0x1A5a44D553Df414920874042b8324Cb63F11e917',
     },
   },
 
@@ -68,7 +68,7 @@ module.exports = {
       fromChainID: 0x8057414e,
       fromAccount: hexToBytes("0x3F759314c81F078b9BaAb7a1fddD6758f027D333"),
       toChainID: 0x8000003c,
-      tokenAddress: '0xA58dC9A67CBE4CADb3B6E855B1D9558b2f29c6f6',
+      tokenAddress: '0x132329E7e4CD25f4CcAE33d40B4eb40006f1Fb52',
     },
   }
 }
