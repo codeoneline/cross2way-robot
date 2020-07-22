@@ -1,5 +1,5 @@
 const Contract = require('./contract');
-const abiOracle = require('../../abi/oracleDelegate.json');
+const abiOracle = require('../../abi/oracle-delegate.json');
 const { web3 } = require('../lib/utils');
 
 class Oracle extends Contract {
