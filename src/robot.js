@@ -12,7 +12,7 @@ const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
 const oracleWan = new Oracle(chainWan, process.env.ORACLE_ADDRESS, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);
 const oracleEth = new Oracle(chainEth, process.env.ORACLE_ADDRESS_ETH, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);
 
-async function doSchedule(func, args, tryTimes = process.env.RETRY_TIMES) {
+async function doSchedule(func, args, tryTimes = process.env.SCHEDULE_RETRY_TIMES) {
   log.info(`${func.name} begin`);
   let leftTime = parseInt(tryTimes);
 
@@ -26,7 +26,7 @@ async function doSchedule(func, args, tryTimes = process.env.RETRY_TIMES) {
         return;
       }
       log.error(`${func.name} exception : ${e}`);
-      await sleep(parseInt(process.env.RETRY_INTERVAL));
+      await sleep(parseInt(process.env.SCHEDULE_RETRY_INTERVAL));
     }
   }
 }

@@ -94,5 +94,22 @@
       "program": "${workspaceFolder}/node_modules/.bin/_mocha",
       "args": ["./test/contract_test.js", "dotenv_config_path=.env.local"]
     },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "iwan_web3_test",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "cwd": "${workspaceRoot}",
+			// Automatically stop program after launch.
+			"stopOnEntry": false,
+			// Workspace relative or absolute path to the runtime executable to be used. Default is the runtime executable on the PATH.
+			"runtimeExecutable": null,
+			// Environment variables passed to the program.
+			"env": { "NODE_ENV": "development"},
+      "program": "${workspaceFolder}/node_modules/.bin/_mocha",
+      "args": ["./test/iwan_web3_test.js"]
+    }
   ]
 }

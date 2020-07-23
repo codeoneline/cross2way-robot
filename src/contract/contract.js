@@ -13,6 +13,7 @@ class Contract {
     this.web3 = chain.web3;
     this.core = chain.core;
     this.signTx = chain.signTx;
+    this.retryTimes = parseInt(process.env.RECEIPT_RETRY_TIMES);
   }
 
   async doOperator(opName, data, gasLimit, value, count, privateKey, pkAddress) {
@@ -25,7 +26,7 @@ class Contract {
     let receipt = null;
     let tryTimes = 0;
     do {
-        await sleep(process.env.RETRY_INTERVAL);
+        await sleep(parseInt(process.env.RECEIPT_RETRY_INTERVAL));
         receipt = await this.core.getTransactionReceipt(txHash);
         tryTimes ++;
     } while (!receipt && tryTimes < count);

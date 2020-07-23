@@ -124,7 +124,7 @@ async function deployTokenPair() {
 }
 
 setTimeout( async () => {
-  await deployTokenPair();
+  // await deployTokenPair();
   // const wlinkAddress = await addToken(tmWan, tokenInfoWan[0]);
 
   // await addToken(tmWan, tokenInfoWan[1]);
@@ -132,9 +132,12 @@ setTimeout( async () => {
   // await addToken(tmEth, tokenInfoEth[1]);
 
   // await unlockAccount();
-  // await mySetStoremanGroupConfig();
+  await mySetStoremanGroupConfig();
   // await myRegisterStart();
   // await myGetStoremanGroupConfig();
+
+  await chainWan.core.closeEngine();
+  await chainEth.core.closeEngine();
 }, 0);
 
 process.on('unhandledRejection', (err) => {

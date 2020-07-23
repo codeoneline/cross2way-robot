@@ -3,15 +3,23 @@ const BigNumber = require("bignumber.js");
 const { promisify, sleep, web3 } = require("./utils");
 
 class IWan {
+  static sApiClient = null;
+  static getApiClient() {
+    if (this.sApiClient === null) {
+      const option = {
+        url: process.env.IWAN_URL,
+        port: parseInt(process.env.IWAN_PORT),
+        flag: process.env.IWAN_FLAG,
+        version: process.env.IWAN_VERSION,
+        timeout: parseInt(process.env.IWAN_TIMEOUT),
+      };
+      this.sApiClient = new iWanClient(process.env.IWAN_APIKEY, process.env.IWAN_SECRETKEY, option);
+    }
+    return this.sApiClient;
+  }
+
   constructor(chainType) {
-    const option = {
-      url: process.env.IWAN_URL,
-      port: parseInt(process.env.IWAN_PORT),
-      flag: process.env.IWAN_FLAG,
-      version: process.env.IWAN_VERSION,
-      timeout: parseInt(process.env.IWAN_TIMEOUT),
-    };
-    this.apiClient = new iWanClient(process.env.IWAN_APIKEY, process.env.IWAN_SECRETKEY, option);
+    this.apiClient = IWan.getApiClient();
     this.web3 = web3;
     this.chainType = chainType;
   }

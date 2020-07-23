@@ -8,12 +8,12 @@ class StoremanGroupAdmin extends Contract {
 
   async setStoremanGroupConfig(id, status, deposit, chain, curve, gpk1, gpk2, startTime, endTime) {
     const data = this.contract.methods.setStoremanGroupConfig(id, status, deposit, chain, curve, gpk1, gpk2, startTime, endTime).encodeABI();
-    return await this.doOperator(this.setStoremanGroupConfig.name, data, null, '0x00', 7, this.pv_key, this.pv_address);
+    return await this.doOperator(this.setStoremanGroupConfig.name, data, null, '0x00', this.retryTimes, this.pv_key, this.pv_address);
   }
 
   async registerStart(id, workStart, workDuration, registerDuration,  preGroupId) {
     const data = this.contract.methods.registerStart(id, workStart, workDuration, registerDuration,  preGroupId).encodeABI();
-    return await this.doOperator(this.registerStart.name, data, null, '0x00', 7, this.pv_key, this.pv_address);
+    return await this.doOperator(this.registerStart.name, data, null, '0x00', this.retryTimes, this.pv_key, this.pv_address);
   }
 
   async getStoremanGroupConfig(id) {
