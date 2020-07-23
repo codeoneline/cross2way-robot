@@ -24,52 +24,88 @@ class DB {
     if (!fs.existsSync(filePath)) {
       db = new Sqlite3(filePath, {verbose: console.log});
       // db = new Sqlite3(filePath);
-      const address = process.env.JACKPOT_ADDRESS.toLowerCase();
       db.exec(`
         create table scan (
+          chainType char(20) PRIMARY KEY NOT NULL,
           blockNumber integer
         );
+
+        create table sga (
+          groupId char(66) PRIMARY KEY NOT NULL,
+          status integer,
+          deposit char(100),
+          chain1 integer,
+          chain2 integer,
+          curve1 integer,
+          curve2 integer,
+          gpk1 char(256),
+          gpk2 char(256),
+          startTime integer,
+          endTime integer,
+
+          updateTime integer
+        );
       `);
-      db.prepare(`insert into scan values (?)`).run(parseInt(process.env.SCAN_FROM) - 1);
+      db.prepare(`insert into scan values (?, ?)`).run(process.env.IWAN_CHAINTYPE_WAN, parseInt(process.env.SCAN_WAN_FROM) - 1);
     } else {
       db = new Sqlite3(filePath);
     }
     this.db = db;
   }
 
-  // insertReceipt(receipt) {
-  //   const insert = this.db.prepare(`insert into receipts values (@transactionHash, @blockNumber, @from, ?, @to, @transactionIndex)`);
-  //   let status = receipt.status;
-  //   if (typeof(receipt.status) === 'string') {
-  //     status = receipt.status === '0x1';
-  //   }
-  //   insert.run(receipt, status ? 1 : 0);
-  // }
-  // insertBalanceChange(balanceChange) {
-  //   return this.db.prepare(`insert into balance_change values (null,@transactionHash, @blockNumber,@event,@amount,@from,@fromBalance,@to,@toBalance)`).run(balanceChange);
-  // }
+  getAllScan() {
+    return this.db.prepare(`select * from scan`).all();
+  }
+  getScan(chainType) {
+    return this.db.prepare(`select * from scan where chainType = ?`).get(chainType);
+  }
 
-  // getUser(address) {
-  //   return this.db.prepare(`select * from users where address = ?`).get(address.toLowerCase());
-  // }
-  // insertUser(user) {
-  //   return this.db.prepare(`insert into users values (@address, @balance)`).run(user);
-  // }
-  // updateUser(user) {
-  //   return this.db.prepare(`update users set balance = @balance where address = @address`).run(user);
-  // }
-
-  // UPDATE {Table} SET {Column} = {Column} + {Value} WHERE {Condition}
-  getScan() {
-    return this.db.prepare(`select blockNumber from scan`).get();
+  insertScanForce(item) {
+    try {
+      this.db.prepare(`insert into scan values (@chainType, @blockNumber)`).run(item);
+    } catch (e) {
+      if (e.code === "SQLITE_CONSTRAINT_PRIMARYKEY") {
+        this.updateScan(item);
+      } else {
+        throw e;
+      }
+    }
   }
 
   insertScan(item) {
-    this.db.prepare(`insert into scan values (@blockNumber)`).run(item);
+    this.db.prepare(`insert into scan values (@chainType, @blockNumber)`).run(item);
   }
 
   updateScan(item) {
-    this.db.prepare(`update scan set blockNumber = @blockNumber`).run(item);
+    this.db.prepare(`update scan set blockNumber = @blockNumber where chainType = @chainType`).run(item);
+  }
+
+  // store man group admin
+  getAllSga() {
+    return this.db.prepare(`select * from sga`).all();
+  }
+  getSga(id) {
+    return this.db.prepare(`select * from sga where groupId = ?`).get(id);
+  }
+
+  insertSga(item) {
+    this.db.prepare(`insert into sga values (@groupId, @status, @deposit, @chain1, @chain2, @curve1, @curve2, @gpk1, @gpk2, @startTime, @endTime, @updateTime)`).run(item);
+  }
+
+  insertSgaForce(item) {
+    try {
+      this.db.prepare(`insert into sga values (@groupId, @status, @deposit, @chain1, @chain2, @curve1, @curve2, @gpk1, @gpk2, @startTime, @endTime, @updateTime)`).run(item);
+    } catch (e) {
+      if (e.code === "SQLITE_CONSTRAINT_PRIMARYKEY") {
+        this.updateSga(item);
+      } else {
+        throw e;
+      }
+    }
+  }
+
+  updateSga(item) {
+    this.db.prepare(`update sga set status = @status, deposit = @deposit, chain1 = @chain1, chain2 = @chain2, curve1 = @curve1, curve2 = @curve2, gpk1 = @gpk1, gpk2 = @gpk2, startTime = @startTime, endTime = @endTime, updateTime = @updateTime where groupId = @groupId`).run(item);
   }
 
   close() {

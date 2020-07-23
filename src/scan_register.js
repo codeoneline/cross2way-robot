@@ -19,6 +19,41 @@ function init() {
   db.init();
 }
 
+init();
+
+function parseEvents(events, next) {
+  for (let i = 0; i < events.length; i++) {
+    const event = events[i];
+  // {
+  //   "groupId":"0x111122223333444455556666777788889999aaaabbbbccccddddeeeeffffcccc",
+  //   "workStart":"1",
+  //   "workDuration":"2",
+  //   "registerDuration":"3",
+  //   "preGroupId":"0x0000000000000000000000000000000000000000000000000000000000000000"
+  // }
+    const config = {
+      groupId: event.returnValues.groupId,
+      status: 0,
+      deposit: "0",
+      chain1: 0,
+      chain2: 0,
+      curve1: 0,
+      curve2: 0,
+      gpk1: "0",
+      gpk2: "0",
+      startTime: 0,
+      endTime: 0,
+      updateTime: 0
+    };
+    const sga = db.getSga(event.returnValues.groupId);
+    if (!sga) {
+      db.insertSga(config);
+    }
+  }
+
+  db.updateScan({chainType: process.env.IWAN_CHAINTYPE_WAN, blockNumber: next});
+}
+
 let bScanning = false;
 let lastException = null;
 
@@ -28,10 +63,23 @@ async function doScan(from, step, to) {
     next = to;
   }
   log.info(`begin scan from=${from}, to=${next}`);
+
+  const events = await sgaWan.core.getPastEvents(sgaWan.address, from, next, sgaWan.contract, 'registerStartEvent');
+  const transaction = db.db.transaction(parseEvents);
+  transaction(events, next);
+
+  if (next < to) {
+    setTimeout( async () => {
+      await doScan(next + 1, step, to); 
+    }, 0);
+  } else {
+    lastException = null;
+    bScanning = false;
+  }
 }
 
-async function scanAndSync() {
-  const from = db.getScan().blockNumber;
+async function scanNewStoremanGroup() {
+  const from = db.getScan(process.env.IWAN_CHAINTYPE_WAN).blockNumber + 1;
   const step = parseInt(process.env.SCAN_STEP);
   const to = await chainWan.core.getBlockNumber() - parseInt(process.env.SCAN_UNCERTAIN_BLOCK);
 
@@ -46,18 +94,31 @@ async function scanAndSync() {
 }
 
 setTimeout(async () => {
-  const from = process.env.STOREMANGROUPADMIN_BLOCKNUMBER;
-  const to = await chainWan.core.getBlockNumber();
-  const events = await sgaWan.core.getPastEvents(sgaWan.address, from, to, sgaWan.contract, 'registerStartEvent');
-  const returnValues = events.returnValues;
-
-  // await oracleEth.
-  console.log(JSON.stringify(events));
+  await scanNewStoremanGroup();
 }, 0)
 
 process.on('unhandledRejection', (err) => {
   // logAndSendMail('unhandled exception', `${err}`, true);
-  console.log(err);
-  console.log(err.stack);
+  log.error(err);
   bScanning = false;
+});
+
+process.on('beforeExit', (code) => {
+  console.log("beforeExit")
+  log.info('***beforeExit***');
+  chainWan.core.closeEngine();
+  chainEth.core.closeEngine();
+})
+process.on('exit', (code) => {
+  console.log("exit")
+  log.info('***exit***');
+  chainWan.core.closeEngine();
+  chainEth.core.closeEngine();
+})
+
+process.on('SIGINT', function() {
+  console.log("SIGINT")
+  log.info('***SIGINT***');
+
+  process.exit();
 });

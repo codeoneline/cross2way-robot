@@ -123,8 +123,16 @@ class IWan {
       toBlock: to, 
       address: address, 
     }
-
-    // this.apiClient.getScEvent
+    
+    const event = eventName === 'allEvents' ? contract.allEvents() : contract.events[eventName]();
+    const topic = event.arguments[0].topics[0]
+    const logs = await this.apiClient.getScEvent(this.chainType, address, [topic], options);
+    logs.forEach(log => {
+      if (!log.returnValues) {
+        log.returnValues = event._formatOutput(log).returnValues;
+      }
+    })
+    return logs;
   }
 
   async getStakerInfo(blockNumber) {
