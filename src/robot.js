@@ -1,16 +1,22 @@
 const schedule = require('node-schedule');
 const log = require('./lib/log');
-const Oracle = require('./contract/oracle');
 const getPrices_cmc = require("./lib/cmc");
 const getPrices_crypto = require("./lib/crypto_compare");
 const { sleep, web3 } = require('./lib/utils');
 const logAndSendMail = require('./lib/email');
+const scanEvent = require('./scan_event');
+const db = require('./lib/sqlite_db');
+const Oracle = require('./contract/oracle');
+const StoremanGroupAdmin = require('./contract/storeman_group_admin');
 
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
 
 const oracleWan = new Oracle(chainWan, process.env.ORACLE_ADDRESS, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);
 const oracleEth = new Oracle(chainEth, process.env.ORACLE_ADDRESS_ETH, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);
+
+const sgaWan = new StoremanGroupAdmin(chainWan, process.env.STOREMANGROUPADMIN_ADDRESS, process.env.STOREMANGROUPADMIN_OWNER_PV_KEY, process.env.STOREMANGROUPADMIN_OWNER_PV_ADDRESS);
+const sgaEth = new StoremanGroupAdmin(chainEth, process.env.STOREMANGROUPADMIN_ADDRESS_ETH, process.env.STOREMANGROUPADMIN_OWNER_PV_KEY, process.env.STOREMANGROUPADMIN_OWNER_PV_ADDRESS);
 
 async function doSchedule(func, args, tryTimes = process.env.SCHEDULE_RETRY_TIMES) {
   log.info(`${func.name} begin`);
@@ -36,7 +42,7 @@ const threshold = web3.utils.toBN(process.env.THRESHOLD);
 const zero = web3.utils.toBN(0);
 
 async function updatePrice(oracle, pricesMap) {
-  log.info(`updatePrice begin`);
+  log.info(`updatePrice ${oracle.core.chainType} begin`);
   if (pricesMap) {
     const symbols = Object.keys(pricesMap);
 
@@ -64,7 +70,7 @@ async function updatePrice(oracle, pricesMap) {
       await oracle.updatePrice(needUpdateMap);
     }
   }
-  log.info(`updatePrice end`);
+  log.info(`updatePrice ${oracle.core.chainType} end`);
 }
 
 // smgID => amount
@@ -75,26 +81,83 @@ async function updateDeposit(oracle, smgID, amount) {
   await oracle.updateDeposit(smgID, amountHex);
 }
 
+async function syncConfigToOtherChain() {
+  log.info(`syncConfigToOtherChain begin`);
+  const sgs = db.getAllSga();
+  for (let i = 0; i<sgs.length; i++) {
+    const sg = sgs[i];
+    const groupId = sg.groupId;
+    const config = await sgaWan.getStoremanGroupConfig(groupId);
+    if (config) {
+      const config_eth = await oracleEth.getStoremanGroupConfig(groupId);
+      if (!config_eth ||
+        (config.groupId !== config_eth.groupId) ||
+        (config.status !== config_eth.status) ||
+        (config.deposit !== config_eth.deposit) ||
+        (config.chain1 !== config_eth.chain2) ||
+        (config.chain2 !== config_eth.chain1) ||
+        (config.curve1 !== config_eth.curve2) ||
+        (config.curve2 !== config_eth.curve1) ||
+        (config.gpk1 !== config_eth.gpk2) ||
+        (config.gpk2 !== config_eth.gpk1) ||
+        (config.startTime !== config_eth.startTime) ||
+        (config.endTime !== config_eth.endTime)
+      ) {
+        // chain1 -> chain2
+        await oracleEth.setStoremanGroupConfig(
+          groupId,
+          config.status,
+          config.deposit,
+          [config.chain2, config.chain1],
+          [config.curve2, config.curve1],
+          config.gpk2,
+          config.gpk1,
+          config.startTime,
+          config.endTime,
+        );
+      }
+    }
+  }
+  log.info(`syncConfigToOtherChain end`);
+}
+
 const robotSchedules = ()=>{
-  schedule.scheduleJob('0 * * * * *', async () => {
-    const pricesMap = await doSchedule(getPrices_crypto, [process.env.SYMBOLS]);
+  // update price
+  schedule.scheduleJob('0 */10 * * * *', async () => {
+    const pricesMap = await doSchedule(getPrices_cmc, [process.env.SYMBOLS]);
     
     log.info(`prices: ${JSON.stringify(pricesMap)}`);
 
-    // await updatePrice(oracleWan, pricesMap);
+    await updatePrice(oracleWan, pricesMap);
     await updatePrice(oracleEth, pricesMap);
+  });
+
+  // sync sga to sga database
+  schedule.scheduleJob('20 * * * * *', () => {
+    scanEvent(sgaWan, 'registerStartEvent');
+  });
+
+  // sync sga config from wan to other chain, sga database
+  schedule.scheduleJob('30 * * * * *', () => {
+    syncConfigToOtherChain();
   });
 };
 
 // helper functions
 
 setTimeout(async () => {
-  const pricesMap = await doSchedule(getPrices_crypto, [process.env.SYMBOLS]);
-  await updatePrice(oracleWan, pricesMap);
-  await updatePrice(oracleEth, pricesMap);
+  // const pricesMap = await doSchedule(getPrices_crypto, [process.env.SYMBOLS]);
+  // await updatePrice(oracleWan, pricesMap);
+  // await updatePrice(oracleEth, pricesMap);
 
   // const smgID = "0x111122223333444455556666777788889999AAAABBBBCCCCDDDDEEEEFFFFCCCC";
   // const amount = 500;
   // await updateDeposit(oracleWan, smgID, amount)
   // await updateDeposit(oracleEth, smgID, amount)
+  
+  // await scanEvent(sgaWan, 'registerStartEvent');
+  // syncConfigToOtherChain();
 }, 0);
+
+robotSchedules();
+

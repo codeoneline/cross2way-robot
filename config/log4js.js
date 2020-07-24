@@ -12,8 +12,8 @@ module.exports = {
     "app": {
       "type": "file",
       "filename": __dirname + "/../log/app.log",
-      "maxLogSize": 10485760,
-      "numBackups": 3
+      "maxLogSize": 104,
+      "backups": 3
     },
     "errorFile": {
       "type": "file",

@@ -36,20 +36,30 @@ class IWan {
     return await this.apiClient.getBalance(this.chainType, addr);
   }
 
-  web0ToWeb1(name, result, contract) {
+  web0ToWeb1(name, result, contract, args) {
     if (result instanceof Array) {
-      const method = contract.methods[name]();
+      const method = contract.methods[name](...args);
       const rt = {};
       for (let i=0; i<method._method.outputs.length; i++) {
         const rtType = method._method.outputs[i].type;
         // web0.20 === delegatePool = "1.05e+21", BN not support
         if (rtType === "uint256" || rtType === "uint") {
           rt[i] = new BigNumber(result[i]).toString(10);
+        }
+        else if (rtType === "uint256[]") {
+          const tmp = [];
+          result.forEach((v) => {tmp.push(new BigNumber(v).toString(10));} )
+          rt[i] = tmp;
+
+          if (method._method.outputs.length === 1) {
+            return tmp;
+          }
         } else {
           rt[i] = result[i];
         }
         rt[method._method.outputs[i].name] = rt[i];
       }
+      
       return rt;
     } else {
       const method = contract.methods[name]();
@@ -60,15 +70,28 @@ class IWan {
         return result;
       }
     }
+
+    // const method = contract.methods[name](...args);
+    // const rt = {};
+    // for (let i=0; i<method._method.outputs.length; i++) {
+    //   const rtType = method._method.outputs[i].type;
+    //   console.log(rtType);
+    //   const results = method._method.outputs[i];
+    //   // web0.20 === delegatePool = "1.05e+21", BN not support
+    //   results.forEach(j => {
+    //     console.log(j);
+    //   })
+    // }
+    return rt;
   }
   async getScVar(name, contract, abi) {
     const result = await this.apiClient.getScVar(this.chainType, contract._address.toLowerCase(), name, abi);
-    return this.web0ToWeb1(name, result, contract);
+    return this.web0ToWeb1(name, result, contract, []);
   }
 
   async getScFun(name, args, contract, abi) {
     const result = await this.apiClient.callScFunc(this.chainType, contract._address.toLowerCase(), name, args, abi);
-    return this.web0ToWeb1(name, result, contract);
+    return this.web0ToWeb1(name, result, contract, args);
   }
 
   async getBlockNumber() {

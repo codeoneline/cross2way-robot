@@ -2,15 +2,15 @@ const assert = require("assert");
 const db = require('../src/lib/sqlite_db');
 const fs = require('fs');
 const path = require('path');
+const filePath = path.resolve(__dirname, "../db/robot_test.db");
+if (fs.existsSync(filePath)) {
+  fs.unlinkSync(filePath);
+}
+db.init(filePath);
 
 before(function () {
   this.timeout(16000);
   console.log("init db test");
-  const filePath = path.resolve(__dirname, "../db/robot_test.db");
-  if (fs.existsSync(filePath)) {
-    fs.unlinkSync(filePath);
-  }
-  db.init(filePath);
 });
 
 after(function () {
@@ -52,7 +52,7 @@ describe("sqlite3 test", function () {
     tx();
   })
 
-  it.only('sga', function() {
+  it('sga', function() {
     const sga_config = {
       groupId: "0x1111",
       status: 1,

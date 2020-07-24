@@ -61,7 +61,7 @@
       ],
       "runtimeArgs": ["-r", "dotenv/config"],
       "cwd": "${workspaceRoot}",
-      "program": "${workspaceFolder}/src/scan_register.js",
+      "program": "${workspaceFolder}/src/scan.js",
       "args": ["dotenv_config_path=.env.development"]
     },
     {

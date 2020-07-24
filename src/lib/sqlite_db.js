@@ -10,9 +10,16 @@ console.log(os.homedir());
 
 class DB {
   constructor() {
+    this.isInit = false;
+    setTimeout(()=> {
+      if (!this.isInit) {
+        this.init();
+      }
+    }, 0);
   }
 
   init(filePath) {
+    this.isInit = true;
     if (!fs.existsSync(path.resolve(__dirname, "../../db"))) {
       fs.mkdirSync(path.resolve(__dirname, "../../db"));
     }
@@ -22,8 +29,8 @@ class DB {
 
     let db = null;
     if (!fs.existsSync(filePath)) {
-      db = new Sqlite3(filePath, {verbose: console.log});
-      // db = new Sqlite3(filePath);
+      // db = new Sqlite3(filePath, {verbose: console.log});
+      db = new Sqlite3(filePath);
       db.exec(`
         create table scan (
           chainType char(20) PRIMARY KEY NOT NULL,
