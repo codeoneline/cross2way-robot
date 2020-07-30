@@ -61,6 +61,16 @@ async function unlockAccount() {
   result = await chainEtc.core.unlockAccount("0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8", "wanglu", 36000);
   console.log(result);
 }
+async function getBalance() {
+  let result = await chainWan.core.getBalance("0x2d0e7c0813a51d3bd1d08246af2a8a7a57d8922e");
+  console.log(result);
+
+  result = await chainEth.core.getBalance("0x2d0e7c0813a51d3bd1d08246af2a8a7a57d8922e");
+  console.log(result);
+
+  result = await chainEtc.core.getBalance("0x2d0e7c0813a51d3bd1d08246af2a8a7a57d8922e");
+  console.log(result);
+}
 
 // # @姬世武 @詹力 
 // # sk1和sk2是给@詹力 用的
@@ -203,7 +213,7 @@ async function deployTokenPairOrUpdate() {
 }
 
 setTimeout( async () => {
-  await deployTokenPairOrUpdate();
+  // await deployTokenPairOrUpdate();
   // const wlinkAddress = await addToken(tmWan, tokenInfoWan[0]);
 
   // await addToken(tmWan, tokenInfoWan[1]);
@@ -220,6 +230,8 @@ setTimeout( async () => {
 
   // await tmWan.getTokenPairInfo(1);
   // await tmWan.getTokenPairs();
+
+  await getBalance();
 }, 0);
 
 process.on('unhandledRejection', (err) => {
