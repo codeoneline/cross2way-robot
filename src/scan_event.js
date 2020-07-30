@@ -3,12 +3,6 @@ const { web3 } = require('./lib/utils');
 const db = require('./lib/sqlite_db');
 const logAndSendMail = require('./lib/email');
 
-// function init() {
-//   db.init();
-// }
-
-// init();
-
 // RegisterStartEvent
 // { 
 //   "groupId":"0x111122223333444455556666777788889999aaaabbbbccccddddeeeeffffcccc",

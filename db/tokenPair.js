@@ -42,6 +42,36 @@ module.exports = {
     },
   },
 
+  ETC2WAN: {
+    mapChain: 'WAN',
+    originChain: 'ETC',
+    mapToken: {name: 'etc map to wan', symbol: 'wanETC', decimals: 18},
+    originToken: {name: 'etc', symbol: 'ETC', decimals: 18},
+    pair: {
+      id: 5,
+      aInfo: [aAccount, "etc", "ETC", 18, 0x8000003d],
+      fromChainID: 0x8000003d,
+      fromAccount: fromAccount,
+      toChainID: 0x8057414e,
+      tokenAddress: '0x886befdc63a010badbaecc6b089cb7dd835200f4',
+    },
+  },
+
+  WAN2ETC: {
+    mapChain: 'ETC',
+    originChain: 'WAN',
+    mapToken: {name: 'wan map to etc', symbol: 'WAN', decimals: 18},
+    originToken: {name: 'wan', symbol: 'WAN', decimals: 18},
+    pair: {
+      id: 6,
+      aInfo: [aAccount, "wan", "WAN", 18, 0x8057414e],
+      fromChainID: 0x8057414e,
+      fromAccount: fromAccount,
+      toChainID: 0x8000003d,
+      tokenAddress: '0xF2f5C0c525231561ad19103E70a052F7EA519569',
+    },
+  },
+
   LINK2WAN: {
     mapChain: 'WAN',
     originChain: 'ETH',
