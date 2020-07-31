@@ -40,6 +40,7 @@ function parseRegisterStartEvent(events, next) {
 
 const eventHandlers = {};
 eventHandlers['registerStartEvent'] = parseRegisterStartEvent
+eventHandlers['StoremanGroupRegisterStartEvent'] = parseRegisterStartEvent
 
 let bScanning = false;
 let lastException = null;

@@ -2,8 +2,8 @@ const RpcChain = require('../lib/web3_chain');
 const { signTx } = require('../lib/wanchain-helper');
 
 class WanChain extends RpcChain {
-  constructor() {
-    super(process.env.RPC_URL);
+  constructor(url) {
+    super(url);
     this.web3.pos = new (require('../lib/wanchain-pos'))(this.web3);
     this.chainType = "WAN";
   }
@@ -29,10 +29,21 @@ class WanChain extends RpcChain {
   }
 }
 
-const wanChain = new WanChain();
+const wanChain = new WanChain(process.env.RPC_URL);
+
+function createWanChain(url) {
+  const chain = new WanChain(url);
+  const rt = {
+    core: chain,
+    web3: chain.web3,
+    signTx: signTx
+  }
+  return rt;
+}
 
 module.exports = {
   core: wanChain,
   web3: wanChain.web3,
   signTx: signTx,
+  createWanChain: createWanChain,
 };

@@ -13,7 +13,6 @@ const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
 const chainEtc = require(`./chain/${process.env.ETC_CHAIN_ENGINE}`);
 
 const sgaWan = new StoremanGroupAdmin(chainWan, process.env.STOREMANGROUPADMIN_ADDRESS, process.env.STOREMANGROUPADMIN_OWNER_PV_KEY, process.env.STOREMANGROUPADMIN_OWNER_PV_ADDRESS);
-const sgaEth = new StoremanGroupAdmin(chainEth, process.env.STOREMANGROUPADMIN_ADDRESS_ETH, process.env.STOREMANGROUPADMIN_OWNER_PV_KEY, process.env.STOREMANGROUPADMIN_OWNER_PV_ADDRESS);
 
 const tmWan = new TokenManager(chainWan, process.env.TOKEN_MANAGER_ADDRESS, process.env.TOKEN_MANAGER_OWNER_PV_KEY, process.env.TOKEN_MANAGER_OWNER_PV_ADDRESS);
 const tmEth = new TokenManager(chainEth, process.env.TOKEN_MANAGER_ADDRESS_ETH, process.env.TOKEN_MANAGER_OWNER_PV_KEY, process.env.TOKEN_MANAGER_OWNER_PV_ADDRESS);
@@ -103,10 +102,6 @@ async function getBalance() {
 const preSmgID = web3.utils.padRight("0x", 64);
 const smgID1 = web3.utils.padRight("0x", 64, '1');
 const smgID2 = web3.utils.padRight("0x", 64, '2');
-// const gpk1_1 = "0xcb54bc900646fe8de5c8db04e4120e38cb61b3e000ae37e4ecdaf71b777f7ec71f81f87d21eb46e372105a3d123af9a94e0760f9c13738b8ca1abf248a9104f2";
-// const gpk1_2 = "0x6de983ee501df9700b3aec67332b98cc9fac1bb52238f15ba66c0fab9125362382e3b5406bb4183f74d875802a6ba8ad9d41a381d7a5c9a3352a7f136fd67c10";
-// const gpk2_1 = "0x0e2c43272ccd977d0dc562a0a790d5c2ca788a6868a74170caed4ba92ff1e86713fa694404bcf8d5ad86fd8c432afe5f49d1c043d33c03857b2fe0c2e98e7556";
-// const gpk2_2 = "0x3ef6c41fb253f3db7900726016f0a0ba0e694cd587b17f174a9c1dc7ea2b3d1de5503a1ae2db27019a4e639bd26734084c4859b8aa746c1ab5774429a33b2e4b";
 const gpk1_1 = "0x0038c8e52318773522675cd2f3536b105c556ff788281d3439b6c048c05c9dfe1f807d0617f926f0c11a4d2e785ac2f0c48dc50b687a3918cf860aef303bae87";
 const gpk1_2 = "0x023f808ae2bfb8dfbd103d29e28b592e0f3099893538ff25e8544a93cd7f4f9f10d9b6594d5cba8b9bc4d1c0f6bf0103956cfd531af147e019edbd0a5ff7a8a9";
 const gpk2_1 = "0x160f229847d78952799aa2c665dae79436c59f0b49fee402bbdda64e7d8732a907b96d0d2c7e4aeb6e14688160ab01ba4a7b412e62d93490ce4684365ef68b6e";
@@ -126,9 +121,6 @@ async function mySetStoremanGroupConfig() {
 
 async function myGetStoremanGroupConfig() {
   let config = await sgaWan.getStoremanGroupConfig(smgID1);
-  console.log(JSON.stringify(config));
-
-  config = await sgaEth.getStoremanGroupConfig(smgID2);
   console.log(JSON.stringify(config));
 }
 
@@ -183,28 +175,28 @@ async function deployTokenPairOrUpdate() {
       const addTokenEvent = await addToken(tms[pairInfo.mapChain], pairInfo.mapToken);
       pairInfo.pair.tokenAddress = addTokenEvent.tokenAddress;
       console.log(`tokenAddress = ${addTokenEvent.tokenAddress}`)
+    }
 
-      const info = await tms[pairInfo.mapChain].getTokenPairInfo(pairInfo.pair.id);
-      if (info && info.tokenAddress !== '0x0000000000000000000000000000000000000000') {
-        await updateTokenPair(tms[pairInfo.mapChain], pairInfo.pair);
+    const info = await tms[pairInfo.mapChain].getTokenPairInfo(pairInfo.pair.id);
+    if (info && info.tokenAddress !== '0x0000000000000000000000000000000000000000') {
+      await updateTokenPair(tms[pairInfo.mapChain], pairInfo.pair);
+    } else {
+      await addTokenPair(tms[pairInfo.mapChain], pairInfo.pair);
+    }
+
+    const info2 = await tms[pairInfo.originChain].getTokenPairInfo(pairInfo.pair.id);
+    if (info2 && info2.tokenAddress !== '0x0000000000000000000000000000000000000000') {
+      await updateTokenPair(tms[pairInfo.originChain], pairInfo.pair);
+    } else {
+      await addTokenPair(tms[pairInfo.originChain], pairInfo.pair);
+    }
+
+    if(pairInfo.originChain !== 'WAN' && pairInfo.mapChain !== 'WAN') {
+      const info3 = await tms['WAN'].getTokenPairInfo(pairInfo.pair.id);
+      if (info3 && info3.tokenAddress !== '0x0000000000000000000000000000000000000000') {
+        await updateTokenPair(tms['WAN'], pairInfo.pair);
       } else {
-        await addTokenPair(tms[pairInfo.mapChain], pairInfo.pair);
-      }
-
-      const info2 = await tms[pairInfo.originChain].getTokenPairInfo(pairInfo.pair.id);
-      if (info2 && info2.tokenAddress !== '0x0000000000000000000000000000000000000000') {
-        await updateTokenPair(tms[pairInfo.originChain], pairInfo.pair);
-      } else {
-        await addTokenPair(tms[pairInfo.originChain], pairInfo.pair);
-      }
-
-      if(pairInfo.originChain !== 'WAN' && pairInfo.mapChain !== 'WAN') {
-        const info3 = await tms['WAN'].getTokenPairInfo(pairInfo.pair.id);
-        if (info3 && info3.tokenAddress !== '0x0000000000000000000000000000000000000000') {
-          await updateTokenPair(tms['WAN'], pairInfo.pair);
-        } else {
-          await addTokenPair(tms['WAN'], pairInfo.pair);
-        }
+        await addTokenPair(tms['WAN'], pairInfo.pair);
       }
     }
   }
@@ -213,7 +205,7 @@ async function deployTokenPairOrUpdate() {
 }
 
 setTimeout( async () => {
-  // await deployTokenPairOrUpdate();
+  await deployTokenPairOrUpdate();
   // const wlinkAddress = await addToken(tmWan, tokenInfoWan[0]);
 
   // await addToken(tmWan, tokenInfoWan[1]);
@@ -231,7 +223,7 @@ setTimeout( async () => {
   // await tmWan.getTokenPairInfo(1);
   // await tmWan.getTokenPairs();
 
-  await getBalance();
+  // await getBalance();
 }, 0);
 
 process.on('unhandledRejection', (err) => {
