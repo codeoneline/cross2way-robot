@@ -140,7 +140,7 @@ const robotSchedules = ()=>{
 
   // sync sga to sga database
   schedule.scheduleJob('20 * * * * *', () => {
-    scanEvent(sgaWan, 'registerStartEvent');
+    scanEvent(sgaWan, 'StoremanGroupRegisterStartEvent');
   });
 
   // sync sga config from wan to other chain, sga database
@@ -165,7 +165,7 @@ setTimeout(async () => {
   // await updateDeposit(oracleWan, smgID, amount)
   // await updateDeposit(oracleEth, smgID, amount)
   
-  // await scanEvent(sgaWan, 'registerStartEvent');
+  // await scanEvent(sgaWan, 'StoremanGroupRegisterStartEvent');
   // syncConfigToOtherChain();
 }, 0);
 
