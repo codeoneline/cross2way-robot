@@ -70,18 +70,6 @@ class IWan {
         return result;
       }
     }
-
-    // const method = contract.methods[name](...args);
-    // const rt = {};
-    // for (let i=0; i<method._method.outputs.length; i++) {
-    //   const rtType = method._method.outputs[i].type;
-    //   console.log(rtType);
-    //   const results = method._method.outputs[i];
-    //   // web0.20 === delegatePool = "1.05e+21", BN not support
-    //   results.forEach(j => {
-    //     console.log(j);
-    //   })
-    // }
     return rt;
   }
   async getScVar(name, contract, abi) {
@@ -158,10 +146,6 @@ class IWan {
     return logs;
   }
 
-  async getStakerInfo(blockNumber) {
-    return await this.apiClient.getStakerInfo(this.chainType, blockNumber);
-  };
-
   closeEngine() {
     if (!this.apiClient.isClosing() && !this.apiClient.isClosed()) {
       if (this.apiClient.isOpen()) {
@@ -170,8 +154,14 @@ class IWan {
       // return this.apiClient.close();
     }
   }
+
+  ///////////////////////////////////////////////////
+  //  pos
+  async getStakerInfo(blockNumber) {
+    return await this.apiClient.getStakerInfo(this.chainType, blockNumber);
+  };
   ///////////////////////////////////////////////////////////
-  // those are used for test
+  // pos only for test
   async getRandom(epochId, blockNumber) {
     return await this.apiClient.getRandom(this.chainType, epochId, blockNumber);
   }

@@ -43,6 +43,18 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "robot production",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "runtimeArgs": ["-r", "dotenv/config"],
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}/src/robot.js",
+      "args": ["dotenv_config_path=.env.production"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "my local",
       "skipFiles": [
         "<node_internals>/**"
@@ -63,6 +75,18 @@
       "cwd": "${workspaceRoot}",
       "program": "${workspaceFolder}/src/my.js",
       "args": ["dotenv_config_path=.env.development"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "my production",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "runtimeArgs": ["-r", "dotenv/config"],
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}/src/my.js",
+      "args": ["dotenv_config_path=.env.production"]
     },
     {
       "type": "node",

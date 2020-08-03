@@ -94,6 +94,20 @@ class RpcChain {
     }
     return receipts;
   }
+
+  // web3--1.20, new interface, only web3 support
+  async getPastEvents(address, from, to, contract, eventName = 'allEvents') {
+    const options = {
+      fromBlock: from, 
+      toBlock: to, 
+      address: address, 
+    }
+    return await contract.getPastEvents(eventName, options);
+  }
+  
+  // close
+  closeEngine() {
+  }
   ////////////////////////////////////////////////////////////////////
   // only rpc support, iWan not support
   getSlot(key, slot, offset = 0) {
@@ -168,15 +182,6 @@ class RpcChain {
   //     }
   //   }
   // ]
-// web3--1.20, new interface, only web3 support
-  async getPastEvents(address, from, to, contract, eventName = 'allEvents') {
-    const options = {
-      fromBlock: from, 
-      toBlock: to, 
-      address: address, 
-    }
-    return await contract.getPastEvents(eventName, options);
-  }
 }
 
 module.exports = RpcChain;

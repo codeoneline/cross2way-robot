@@ -1,9 +1,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 // normal init
 const log = require('./lib/log');
+const Oracle = require('./contract/oracle');
 const TokenManager = require('./contract/token_manager');
 const StoremanGroupAdmin = require('./contract/storeman_group_admin');
-const { web3 } = require('./lib/utils');
+const MapToken = require('./contract/map_token');
+const { web3, sleep } = require('./lib/utils');
 const fs = require('fs');
 const path = require('path');
 
@@ -17,6 +19,11 @@ const sgaWan = new StoremanGroupAdmin(chainWan, process.env.STOREMANGROUPADMIN_A
 const tmWan = new TokenManager(chainWan, process.env.TOKEN_MANAGER_ADDRESS, process.env.TOKEN_MANAGER_OWNER_PV_KEY, process.env.TOKEN_MANAGER_OWNER_PV_ADDRESS);
 const tmEth = new TokenManager(chainEth, process.env.TOKEN_MANAGER_ADDRESS_ETH, process.env.TOKEN_MANAGER_OWNER_PV_KEY, process.env.TOKEN_MANAGER_OWNER_PV_ADDRESS);
 const tmEtc = new TokenManager(chainEtc, process.env.TOKEN_MANAGER_ADDRESS_ETC, process.env.TOKEN_MANAGER_OWNER_PV_KEY, process.env.TOKEN_MANAGER_OWNER_PV_ADDRESS);
+
+const oracleWan = new Oracle(chainWan, process.env.ORACLE_ADDRESS, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);
+
+const fnxWan = new MapToken(chainWan, process.env.FNX_WAN_ADDRESS, process.env.FNX_WAN_OWNER_PV_KEY, process.env.FNX_WAN_OWNER_PV_ADDRESS);
+const linkEth = new MapToken(chainEth, process.env.LINK_ETH_ADDRESS, process.env.LINK_ETH_OWNER_PV_KEY, process.env.LINK_ETH_OWNER_PV_ADDRESS);
 
 const tms = {
   "WAN": tmWan,
@@ -49,6 +56,22 @@ async function registerStart(sga, id, workStart, workDuration, registerDuration,
 }
 
 // create ETH WETH WAN EWAN token pair
+async function changeOwner() {
+  const old_owner_addr = "0x2d0e7c0813a51d3bd1d08246af2a8a7a57d8922e";
+  const old_owner_sk = "a4369e77024c2ade4994a9345af5c47598c7cfb36c65e8a4a3117519883d9014";
+  const new_owner_addr = "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8";
+  const new_owner_sk = "b6a03207128827eaae0d31d97a7a6243de31f2baf99eabd764e33389ecf436fc";
+
+  // await tmWan.changeOwner(old_owner_addr, old_owner_sk, new_owner_addr, new_owner_sk);
+  // await oracleWan.changeOwner(old_owner_addr, old_owner_sk, new_owner_addr, new_owner_sk);
+  await fnxWan.changeOwner(old_owner_addr, old_owner_sk, new_owner_addr, new_owner_sk);
+}
+
+async function mint(addr, a) {
+  const amount = '0x' + web3.utils.toWei(web3.utils.toBN(a)).toString('hex');
+  await fnxWan.mint(addr, amount);
+  await linkEth.mint(addr, amount);
+}
 
 async function unlockAccount() {
   let result = await chainWan.core.unlockAccount("0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8", "wanglu", 36000);
@@ -171,6 +194,7 @@ async function deployTokenPairOrUpdate() {
   const tokenPairsKeys = Object.keys(tokenPairs);
   for (let i = 0; i < tokenPairsKeys.length; i++) {
     const pairInfo = tokenPairs[tokenPairsKeys[i]];
+    
     if (pairInfo.pair.tokenAddress === '0x0000000000000000000000000000000000000000') {
       const addTokenEvent = await addToken(tms[pairInfo.mapChain], pairInfo.mapToken);
       pairInfo.pair.tokenAddress = addTokenEvent.tokenAddress;
@@ -205,7 +229,9 @@ async function deployTokenPairOrUpdate() {
 }
 
 setTimeout( async () => {
-  await deployTokenPairOrUpdate();
+  // await mint("0x5793e629c061e7fd642ab6a1b4d552cec0e2d606", 1);
+  // await changeOwner();
+  // await deployTokenPairOrUpdate();
   // const wlinkAddress = await addToken(tmWan, tokenInfoWan[0]);
 
   // await addToken(tmWan, tokenInfoWan[1]);

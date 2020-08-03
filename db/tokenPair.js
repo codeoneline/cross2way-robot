@@ -23,7 +23,7 @@ module.exports = {
       fromChainID: 0x8000003c,
       fromAccount: fromAccount,
       toChainID: 0x8057414e,
-      tokenAddress: '0x36FfEcE47A3BaF210b26cc469E37eef2212d9812',
+      tokenAddress: '0x773528a0DC8fdB687B16F57B4915D88F7f0e1598',
     },
   },
 
@@ -53,7 +53,7 @@ module.exports = {
       fromChainID: 0x8000003d,
       fromAccount: fromAccount,
       toChainID: 0x8057414e,
-      tokenAddress: '0x886befdc63a010badbaecc6b089cb7dd835200f4',
+      tokenAddress: '0x0FfFC2a941e489319f62744775B8ee6a02Cdb7B5',
     },
   },
 
@@ -83,7 +83,7 @@ module.exports = {
       fromChainID: 0x8000003c,
       fromAccount: hexToBytes("0x64993826cDf00B4355C4f366e2C38da140Eb5f0D"),
       toChainID: 0x8057414e,
-      tokenAddress: '0x1A5a44D553Df414920874042b8324Cb63F11e917',
+      tokenAddress: '0x33407D39e376813dD07a66Ccbdcc91A43389d875',
     },
   },
 
@@ -94,9 +94,9 @@ module.exports = {
     originToken: {name: 'fnx on wan ', symbol: 'FNX', decimals: 18},
     pair: {
       id: 4,
-      aInfo: [hexToBytes("0x3F759314c81F078b9BaAb7a1fddD6758f027D333"), "fnx on wan", "FNX", 18, 0x8057414e],
+      aInfo: [hexToBytes("0x025d32e1801d567588ef62b29435649f344a694b"), "fnx on wan", "FNX", 18, 0x8057414e],
       fromChainID: 0x8057414e,
-      fromAccount: hexToBytes("0x3F759314c81F078b9BaAb7a1fddD6758f027D333"),
+      fromAccount: hexToBytes("0x025d32e1801d567588ef62b29435649f344a694b"),
       toChainID: 0x8000003c,
       tokenAddress: '0x132329E7e4CD25f4CcAE33d40B4eb40006f1Fb52',
     },

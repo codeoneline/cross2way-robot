@@ -16,6 +16,30 @@ class Contract {
     this.retryTimes = parseInt(process.env.RECEIPT_RETRY_TIMES);
   }
 
+  async getOwner() {
+    return await this.core.getScVar("owner", this.contract, this.abi);
+  }
+
+  async acceptOwnership(newSk, newOwner) {
+    const data2 = this.contract.methods.acceptOwnership().encodeABI();
+    const obj2 = await this.doOperator("acceptOwnership", data2, null, '0x00', this.retryTimes, newSk, newOwner);
+    if (obj2.status) {
+      this.pv_key = newSk.toLowerCase();
+      this.pv_address = newOwner.toLowerCase();
+    }
+  }
+
+  async changeOwner(oldOwner, oldSk, newOwner, newSk) {
+    const old = await this.getOwner();
+    if (old.toLowerCase() === oldOwner.toLowerCase()) {
+      const data = this.contract.methods.changeOwner(newOwner).encodeABI();
+      const obj = await this.doOperator(this.changeOwner.name, data, null, '0x00', this.retryTimes, oldSk, oldOwner);
+      if (obj.status) {
+        await this.acceptOwnership(newSk, newOwner);
+      }
+    }
+  }
+
   async doOperator(opName, data, gasLimit, value, count, privateKey, pkAddress) {
     log.debug(`do operator: ${opName}`);
     const nonce = await this.core.getTxCount(pkAddress);

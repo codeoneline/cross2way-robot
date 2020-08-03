@@ -8,7 +8,6 @@ const scanEvent = require('./scan_event');
 const db = require('./lib/sqlite_db');
 const Oracle = require('./contract/oracle');
 const StoremanGroupAdmin = require('./contract/storeman_group_admin');
-const BigNumber = require('bignumber.js');
 
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);

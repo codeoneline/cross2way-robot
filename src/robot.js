@@ -90,6 +90,16 @@ async function syncConfigToOtherChain() {
     const groupId = sg.groupId;
     const config = await sgaWan.getStoremanGroupConfig(groupId);
     if (config) {
+      if ((sg.status !== parseInt(config.status)) ||
+        (sg.deposit !== config.deposit)
+      ) {
+        const c = JSON.parse(JSON.stringify(config));
+        c.updateTime = updateTime;
+        db.updateSga(c);
+      }
+      if (!config.gpk1 || !config.gpk2) {
+        continue;
+      }
       const oracles = [oracleWan, oracleEth, oracleEtc];
       for(i = 0; i<oracles.length; i++) {
         const oracle = oracles[i];

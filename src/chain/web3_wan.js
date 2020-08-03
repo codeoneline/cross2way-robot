@@ -11,9 +11,6 @@ class WanChain extends RpcChain {
   async getStakerInfo(blockNumber) {
     return await this.web3.pos.getStakerInfo(blockNumber);
   };
-  // close
-  closeEngine() {
-  }
   ///////////////////////////////////////////////////////////
   // those are for test
   async getRandom(epochId, blockNumber) {
