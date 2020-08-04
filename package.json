@@ -6,6 +6,7 @@
   "scripts": {
     "robot_local": "node -r dotenv/config src/robot.js dotenv_config_path=.env.local",
     "robot_development": "node -r dotenv/config src/robot.js dotenv_config_path=.env.development",
+    "robot_production": "node -r dotenv/config src/robot.js dotenv_config_path=.env.production",
 
     "scan_development": "node -r dotenv/config src/scan_register.js dotenv_config_path=.env.development",
 

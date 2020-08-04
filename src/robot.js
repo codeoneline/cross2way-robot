@@ -85,6 +85,7 @@ async function updateDeposit(oracle, smgID, amount) {
 async function syncConfigToOtherChain() {
   log.info(`syncConfigToOtherChain begin`);
   const sgs = db.getAllSga();
+  const updateTime = new Date().getTime();
   for (let i = 0; i<sgs.length; i++) {
     const sg = sgs[i];
     const groupId = sg.groupId;
@@ -100,9 +101,9 @@ async function syncConfigToOtherChain() {
       if (!config.gpk1 || !config.gpk2) {
         continue;
       }
-      const oracles = [oracleWan, oracleEth, oracleEtc];
-      for(i = 0; i<oracles.length; i++) {
-        const oracle = oracles[i];
+      const oracles = [oracleEth, oracleEtc];
+      for(let j = 0; j<oracles.length; j++) {
+        const oracle = oracles[j];
         const config_eth = await oracle.getStoremanGroupConfig(groupId);
         if (!config_eth ||
           (config.groupId !== config_eth.groupId) ||
