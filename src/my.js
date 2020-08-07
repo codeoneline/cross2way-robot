@@ -241,7 +241,7 @@ async function deployTokenPairOrUpdate() {
 }
 
 setTimeout( async () => {
-  await mint("0x5793e629c061e7fd642ab6a1b4d552cec0e2d606", 1);
+  // await mint("0x5793e629c061e7fd642ab6a1b4d552cec0e2d606", 1);
   // await changeOwner();
   // await upgradeTo();
   // await deployTokenPairOrUpdate();
@@ -251,7 +251,7 @@ setTimeout( async () => {
   // await addToken(tmEth, tokenInfoEth[0]);
   // await addToken(tmEth, tokenInfoEth[1]);
 
-  // await unlockAccount();
+  await unlockAccount();
   // await myRegisterStart();
   // await mySetStoremanGroupConfig();
   // await myGetStoremanGroupConfig();
