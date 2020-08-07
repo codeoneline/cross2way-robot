@@ -3,6 +3,8 @@
 const log = require('./lib/log');
 const Oracle = require('./contract/oracle');
 const TokenManager = require('./contract/token_manager');
+const OracleProxy = require('./contract/oracle_proxy');
+const TokenManagerProxy = require('./contract/token_manager_proxy');
 const StoremanGroupAdmin = require('./contract/storeman_group_admin');
 const MapToken = require('./contract/map_token');
 const { web3, sleep } = require('./lib/utils');
@@ -62,9 +64,16 @@ async function changeOwner() {
   const new_owner_addr = "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8";
   const new_owner_sk = "b6a03207128827eaae0d31d97a7a6243de31f2baf99eabd764e33389ecf436fc";
 
-  // await tmWan.changeOwner(old_owner_addr, old_owner_sk, new_owner_addr, new_owner_sk);
-  // await oracleWan.changeOwner(old_owner_addr, old_owner_sk, new_owner_addr, new_owner_sk);
-  await fnxWan.changeOwner(old_owner_addr, old_owner_sk, new_owner_addr, new_owner_sk);
+  await tmWan.changeOwner(old_owner_addr, old_owner_sk, new_owner_addr, new_owner_sk);
+  await oracleWan.changeOwner(old_owner_addr, old_owner_sk, new_owner_addr, new_owner_sk);
+  // await fnxWan.changeOwner(old_owner_addr, old_owner_sk, new_owner_addr, new_owner_sk);
+}
+
+async function upgradeTo() {
+  const oracleProxyWan = new OracleProxy(chainWan, process.env.ORACLE_ADDRESS, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);
+  const tmProxyWan = new TokenManagerProxy(chainWan, process.env.TOKEN_MANAGER_ADDRESS, process.env.TOKEN_MANAGER_OWNER_PV_KEY, process.env.TOKEN_MANAGER_OWNER_PV_ADDRESS);
+  // await tmProxyWan.upgradeTo(process.env.TOKEN_MANAGER_ADDRESS_UP);
+  await oracleProxyWan.upgradeTo(process.env.ORACLE_ADDRESS_UP);
 }
 
 async function mint(addr, a) {
@@ -74,7 +83,8 @@ async function mint(addr, a) {
 }
 
 async function unlockAccount() {
-  let result = await chainWan.core.unlockAccount("0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8", "wanglu", 36000);
+  let result = false;
+  result = await chainWan.core.unlockAccount("0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8", "wanglu", 36000);
   console.log(result);
 
   result = await chainEth.core.unlockAccount("0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8", "wanglu", 36000);
@@ -83,6 +93,8 @@ async function unlockAccount() {
   result = await chainEtc.core.unlockAccount("0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8", "wanglu", 36000);
   console.log(result);
 }
+
+
 async function getBalance() {
   let result = await chainWan.core.getBalance("0x2d0e7c0813a51d3bd1d08246af2a8a7a57d8922e");
   console.log(result);
@@ -229,8 +241,9 @@ async function deployTokenPairOrUpdate() {
 }
 
 setTimeout( async () => {
-  // await mint("0x5793e629c061e7fd642ab6a1b4d552cec0e2d606", 1);
+  await mint("0x5793e629c061e7fd642ab6a1b4d552cec0e2d606", 1);
   // await changeOwner();
+  // await upgradeTo();
   // await deployTokenPairOrUpdate();
   // const wlinkAddress = await addToken(tmWan, tokenInfoWan[0]);
 

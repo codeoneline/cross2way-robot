@@ -40,6 +40,11 @@ class Contract {
     }
   }
 
+  async upgradeTo(impl) {
+    const data = this.contract.methods.upgradeTo(impl).encodeABI();
+    this.doOperator(this.upgradeTo.name, data, null, '0x00', this.retryTimes, this.pv_key, this.pv_address);
+  }
+
   async doOperator(opName, data, gasLimit, value, count, privateKey, pkAddress) {
     log.debug(`do operator: ${opName}`);
     const nonce = await this.core.getTxCount(pkAddress);

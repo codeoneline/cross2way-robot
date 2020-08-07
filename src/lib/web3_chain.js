@@ -1,7 +1,7 @@
 const Web3 = require("web3");
 const { promisify } = require("./utils");
 
-class RpcChain {
+class Web3Chain {
   constructor(rpc_url) {
     this.web3 = new Web3(new Web3.providers.HttpProvider(rpc_url));
   }
@@ -184,4 +184,4 @@ class RpcChain {
   // ]
 }
 
-module.exports = RpcChain;
+module.exports = Web3Chain;

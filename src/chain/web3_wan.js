@@ -1,7 +1,7 @@
-const RpcChain = require('../lib/web3_chain');
+const Web3Chain = require('../lib/web3_chain');
 const { signTx } = require('../lib/wanchain-helper');
 
-class WanChain extends RpcChain {
+class WanChain extends Web3Chain {
   constructor(url) {
     super(url);
     this.web3.pos = new (require('../lib/wanchain-pos'))(this.web3);
