@@ -1,89 +1,19 @@
 {
-  "ETH2WAN": {
-    "mapChain": "WAN",
-    "originChain": "ETH",
-    "mapToken": {
-      "name": "wan map eth",
-      "symbol": "wanETH",
-      "decimals": 18
-    },
-    "originToken": {
-      "name": "eth",
-      "symbol": "ETH",
-      "decimals": 18
-    },
-    "pair": {
-      "id": 1,
-      "aInfo": [
-        [
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
-        "eth",
-        "ETH",
-        18,
-        2147483708
-      ],
-      "fromChainID": 2147483708,
-      "fromAccount": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ],
-      "toChainID": 2153201998,
-      "tokenAddress": "0x36FfEcE47A3BaF210b26cc469E37eef2212d9812"
-    }
-  },
-  "WAN2ETH": {
+  "BTC2ETH": {
     "mapChain": "ETH",
     "originChain": "WAN",
     "mapToken": {
-      "name": "eth map wan",
-      "symbol": "WAN",
+      "name": "btc map eth",
+      "symbol": "wanBTC",
       "decimals": 18
     },
     "originToken": {
-      "name": "wan",
-      "symbol": "WAN",
+      "name": "btc on wan",
+      "symbol": "BTC",
       "decimals": 18
     },
     "pair": {
-      "id": 2,
+      "id": 22,
       "aInfo": [
         [
           0,
@@ -107,8 +37,8 @@
           0,
           0
         ],
-        "wan",
-        "WAN",
+        "btc",
+        "BTC",
         18,
         2153201998
       ],
@@ -136,287 +66,77 @@
         0
       ],
       "toChainID": 2147483708,
-      "tokenAddress": "0xe87627630583e5411486982268b01DaBcaB5CeC0"
+      "tokenAddress": "0x30d2d6D33C9dfA6A1a92697fC1981776C1f516bC"
     }
   },
-  "ETC2WAN": {
-    "mapChain": "WAN",
-    "originChain": "ETC",
-    "mapToken": {
-      "name": "etc map to wan",
-      "symbol": "wanETC",
-      "decimals": 18
-    },
-    "originToken": {
-      "name": "etc",
-      "symbol": "ETC",
-      "decimals": 18
-    },
-    "pair": {
-      "id": 5,
-      "aInfo": [
-        [
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
-        "etc",
-        "ETC",
-        18,
-        2147483709
-      ],
-      "fromChainID": 2147483709,
-      "fromAccount": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ],
-      "toChainID": 2153201998,
-      "tokenAddress": "0x886befdc63a010badbaecc6b089cb7dd835200f4"
-    }
-  },
-  "WAN2ETC": {
-    "mapChain": "ETC",
-    "originChain": "WAN",
-    "mapToken": {
-      "name": "wan map to etc",
-      "symbol": "WAN",
-      "decimals": 18
-    },
-    "originToken": {
-      "name": "wan",
-      "symbol": "WAN",
-      "decimals": 18
-    },
-    "pair": {
-      "id": 6,
-      "aInfo": [
-        [
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
-        "wan",
-        "WAN",
-        18,
-        2153201998
-      ],
-      "fromChainID": 2153201998,
-      "fromAccount": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ],
-      "toChainID": 2147483709,
-      "tokenAddress": "0xF2f5C0c525231561ad19103E70a052F7EA519569"
-    }
-  },
-  "LINK2WAN": {
-    "mapChain": "WAN",
-    "originChain": "ETH",
-    "mapToken": {
-      "name": "link map on wan",
-      "symbol": "wanLINK",
-      "decimals": 18
-    },
-    "originToken": {
-      "name": "link on eth",
-      "symbol": "LINK",
-      "decimals": 18
-    },
-    "pair": {
-      "id": 3,
-      "aInfo": [
-        [
-          100,
-          153,
-          56,
-          38,
-          205,
-          240,
-          11,
-          67,
-          85,
-          196,
-          243,
-          102,
-          226,
-          195,
-          141,
-          161,
-          64,
-          235,
-          95,
-          13
-        ],
-        "link on eth",
-        "LINK",
-        18,
-        2147483708
-      ],
-      "fromChainID": 2147483708,
-      "fromAccount": [
-        100,
-        153,
-        56,
-        38,
-        205,
-        240,
-        11,
-        67,
-        85,
-        196,
-        243,
-        102,
-        226,
-        195,
-        141,
-        161,
-        64,
-        235,
-        95,
-        13
-      ],
-      "toChainID": 2153201998,
-      "tokenAddress": "0x1A5a44D553Df414920874042b8324Cb63F11e917"
-    }
-  },
-  "FNX2ETH": {
+  "EOS2ETH": {
     "mapChain": "ETH",
     "originChain": "WAN",
     "mapToken": {
-      "name": "fnx map on eth",
-      "symbol": "wanFNX",
+      "name": "eos map eth",
+      "symbol": "wanEOS",
       "decimals": 18
     },
     "originToken": {
-      "name": "fnx on wan ",
-      "symbol": "FNX",
+      "name": "eos on wan",
+      "symbol": "EOS",
       "decimals": 18
     },
     "pair": {
-      "id": 4,
+      "id": 23,
       "aInfo": [
         [
-          63,
-          117,
-          147,
-          20,
-          200,
-          31,
-          7,
-          139,
-          155,
-          170,
-          183,
-          161,
-          253,
-          221,
-          103,
-          88,
-          240,
-          39,
-          211,
-          51
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
         ],
-        "fnx on wan",
-        "FNX",
+        "eos",
+        "EOS",
         18,
         2153201998
       ],
       "fromChainID": 2153201998,
       "fromAccount": [
-        63,
-        117,
-        147,
-        20,
-        200,
-        31,
-        7,
-        139,
-        155,
-        170,
-        183,
-        161,
-        253,
-        221,
-        103,
-        88,
-        240,
-        39,
-        211,
-        51
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
       ],
       "toChainID": 2147483708,
-      "tokenAddress": "0x132329E7e4CD25f4CcAE33d40B4eb40006f1Fb52"
+      "tokenAddress": "0xAbD9ab964697AbB5EC434a8aD612B88DDeA39b15"
     }
   }
 }
