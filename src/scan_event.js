@@ -46,6 +46,7 @@ class ScanInstance {
   }
 
   async doScan(from, step, to) {
+    console.log(`doScan this = ${this}`);
     let next = from + step;
     if (next > to) {
       next = to;
@@ -55,10 +56,11 @@ class ScanInstance {
     const events = await this.contract.core.getPastEvents(this.contract.address, from, next, this.contract.contract, this.eventName);
     const transaction = db.db.transaction(ScanInstance.eventHandlers[this.eventName]);
     transaction(events, next);
+    db.updateScan({chainType: this.chainType, blockNumber: next});
   
     if (next < to) {
       setTimeout( async () => {
-        await doScan(next + 1, step, to); 
+        await this.doScan(next + 1, step, to); 
       }, 0);
     } else {
       this.lastException = null;
@@ -78,7 +80,7 @@ class ScanInstance {
     }
   
     log.info(`scan from=${from}, to=${to}`);
-    await doScan(from, step, to);
+    await this.doScan(from, step, to);
   }
   
   // scan to blockNumber = current - SCAN_UNCERTAIN_BLOCK, 
@@ -90,12 +92,12 @@ class ScanInstance {
       return;
     }
     this.bScanning = true;
-  
+
     // post an event begin to scan
     setTimeout(async () => {
       try {
         // await scanNewStoremanGroup(chainContract, eventName);
-        await scanNewStoremanGroup();
+        await this.scanNewStoremanGroup();
       } catch (e) {
         if (this.lastException !== e) {
           this.lastException = e;
@@ -103,7 +105,7 @@ class ScanInstance {
         }
         this.bScanning = false;
       }
-    }, parseInt(process.env.SCAN_DELAY));
+    }, this.delay);
   }
 }
 

@@ -26,6 +26,8 @@ const oracleWan = new Oracle(chainWan, process.env.ORACLE_ADDRESS, process.env.O
 
 const fnxWan = new MapToken(chainWan, process.env.FNX_WAN_ADDRESS, process.env.FNX_WAN_OWNER_PV_KEY, process.env.FNX_WAN_OWNER_PV_ADDRESS);
 const linkEth = new MapToken(chainEth, process.env.LINK_ETH_ADDRESS, process.env.LINK_ETH_OWNER_PV_KEY, process.env.LINK_ETH_OWNER_PV_ADDRESS);
+const eosWan = new MapToken(chainWan, "0xDDcd518E6bD473A129c31Ba4a2EC699843F10567", process.env.SK_MY, process.env.ADDRESS_MY);
+const btcEth = new MapToken(chainWan, "0x3Dd2c6BE473943d7fB9072e43Edf9c6cfd09d81f", process.env.SK_MY, process.env.ADDRESS_MY);
 
 const tms = {
   "WAN": tmWan,
@@ -55,8 +57,10 @@ async function upgradeTo() {
 // fnx link mint
 async function mint(addr, a) {
   const amount = '0x' + web3.utils.toWei(web3.utils.toBN(a)).toString('hex');
-  await fnxWan.mint(addr, amount);
-  await linkEth.mint(addr, amount);
+  // await fnxWan.mint(addr, amount);
+  // await linkEth.mint(addr, amount);
+  await eosWan.mint(addr, amount);
+  await btcEth.mint(addr, amount);
 }
 
 async function unlockAccount() {
@@ -156,6 +160,7 @@ async function deployTokenPairOrUpdate() {
 
 setTimeout( async () => {
   // await mint("0x5793e629c061e7fd642ab6a1b4d552cec0e2d606", 1);
+  await mint("0x6a8299deccd420d5b6970d611afb25cc8e910220", 10000000);
   // await changeOwner();
   // await upgradeTo();
 
@@ -167,8 +172,8 @@ setTimeout( async () => {
 
   // await getBalance();
 
-  await unlockAccount();
-  await deployTokenPairOrUpdate();
+  // await unlockAccount();
+  // await deployTokenPairOrUpdate();
 }, 0);
 
 process.on('unhandledRejection', (err) => {

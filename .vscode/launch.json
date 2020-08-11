@@ -130,6 +130,18 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "scan event 2",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "cwd": "${workspaceRoot}",
+			"stopOnEntry": false,
+			"runtimeExecutable": null,
+      "program": "${workspaceFolder}/src/scan_event2.js",
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "test contract local",
       "skipFiles": [
         "<node_internals>/**"

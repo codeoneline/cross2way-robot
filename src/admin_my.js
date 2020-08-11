@@ -25,6 +25,8 @@ const oracleWanMy = new Oracle(chainWanMy, process.env.ORACLE_ADDRESS_MY, proces
 
 const fnxWanMy = new MapToken(chainWanMy, process.env.FNX_ADDRESS_MY, process.env.SK_MY, process.env.ADDRESS_MY);
 const linkEth = new MapToken(chainEth, process.env.LINK_ETH_ADDRESS, process.env.LINK_ETH_OWNER_PV_KEY, process.env.LINK_ETH_OWNER_PV_ADDRESS);
+const eosWanMy = new MapToken(chainWanMy, "0xDDcd518E6bD473A129c31Ba4a2EC699843F10567", process.env.SK_MY, process.env.ADDRESS_MY);
+const btcEthMy = new MapToken(chainWanMy, "0x3Dd2c6BE473943d7fB9072e43Edf9c6cfd09d81f", process.env.SK_MY, process.env.ADDRESS_MY);
 
 
 const tms = {
@@ -65,10 +67,12 @@ async function upgradeToMy() {
 }
 
 // fnx link mint
-async function mintMy(addr, a) {
+async function mintMy(addr, addr2, a) {
   const amount = '0x' + web3.utils.toWei(web3.utils.toBN(a)).toString('hex');
   await fnxWanMy.mint(addr, amount);
-  await linkEth.mint(addr, amount);
+  await linkEth.mint(addr2, amount);
+  await eosWanMy.mint(addr, amount);
+  await btcEthMy.mint(addr, amount);
 }
 
 async function unlockAccountMy() {
@@ -233,7 +237,7 @@ async function deployTokenPairOrUpdateMy() {
 }
 
 setTimeout( async () => {
-  // await mintMy("0x5793e629c061e7fd642ab6a1b4d552cec0e2d606", 1);
+  // await mintMy("0x67e3b428acbc3aa2fd38813f65dafbd5af97c6d5", "0xded23dd19136574fce6b4ab4ea76395c4088a033", 10000000);
   // await changeOwnerMy();
   // await upgradeToMy();
 
