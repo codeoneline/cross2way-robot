@@ -11,13 +11,13 @@ class TokenManager extends Contract {
     return await this.doOperator(this.addToken.name, data, null, '0x00', this.retryTimes, this.pv_key, this.pv_address);
   }
 
-  async addTokenPair(id, aInfo, fromChainID, fromAccount, toChainID, tokenAddress) {
-    const data = await this.contract.methods.addTokenPair(id, aInfo, fromChainID, fromAccount, toChainID, tokenAddress).encodeABI();
+  async addTokenPair(id, aInfo, fromChainID, fromAccount, toChainID, toAccount) {
+    const data = await this.contract.methods.addTokenPair(id, aInfo, fromChainID, fromAccount, toChainID, toAccount).encodeABI();
     return await this.doOperator(this.addTokenPair.name, data, null, '0x00', this.retryTimes, this.pv_key, this.pv_address);
   }
 
-  async updateTokenPair(id, aInfo, fromChainID, fromAccount, toChainID, tokenAddress, isValid) {
-    const data = await this.contract.methods.updateTokenPair(id, aInfo, fromChainID, fromAccount, toChainID, tokenAddress, isValid).encodeABI();
+  async updateTokenPair(id, aInfo, fromChainID, fromAccount, toChainID, toAccount) {
+    const data = await this.contract.methods.updateTokenPair(id, aInfo, fromChainID, fromAccount, toChainID, toAccount).encodeABI();
     return await this.doOperator(this.updateTokenPair.name, data, null, '0x00', this.retryTimes, this.pv_key, this.pv_address);
   }
 

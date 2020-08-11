@@ -55,37 +55,49 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "my local",
+      "name": "admin local",
       "skipFiles": [
         "<node_internals>/**"
       ],
       "runtimeArgs": ["-r", "dotenv/config"],
       "cwd": "${workspaceRoot}",
-      "program": "${workspaceFolder}/src/my.js",
+      "program": "${workspaceFolder}/src/admin.js",
       "args": ["dotenv_config_path=.env.local"]
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "my development",
+      "name": "admin development",
       "skipFiles": [
         "<node_internals>/**"
       ],
       "runtimeArgs": ["-r", "dotenv/config"],
       "cwd": "${workspaceRoot}",
-      "program": "${workspaceFolder}/src/my.js",
+      "program": "${workspaceFolder}/src/admin.js",
       "args": ["dotenv_config_path=.env.development"]
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "my production",
+      "name": "admin production",
       "skipFiles": [
         "<node_internals>/**"
       ],
       "runtimeArgs": ["-r", "dotenv/config"],
       "cwd": "${workspaceRoot}",
-      "program": "${workspaceFolder}/src/my.js",
+      "program": "${workspaceFolder}/src/admin.js",
+      "args": ["dotenv_config_path=.env.production"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "admin my production",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "runtimeArgs": ["-r", "dotenv/config"],
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}/src/admin_my.js",
       "args": ["dotenv_config_path=.env.production"]
     },
     {

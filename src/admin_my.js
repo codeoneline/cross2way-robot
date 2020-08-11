@@ -5,86 +5,75 @@ const Oracle = require('./contract/oracle');
 const TokenManager = require('./contract/token_manager');
 const OracleProxy = require('./contract/oracle_proxy');
 const TokenManagerProxy = require('./contract/token_manager_proxy');
-const StoremanGroupAdmin = require('./contract/storeman_group_admin');
+const StoremanGroupAdminMy = require('./contract/storeman_group_admin_my');
 const MapToken = require('./contract/map_token');
 const { web3, sleep } = require('./lib/utils');
 const fs = require('fs');
 const path = require('path');
 
-// we can choose one blockchain
-const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
+const chainWanMy = require(`./chain/${process.env.MY_WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
 const chainEtc = require(`./chain/${process.env.ETC_CHAIN_ENGINE}`);
 
-const sgaWan = new StoremanGroupAdmin(chainWan, process.env.STOREMANGROUPADMIN_ADDRESS, process.env.STOREMANGROUPADMIN_OWNER_PV_KEY, process.env.STOREMANGROUPADMIN_OWNER_PV_ADDRESS);
+const sgaWanMy = new StoremanGroupAdminMy(chainWanMy, process.env.SMGA_ADDRESS_MY, process.env.SK_MY, process.env.ADDRESS_MY);
 
-const tmWan = new TokenManager(chainWan, process.env.TOKEN_MANAGER_ADDRESS, process.env.TOKEN_MANAGER_OWNER_PV_KEY, process.env.TOKEN_MANAGER_OWNER_PV_ADDRESS);
+const tmWanMy = new TokenManager(chainWanMy, process.env.TM_ADDRESS_MY, process.env.SK_MY, process.env.ADDRESS_MY);
 const tmEth = new TokenManager(chainEth, process.env.TOKEN_MANAGER_ADDRESS_ETH, process.env.TOKEN_MANAGER_OWNER_PV_KEY, process.env.TOKEN_MANAGER_OWNER_PV_ADDRESS);
 const tmEtc = new TokenManager(chainEtc, process.env.TOKEN_MANAGER_ADDRESS_ETC, process.env.TOKEN_MANAGER_OWNER_PV_KEY, process.env.TOKEN_MANAGER_OWNER_PV_ADDRESS);
 
-const oracleWan = new Oracle(chainWan, process.env.ORACLE_ADDRESS, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);
+const oracleWanMy = new Oracle(chainWanMy, process.env.ORACLE_ADDRESS_MY, process.env.SK_MY, process.env.ADDRESS_MY);
 
-const fnxWan = new MapToken(chainWan, process.env.FNX_WAN_ADDRESS, process.env.FNX_WAN_OWNER_PV_KEY, process.env.FNX_WAN_OWNER_PV_ADDRESS);
+const fnxWanMy = new MapToken(chainWanMy, process.env.FNX_ADDRESS_MY, process.env.SK_MY, process.env.ADDRESS_MY);
 const linkEth = new MapToken(chainEth, process.env.LINK_ETH_ADDRESS, process.env.LINK_ETH_OWNER_PV_KEY, process.env.LINK_ETH_OWNER_PV_ADDRESS);
 
+
 const tms = {
-  "WAN": tmWan,
+  "WAN": tmWanMy,
   "ETH": tmEth,
   "ETC": tmEtc
 }
 
 async function setStoremanGroupConfig(sga, id, status, deposit, chain, curve, gpk1, gpk2, startTime, endTime) {
-  log.info(`setStoremanGroupConfig begin`);
-  
-  const _deposit = "0x" + web3.utils.toBN(deposit).toString('hex');
-  const _chain = ["0x" + web3.utils.toBN(chain[0]).toString('hex'),
-                "0x" + web3.utils.toBN(chain[1]).toString('hex')];
-  const _curve = ["0x" + web3.utils.toBN(curve[0]).toString('hex'),
-                "0x" + web3.utils.toBN(curve[1]).toString('hex')];
-  const _startTime = "0x" + web3.utils.toBN(startTime).toString('hex');
-  const _endTime = "0x" + web3.utils.toBN(endTime).toString('hex');
-
-  await sga.setStoremanGroupConfig(id, status, _deposit, _chain, _curve, gpk1, gpk2, _startTime, _endTime);
+  log.info(`setStoremanGroupConfig`);
+  await sga.setStoremanGroupConfig(id, status, deposit, chain, curve, gpk1, gpk2, startTime, endTime);
 }
 
 async function registerStart(sga, id, workStart, workDuration, registerDuration,  preGroupId) {
-  log.info(`registerStart begin`);
-
-  const _workStart = "0x" + web3.utils.toBN(workStart).toString('hex');
-  const _workDuration = "0x" + web3.utils.toBN(workDuration).toString('hex');
-  const _registerDuration = "0x" + web3.utils.toBN(registerDuration).toString('hex');
-
-  await sga.registerStart(id, _workStart, _workDuration, _registerDuration, preGroupId);
+  log.info(`registerStart`);
+  await sga.registerStart(id, workStart, workDuration, registerDuration, preGroupId);
 }
 
-// create ETH WETH WAN EWAN token pair
-async function changeOwner() {
-  const old_owner_addr = "0x2d0e7c0813a51d3bd1d08246af2a8a7a57d8922e";
-  const old_owner_sk = "a4369e77024c2ade4994a9345af5c47598c7cfb36c65e8a4a3117519883d9014";
-  const new_owner_addr = "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8";
-  const new_owner_sk = "b6a03207128827eaae0d31d97a7a6243de31f2baf99eabd764e33389ecf436fc";
+// TODO: check map token owner == proxy
 
-  await tmWan.changeOwner(old_owner_addr, old_owner_sk, new_owner_addr, new_owner_sk);
-  await oracleWan.changeOwner(old_owner_addr, old_owner_sk, new_owner_addr, new_owner_sk);
+const old_owner_addr = "0x2d0e7c0813a51d3bd1d08246af2a8a7a57d8922e";
+const old_owner_sk = "a4369e77024c2ade4994a9345af5c47598c7cfb36c65e8a4a3117519883d9014";
+const new_owner_addr = "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8";
+const new_owner_sk = "b6a03207128827eaae0d31d97a7a6243de31f2baf99eabd764e33389ecf436fc";
+// TODO: should change proxy owner!
+async function changeOwnerMy() {
+  await tmWanMy.changeOwner(old_owner_addr, old_owner_sk, new_owner_addr, new_owner_sk);
+  await oracleWanMy.changeOwner(old_owner_addr, old_owner_sk, new_owner_addr, new_owner_sk);
   // await fnxWan.changeOwner(old_owner_addr, old_owner_sk, new_owner_addr, new_owner_sk);
 }
 
-async function upgradeTo() {
-  const oracleProxyWan = new OracleProxy(chainWan, process.env.ORACLE_ADDRESS, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);
-  const tmProxyWan = new TokenManagerProxy(chainWan, process.env.TOKEN_MANAGER_ADDRESS, process.env.TOKEN_MANAGER_OWNER_PV_KEY, process.env.TOKEN_MANAGER_OWNER_PV_ADDRESS);
-  // await tmProxyWan.upgradeTo(process.env.TOKEN_MANAGER_ADDRESS_UP);
-  await oracleProxyWan.upgradeTo(process.env.ORACLE_ADDRESS_UP);
+async function upgradeToMy() {
+  const oracleProxyWan = new OracleProxy(chainWanMy, process.env.ORACLE_ADDRESS_MY, process.env.SK_MY, process.env.ADDRESS_MY);
+  await oracleProxyWan.upgradeTo(process.env.ORACLE_ADDRESS_MY_UP);
+
+  // const tmProxyWan = new TokenManagerProxy(chainWan, process.env.TM_ADDRESS_MY, process.env.SK_MY, process.env.ADDRESS_MY);
+  // await tmProxyWan.upgradeTo(process.env.TM_ADDRESS_MY_UP);
 }
 
-async function mint(addr, a) {
+// fnx link mint
+async function mintMy(addr, a) {
   const amount = '0x' + web3.utils.toWei(web3.utils.toBN(a)).toString('hex');
-  await fnxWan.mint(addr, amount);
+  await fnxWanMy.mint(addr, amount);
   await linkEth.mint(addr, amount);
 }
 
-async function unlockAccount() {
+async function unlockAccountMy() {
   let result = false;
-  result = await chainWan.core.unlockAccount("0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8", "wanglu", 36000);
+  result = await chainWanMy.core.unlockAccount("0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8", "wanglu", 36000);
   console.log(result);
 
   result = await chainEth.core.unlockAccount("0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8", "wanglu", 36000);
@@ -94,9 +83,8 @@ async function unlockAccount() {
   console.log(result);
 }
 
-
-async function getBalance() {
-  let result = await chainWan.core.getBalance("0x2d0e7c0813a51d3bd1d08246af2a8a7a57d8922e");
+async function getBalanceMy() {
+  let result = await chainWanMy.core.getBalance("0x2d0e7c0813a51d3bd1d08246af2a8a7a57d8922e");
   console.log(result);
 
   result = await chainEth.core.getBalance("0x2d0e7c0813a51d3bd1d08246af2a8a7a57d8922e");
@@ -146,16 +134,18 @@ const endTime = 2595234554;
 // enum GroupStatus {none, initial, curveSeted, failed, selected, ready, unregistered, dismissed}
 async function mySetStoremanGroupConfig() {
   const deposit1 = '0x' + web3.utils.toWei("10000000").toString('hex');
-  let receipt = await setStoremanGroupConfig(sgaWan, smgID1, 5, deposit1, [0x8057414e, 2147483708], [1, 1], gpk1_1, gpk1_2, startTime, endTime);
+  let receipt = await setStoremanGroupConfig(sgaWanMy, smgID1, 5, deposit1, [0x8057414e, 2147483708], [1, 1], gpk1_1, gpk1_2, startTime, endTime);
   console.log(JSON.stringify(receipt));
 
   const deposit2 = '0x' + web3.utils.toWei("900000000").toString('hex');
-  receipt = await setStoremanGroupConfig(sgaWan, smgID2, 5, deposit2, [0x8057414e, 2147483708], [1, 1], gpk2_1, gpk2_2, startTime, endTime);
+  receipt = await setStoremanGroupConfig(sgaWanMy, smgID2, 5, deposit2, [0x8057414e, 2147483708], [1, 1], gpk2_1, gpk2_2, startTime, endTime);
   console.log(JSON.stringify(receipt));
 }
 
 async function myGetStoremanGroupConfig() {
-  let config = await sgaWan.getStoremanGroupConfig(smgID1);
+  let config = await sgaWanMy.getStoremanGroupConfig(smgID1);
+  console.log(JSON.stringify(config));
+  config = await sgaWanMy.getStoremanGroupConfig(smgID2);
   console.log(JSON.stringify(config));
 }
 
@@ -163,17 +153,17 @@ async function myRegisterStart() {
   // sga, id, workStart, workDuration, registerDuration,  preGroupId
   const workStart = startTime;
   const workDuration = endTime - startTime
-  let receipt = await registerStart(sgaWan, smgID1, workStart, workDuration, workDuration, preSmgID);
+  let receipt = await registerStart(sgaWanMy, smgID1, workStart, workDuration, workDuration, preSmgID);
   console.log(JSON.stringify(receipt));
 
-  receipt = await registerStart(sgaWan, smgID2, workStart, workDuration, workDuration, preSmgID);
+  receipt = await registerStart(sgaWanMy, smgID2, workStart, workDuration, workDuration, preSmgID);
   console.log(JSON.stringify(receipt));
 }
 
 
 async function addToken(tm, token) {
   let receipt = await tm.addToken(token.name, token.symbol, token.decimals);
-  // console.log(JSON.stringify(receipt.logs[0].));
+  
   if (receipt.status) {
     const event = tm.contract.events[receipt.logs[0].topics[0]]();
     const logObj = event._formatOutput(receipt.logs[0]);
@@ -182,7 +172,8 @@ async function addToken(tm, token) {
 }
 
 async function addTokenPair(tm, tokenPair) {
-  let receipt = await tm.addTokenPair(tokenPair.id, tokenPair.aInfo, tokenPair.fromChainID, tokenPair.fromAccount, tokenPair.toChainID, tokenPair.tokenAddress);
+  const toAccount = web3.utils.hexToBytes(tokenPair.tokenAddress);
+  let receipt = await tm.addTokenPair(tokenPair.id, tokenPair.aInfo, tokenPair.fromChainID, tokenPair.fromAccount, tokenPair.toChainID, toAccount);
 
   if (receipt.status) {
     const event = tm.contract.events[receipt.logs[0].topics[0]]();
@@ -192,7 +183,8 @@ async function addTokenPair(tm, tokenPair) {
 }
 
 async function updateTokenPair(tm, tokenPair) {
-  let receipt = await tm.updateTokenPair(tokenPair.id, tokenPair.aInfo, tokenPair.fromChainID, tokenPair.fromAccount, tokenPair.toChainID, tokenPair.tokenAddress, true);
+  const toAccount = web3.utils.hexToBytes(tokenPair.tokenAddress);
+  let receipt = await tm.updateTokenPair(tokenPair.id, tokenPair.aInfo, tokenPair.fromChainID, tokenPair.fromAccount, tokenPair.toChainID, toAccount);
 
   if (receipt.status) {
     const event = tm.contract.events[receipt.logs[0].topics[0]]();
@@ -201,8 +193,8 @@ async function updateTokenPair(tm, tokenPair) {
   }
 }
 
-async function deployTokenPairOrUpdate() {
-  const tokenPairs = require('../db/tokenPair.js');
+async function deployTokenPairOrUpdateMy() {
+  const tokenPairs = require('../db/tokenPairMy.js');
   const tokenPairsKeys = Object.keys(tokenPairs);
   for (let i = 0; i < tokenPairsKeys.length; i++) {
     const pairInfo = tokenPairs[tokenPairsKeys[i]];
@@ -214,14 +206,14 @@ async function deployTokenPairOrUpdate() {
     }
 
     const info = await tms[pairInfo.mapChain].getTokenPairInfo(pairInfo.pair.id);
-    if (info && info.tokenAddress !== '0x0000000000000000000000000000000000000000') {
+    if (info && info.toAccount && web3.utils.bytesToHex(info.toAccount) !== '0x0000000000000000000000000000000000000000') {
       await updateTokenPair(tms[pairInfo.mapChain], pairInfo.pair);
     } else {
       await addTokenPair(tms[pairInfo.mapChain], pairInfo.pair);
     }
 
     const info2 = await tms[pairInfo.originChain].getTokenPairInfo(pairInfo.pair.id);
-    if (info2 && info2.tokenAddress !== '0x0000000000000000000000000000000000000000') {
+    if (info2 && info2.toAccount && web3.utils.bytesToHex(info2.toAccount) !== '0x0000000000000000000000000000000000000000') {
       await updateTokenPair(tms[pairInfo.originChain], pairInfo.pair);
     } else {
       await addTokenPair(tms[pairInfo.originChain], pairInfo.pair);
@@ -229,7 +221,7 @@ async function deployTokenPairOrUpdate() {
 
     if(pairInfo.originChain !== 'WAN' && pairInfo.mapChain !== 'WAN') {
       const info3 = await tms['WAN'].getTokenPairInfo(pairInfo.pair.id);
-      if (info3 && info3.tokenAddress !== '0x0000000000000000000000000000000000000000') {
+      if (info3 && info3.toAccount && web3.utils.bytesToHex(info3.tokenAddress) !== '0x0000000000000000000000000000000000000000') {
         await updateTokenPair(tms['WAN'], pairInfo.pair);
       } else {
         await addTokenPair(tms['WAN'], pairInfo.pair);
@@ -237,32 +229,22 @@ async function deployTokenPairOrUpdate() {
     }
   }
 
-  fs.writeFileSync(path.resolve(__dirname, '../db/tokenPair_deployed.json'), JSON.stringify(tokenPairs, null, 2), 'utf-8');
+  fs.writeFileSync(path.resolve(__dirname, '../db/tokenPairMy_deployed.json'), JSON.stringify(tokenPairs, null, 2), 'utf-8');
 }
 
 setTimeout( async () => {
-  await mint("0x5793e629c061e7fd642ab6a1b4d552cec0e2d606", 1);
-  // await changeOwner();
-  // await upgradeTo();
-  // await deployTokenPairOrUpdate();
-  // const wlinkAddress = await addToken(tmWan, tokenInfoWan[0]);
+  // await mintMy("0x5793e629c061e7fd642ab6a1b4d552cec0e2d606", 1);
+  // await changeOwnerMy();
+  // await upgradeToMy();
 
-  // await addToken(tmWan, tokenInfoWan[1]);
-  // await addToken(tmEth, tokenInfoEth[0]);
-  // await addToken(tmEth, tokenInfoEth[1]);
+  await unlockAccountMy();
+  await deployTokenPairOrUpdateMy();
+  await myRegisterStart();
+  await mySetStoremanGroupConfig();
+  await myGetStoremanGroupConfig();
 
-  // await unlockAccount();
-  // await myRegisterStart();
-  // await mySetStoremanGroupConfig();
-  // await myGetStoremanGroupConfig();
-
-  // await chainWan.core.closeEngine();
+  // await chainWanMy.core.closeEngine();
   // await chainEth.core.closeEngine();
-
-  // await tmWan.getTokenPairInfo(1);
-  // await tmWan.getTokenPairs();
-
-  // await getBalance();
 }, 0);
 
 process.on('unhandledRejection', (err) => {

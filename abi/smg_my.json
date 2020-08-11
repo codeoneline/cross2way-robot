@@ -1,16 +1,65 @@
 [
   {
     "constant": true,
+    "inputs": [],
+    "name": "total",
+    "outputs": [
+      {
+        "name": "",
+        "type": "int256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
     "inputs": [
       {
         "name": "",
         "type": "bytes32"
       }
     ],
-    "name": "mapStoremanGroupConfig",
+    "name": "mapFee",
     "outputs": [
       {
-        "name": "deposit",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "name": "mapConfig",
+    "outputs": [
+      {
+        "name": "status",
+        "type": "uint8"
+      },
+      {
+        "name": "chain1",
+        "type": "uint256"
+      },
+      {
+        "name": "chain2",
+        "type": "uint256"
+      },
+      {
+        "name": "curve1",
+        "type": "uint256"
+      },
+      {
+        "name": "curve2",
         "type": "uint256"
       },
       {
@@ -28,64 +77,10 @@
       {
         "name": "endTime",
         "type": "uint256"
-      },
-      {
-        "name": "status",
-        "type": "uint8"
-      },
-      {
-        "name": "isDebtClean",
-        "type": "bool"
       }
     ],
     "payable": false,
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [],
-    "name": "renounceOwnership",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [],
-    "name": "acceptOwnership",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "owner",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "changeOwner",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -96,7 +91,7 @@
         "type": "bytes32"
       }
     ],
-    "name": "mapPrices",
+    "name": "mapDeposit",
     "outputs": [
       {
         "name": "",
@@ -109,22 +104,13 @@
   },
   {
     "constant": true,
-    "inputs": [],
-    "name": "newOwner",
-    "outputs": [
+    "inputs": [
       {
         "name": "",
-        "type": "address"
+        "type": "uint256"
       }
     ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "admin",
+    "name": "oldAddr",
     "outputs": [
       {
         "name": "",
@@ -139,29 +125,32 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
-        "name": "addr",
-        "type": "address"
-      }
-    ],
-    "name": "SetAdmin",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "name": "keys",
-        "type": "bytes32[]"
+        "indexed": true,
+        "name": "groupId",
+        "type": "bytes32"
       },
       {
         "indexed": false,
-        "name": "prices",
-        "type": "uint256[]"
+        "name": "workStart",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "workDuration",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "registerDuration",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "name": "preGroupId",
+        "type": "bytes32"
       }
     ],
-    "name": "UpdatePrice",
+    "name": "StoremanGroupRegisterStartEvent",
     "type": "event"
   },
   {
@@ -169,34 +158,86 @@
     "inputs": [
       {
         "indexed": true,
-        "name": "id",
+        "name": "groupId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "StoremanGroupUnregisterEvent",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "name": "tokenOrigAccount",
+        "type": "bytes"
+      },
+      {
+        "indexed": false,
+        "name": "storemanGroup",
+        "type": "bytes"
+      },
+      {
+        "indexed": false,
+        "name": "dismissTime",
+        "type": "uint256"
+      }
+    ],
+    "name": "StoremanGroupDismissedLogger",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "groupId",
+        "type": "bytes32"
+      },
+      {
+        "indexed": true,
+        "name": "preGroupId",
         "type": "bytes32"
       },
       {
         "indexed": false,
-        "name": "isDebtClean",
-        "type": "bool"
+        "name": "wkAddrs",
+        "type": "address[]"
       }
     ],
-    "name": "SetDebtClean",
+    "name": "storemanTransferEvent",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "storemanGroupContributeEvent",
     "type": "event"
   },
   {
     "constant": false,
     "inputs": [
       {
-        "name": "keys",
-        "type": "bytes32[]"
-      },
-      {
-        "name": "prices",
-        "type": "uint256[]"
+        "name": "smgID",
+        "type": "bytes32"
       }
     ],
-    "name": "updatePrice",
+    "name": "smgTransfer",
     "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
+    "payable": true,
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -211,7 +252,7 @@
         "type": "uint256"
       }
     ],
-    "name": "updateDeposit",
+    "name": "addDeposit",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
@@ -221,25 +262,7 @@
     "constant": false,
     "inputs": [
       {
-        "name": "id",
-        "type": "bytes32"
-      },
-      {
-        "name": "status",
-        "type": "uint8"
-      }
-    ],
-    "name": "setStoremanGroupStatus",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "id",
+        "name": "groupId",
         "type": "bytes32"
       },
       {
@@ -279,95 +302,6 @@
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "storemanGroupId",
-        "type": "bytes32"
-      },
-      {
-        "name": "isClean",
-        "type": "bool"
-      }
-    ],
-    "name": "setDebtClean",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "addr",
-        "type": "address"
-      }
-    ],
-    "name": "setAdmin",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "key",
-        "type": "bytes32"
-      }
-    ],
-    "name": "getValue",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "keys",
-        "type": "bytes32[]"
-      }
-    ],
-    "name": "getValues",
-    "outputs": [
-      {
-        "name": "values",
-        "type": "uint256[]"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "smgID",
-        "type": "bytes32"
-      }
-    ],
-    "name": "getDeposit",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -430,22 +364,78 @@
     "type": "function"
   },
   {
-    "constant": true,
+    "constant": false,
     "inputs": [
       {
-        "name": "storemanGroupId",
+        "name": "groupId",
+        "type": "bytes32"
+      },
+      {
+        "name": "workStart",
+        "type": "uint256"
+      },
+      {
+        "name": "workDuration",
+        "type": "uint256"
+      },
+      {
+        "name": "registerDuration",
+        "type": "uint256"
+      },
+      {
+        "name": "preGroupId",
         "type": "bytes32"
       }
     ],
-    "name": "isDebtClean",
-    "outputs": [
+    "name": "registerStart",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
       {
-        "name": "",
-        "type": "bool"
+        "name": "groupId",
+        "type": "bytes32"
       }
     ],
+    "name": "storemanGroupUnregister",
+    "outputs": [],
     "payable": false,
-    "stateMutability": "view",
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "tokenOrigAccount",
+        "type": "bytes"
+      },
+      {
+        "name": "storemanGroup",
+        "type": "bytes"
+      },
+      {
+        "name": "groupId",
+        "type": "bytes32"
+      }
+    ],
+    "name": "storemanGroupDismiss",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [],
+    "name": "contribute",
+    "outputs": [],
+    "payable": true,
+    "stateMutability": "payable",
     "type": "function"
   }
 ]

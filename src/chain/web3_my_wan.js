@@ -26,7 +26,7 @@ class WanChain extends Web3Chain {
   }
 }
 
-const wanChain = new WanChain(process.env.RPC_URL);
+const wanChain = new WanChain(process.env.RPC_URL_MY);
 
 module.exports = {
   core: wanChain,

@@ -4,8 +4,8 @@ const { sleep } = require('../lib/utils');
 class Contract {
   constructor(chain, abi, contractAddress, ownerPrivateKey, ownerPrivateAddress) {
     this.address = contractAddress.toLowerCase();
-    this.pv_key = ownerPrivateKey.toLowerCase();
-    this.pv_address = ownerPrivateAddress.toLowerCase();
+    this.pv_key = ownerPrivateKey ? ownerPrivateKey.toLowerCase() : ownerPrivateKey;
+    this.pv_address = ownerPrivateAddress ? ownerPrivateAddress.toLowerCase() : ownerPrivateAddress;
     this.price_decimal = parseInt(process.env.PRICE_DECIMAL);
     this.abi = abi;
 
@@ -46,12 +46,14 @@ class Contract {
   }
 
   async doOperator(opName, data, gasLimit, value, count, privateKey, pkAddress) {
-    log.debug(`do operator: ${opName}`);
+    log.debug(`${this.core.chainType} do operator: ${opName}`);
     const nonce = await this.core.getTxCount(pkAddress);
+
     const gas = gasLimit ? gasLimit : await this.core.estimateGas(pkAddress, this.address, value, data) + 200000;
     const rawTx = this.signTx(gas, nonce, data, privateKey, value, this.address);
     const txHash = await this.core.sendRawTxByWeb3(rawTx);
-    log.info(`${opName} hash: ${txHash}`);
+
+    log.info(`${this.core.chainType} ${opName} hash: ${txHash}`);
     let receipt = null;
     let tryTimes = 0;
     do {
@@ -65,7 +67,7 @@ class Contract {
         throw new Error(content);
     }
 
-    log.debug(`${opName} receipt: ${JSON.stringify(receipt)}`);
+    log.debug(`${this.core.chainType} ${opName} receipt: ${JSON.stringify(receipt)}`);
     return  { status: receipt.status, logs: receipt.logs};
   }
 }

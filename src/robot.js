@@ -151,12 +151,12 @@ const robotSchedules = ()=>{
 
   // sync sga to sga database
   schedule.scheduleJob('20 * * * * *', () => {
-    scanEvent(sgaWan, 'StoremanGroupRegisterStartEvent');
+    scanEvent(sgaWan, 'StoremanGroupRegisterStartEvent', 'wan');
   });
 
   // sync sga config from wan to other chain, sga database
-  schedule.scheduleJob('30 * * * * *', () => {
-    syncConfigToOtherChain();
+  schedule.scheduleJob('30 * * * * *', async () => {
+    await syncConfigToOtherChain();
   });
 };
 

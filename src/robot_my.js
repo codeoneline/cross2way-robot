@@ -7,21 +7,17 @@ const logAndSendMail = require('./lib/email');
 const scanEvent = require('./scan_event');
 const db = require('./lib/sqlite_db');
 const Oracle = require('./contract/oracle');
-const StoremanGroupAdmin = require('./contract/storeman_group_admin');
+const StoremanGroupAdminMy = require('./contract/storeman_group_admin_my');
 
-const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
+const chainWanMy = require(`./chain/${process.env.MY_WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
 const chainEtc = require(`./chain/${process.env.ETC_CHAIN_ENGINE}`);
 
-const oracleWan = new Oracle(chainWan, process.env.ORACLE_ADDRESS, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);
+const oracleWanMy = new Oracle(chainWanMy, process.env.ORACLE_ADDRESS_MY, process.env.SK_MY, process.env.ADDRESS_MY);
 const oracleEth = new Oracle(chainEth, process.env.ORACLE_ADDRESS_ETH, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);
 const oracleEtc = new Oracle(chainEtc, process.env.ORACLE_ADDRESS_ETC, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);
 
-const sgaWan = new StoremanGroupAdmin(chainWan, process.env.STOREMANGROUPADMIN_ADDRESS, process.env.STOREMANGROUPADMIN_OWNER_PV_KEY, process.env.STOREMANGROUPADMIN_OWNER_PV_ADDRESS);
-
-const StoremanGroupAdmin_os = require('./contract/storeman_group_admin_os');
-const chainWan_os = chainWan.createWanChain(process.env.RPC_URL_WAN);
-const sgaWan_os = new StoremanGroupAdmin_os(chainWan_os, process.env.SMGA_ADDRESS_WAN, process.env.SMGA_OWNER_PV_KEY_WAN, process.env.SMGA_OWNER_PV_ADDRESS_WAN);
+const sgaWanMy = new StoremanGroupAdminMy(chainWanMy, process.env.SMGA_ADDRESS_MY, process.env.SK_MY, process.env.ADDRESS_MY);
 
 async function doSchedule(func, args, tryTimes = process.env.SCHEDULE_RETRY_TIMES) {
   log.info(`${func.name} begin`);
@@ -93,81 +89,52 @@ async function syncConfigToOtherChain() {
   for (let i = 0; i<sgs.length; i++) {
     const sg = sgs[i];
     const groupId = sg.groupId;
-    const config = await sgaWan_os.getStoremanGroupConfig(groupId);
+    const config = await sgaWanMy.getStoremanGroupConfig(groupId);
     if (config) {
       if ((sg.status !== parseInt(config.status)) ||
         (sg.deposit !== config.deposit)
       ) {
         const c = JSON.parse(JSON.stringify(config));
         c.updateTime = updateTime;
-        db.updateSga(c);
+        db.updateSgaMy(c);
       }
       if (!config.gpk1 || !config.gpk2) {
         continue;
       }
-      const oracles = [sgaWan, oracleWan, oracleEth, oracleEtc];
-      for(i = 0; i<oracles.length; i++) {
-        const oracle = oracles[i];
+      const oracles = [oracleEth, oracleEtc];
+      for(let j = 0; j<oracles.length; j++) {
+        const oracle = oracles[j];
         const config_eth = await oracle.getStoremanGroupConfig(groupId);
-        
-        // chain1 -> chain2
-        if (oracle !== sgaWan && oracle !== oracleWan) {
-          if (!config_eth ||
-            (config.groupId !== config_eth.groupId) ||
-            (config.status !== config_eth.status) ||
-            (config.deposit !== config_eth.deposit) ||
-            (config.chain1 !== config_eth.chain2) ||
-            (config.chain2 !== config_eth.chain1) ||
-            (config.curve1 !== config_eth.curve2) ||
-            (config.curve2 !== config_eth.curve1) ||
-            (config.gpk1 !== config_eth.gpk2) ||
-            (config.gpk2 !== config_eth.gpk1) ||
-            (config.startTime !== config_eth.startTime) ||
-            (config.endTime !== config_eth.endTime)
-          ) {
-            await oracle.setStoremanGroupConfig(
-              groupId,
-              config.status,
-              config.deposit,
-              [config.chain2, config.chain1],
-              [config.curve2, config.curve1],
-              config.gpk2,
-              config.gpk1,
-              config.startTime,
-              config.endTime,
-            );
-          }
-        } else {
-          if (!config_eth ||
-            (config.groupId !== config_eth.groupId) ||
-            (config.status !== config_eth.status) ||
-            (config.deposit !== config_eth.deposit) ||
-            (config.chain1 !== config_eth.chain1) ||
-            (config.chain2 !== config_eth.chain2) ||
-            (config.curve1 !== config_eth.curve1) ||
-            (config.curve2 !== config_eth.curve2) ||
-            (config.gpk1 !== config_eth.gpk1) ||
-            (config.gpk2 !== config_eth.gpk2) ||
-            (config.startTime !== config_eth.startTime) ||
-            (config.endTime !== config_eth.endTime)
-          ) {
-            await oracle.setStoremanGroupConfig(
-              groupId,
-              config.status,
-              config.deposit,
-              [config.chain1, config.chain2],
-              [config.curve1, config.curve2],
-              config.gpk1,
-              config.gpk2,
-              config.startTime,
-              config.endTime,
-            );
-          }
+        if (!config_eth ||
+          (config.groupId !== config_eth.groupId) ||
+          (config.status !== config_eth.status) ||
+          (config.deposit !== config_eth.deposit) ||
+          (config.chain1 !== config_eth.chain2) ||
+          (config.chain2 !== config_eth.chain1) ||
+          (config.curve1 !== config_eth.curve2) ||
+          (config.curve2 !== config_eth.curve1) ||
+          (config.gpk1 !== config_eth.gpk2) ||
+          (config.gpk2 !== config_eth.gpk1) ||
+          (config.startTime !== config_eth.startTime) ||
+          (config.endTime !== config_eth.endTime)
+        ) {
+          // chain1 -> chain2
+          await oracle.setStoremanGroupConfig(
+            groupId,
+            config.status,
+            config.deposit,
+            [config.chain2, config.chain1],
+            [config.curve2, config.curve1],
+            config.gpk2,
+            config.gpk1,
+            config.startTime,
+            config.endTime,
+          );
         }
       }
     }
   }
-  log.info(`syncConfigToOtherChain end`);
+  log.info(`my syncConfigToOtherChain end`);
 }
 
 const robotSchedules = ()=>{
@@ -177,19 +144,19 @@ const robotSchedules = ()=>{
     
     log.info(`prices: ${JSON.stringify(pricesMap)}`);
 
-    await updatePrice(oracleWan, pricesMap);
+    await updatePrice(oracleWanMy, pricesMap);
     await updatePrice(oracleEth, pricesMap);
     await updatePrice(oracleEtc, pricesMap);
   });
 
   // sync sga to sga database
   schedule.scheduleJob('20 * * * * *', () => {
-    scanEvent(sgaWan_os, 'StoremanGroupRegisterStartEvent');
+    scanEvent(sgaWanMy, 'StoremanGroupRegisterStartEvent', 'my wan');
   });
 
   // sync sga config from wan to other chain, sga database
-  schedule.scheduleJob('30 * * * * *', () => {
-    syncConfigToOtherChain();
+  schedule.scheduleJob('30 * * * * *', async () => {
+    await syncConfigToOtherChain();
   });
 };
 
@@ -212,7 +179,7 @@ setTimeout(async () => {
   // await scanEvent(sgaWan, 'registerStartEvent');
   // syncConfigToOtherChain();
 
-  await scanEvent(sgaWan_os, 'StoremanGroupRegisterStartEvent');
+  await scanEvent(sgaWanMy, 'StoremanGroupRegisterStartEvent', 'my wan');
   syncConfigToOtherChain();
 
 }, 0);
