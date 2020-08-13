@@ -5,6 +5,9 @@ const TokenManagerProxy = require('./contract/token_manager_proxy');
 const StoremanGroupAdminMy = require('./contract/storeman_group_admin_my');
 const MapToken = require('./contract/map_token');
 
+const {changeOwner, upgradeTo, mint, unlockAccount, getBalance,
+  addToken, addTokenPair, updateTokenPair, deployTokenPairOrUpdate} = require('./admin_core');
+
 const { web3 } = require('./lib/utils');
 const fs = require('fs');
 const path = require('path');
@@ -24,7 +27,7 @@ const oracleWanMy = new Oracle(chainWanMy, process.env.ORACLE_ADDRESS_MY, proces
 const fnxWanMy = new MapToken(chainWanMy, process.env.FNX_ADDRESS_MY, process.env.SK_MY, process.env.ADDRESS_MY);
 const linkEth = new MapToken(chainEth, process.env.LINK_ETH_ADDRESS, process.env.LINK_ETH_OWNER_PV_KEY, process.env.LINK_ETH_OWNER_PV_ADDRESS);
 const eosWanMy = new MapToken(chainWanMy, "0xDDcd518E6bD473A129c31Ba4a2EC699843F10567", process.env.SK_MY, process.env.ADDRESS_MY);
-const btcEthMy = new MapToken(chainWanMy, "0x3Dd2c6BE473943d7fB9072e43Edf9c6cfd09d81f", process.env.SK_MY, process.env.ADDRESS_MY);
+const btcWanMy = new MapToken(chainWanMy, "0x3Dd2c6BE473943d7fB9072e43Edf9c6cfd09d81f", process.env.SK_MY, process.env.ADDRESS_MY);
 
 const tms = {
   "WAN": tmWanMy,
@@ -32,56 +35,14 @@ const tms = {
   "ETC": tmEtc
 }
 
-async function setStoremanGroupConfig(sga, id, status, deposit, chain, curve, gpk1, gpk2, startTime, endTime) {
-  log.info(`setStoremanGroupConfig`);
-  await sga.setStoremanGroupConfig(id, status, deposit, chain, curve, gpk1, gpk2, startTime, endTime);
-}
-
-async function registerStart(sga, id, workStart, workDuration, registerDuration,  preGroupId) {
-  log.info(`registerStart`);
-  await sga.registerStart(id, workStart, workDuration, registerDuration, preGroupId);
-}
-
-// TODO: check map token owner == proxy
-
-const old_owner_addr = "0x2d0e7c0813a51d3bd1d08246af2a8a7a57d8922e";
-const old_owner_sk = "a4369e77024c2ade4994a9345af5c47598c7cfb36c65e8a4a3117519883d9014";
-const new_owner_addr = "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8";
-const new_owner_sk = "b6a03207128827eaae0d31d97a7a6243de31f2baf99eabd764e33389ecf436fc";
-// TODO: should change proxy owner!
-async function changeOwnerMy() {
-  await tmWanMy.changeOwner(old_owner_addr, old_owner_sk, new_owner_addr, new_owner_sk);
-  await oracleWanMy.changeOwner(old_owner_addr, old_owner_sk, new_owner_addr, new_owner_sk);
-  // await fnxWan.changeOwner(old_owner_addr, old_owner_sk, new_owner_addr, new_owner_sk);
-}
-
-async function upgradeToMy() {
+async function upgradeMyOracle() {
   const oracleProxyWan = new OracleProxy(chainWanMy, process.env.ORACLE_ADDRESS_MY, process.env.SK_MY, process.env.ADDRESS_MY);
-  await oracleProxyWan.upgradeTo(process.env.ORACLE_ADDRESS_MY_UP);
-
-  // const tmProxyWan = new TokenManagerProxy(chainWan, process.env.TM_ADDRESS_MY, process.env.SK_MY, process.env.ADDRESS_MY);
-  // await tmProxyWan.upgradeTo(process.env.TM_ADDRESS_MY_UP);
+  await upgradeTo(oracleProxyWan, process.env.ORACLE_ADDRESS_MY_UP);
 }
 
-// fnx link mint
-async function mintMy(addr, addr2, a) {
-  const amount = '0x' + web3.utils.toWei(web3.utils.toBN(a)).toString('hex');
-  await fnxWanMy.mint(addr, amount);
-  await linkEth.mint(addr2, amount);
-  await eosWanMy.mint(addr, amount);
-  await btcEthMy.mint(addr, amount);
-}
-
-async function unlockAccountMy() {
-  let result = false;
-  result = await chainWanMy.core.unlockAccount("0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8", "wanglu", 36000);
-  console.log(result);
-
-  result = await chainEth.core.unlockAccount("0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8", "wanglu", 36000);
-  console.log(result);
-
-  result = await chainEtc.core.unlockAccount("0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8", "wanglu", 36000);
-  console.log(result);
+async function upgradeMyTokenManager() {
+  const tmProxyWan = new TokenManagerProxy(chainWanMy, process.env.TM_ADDRESS_MY, process.env.SK_MY, process.env.ADDRESS_MY);
+  await upgradeTo(tmProxyWan, process.env.TM_ADDRESS_MY_UP);
 }
 
 async function getBalanceMy() {
@@ -122,18 +83,28 @@ async function getBalanceMy() {
 // #   PK1: 0x0e2c43272ccd977d0dc562a0a790d5c2ca788a6868a74170caed4ba92ff1e86713fa694404bcf8d5ad86fd8c432afe5f49d1c043d33c03857b2fe0c2e98e7556
 // #   PK2: 0x3ef6c41fb253f3db7900726016f0a0ba0e694cd587b17f174a9c1dc7ea2b3d1de5503a1ae2db27019a4e639bd26734084c4859b8aa746c1ab5774429a33b2e4b
 
-// storeMan: wan <-> eth
+
+async function setStoremanGroupConfig(sga, id, status, deposit, chain, curve, gpk1, gpk2, startTime, endTime) {
+  log.info(`setStoremanGroupConfig`);
+  await sga.setStoremanGroupConfig(id, status, deposit, chain, curve, gpk1, gpk2, startTime, endTime);
+}
+
+async function registerStart(sga, id, workStart, workDuration, registerDuration,  preGroupId) {
+  log.info(`registerStart`);
+  await sga.registerStart(id, workStart, workDuration, registerDuration, preGroupId);
+}
+
 const preSmgID = web3.utils.padRight("0x", 64);
 const smgID1 = web3.utils.padRight("0x", 64, '1');
 const smgID2 = web3.utils.padRight("0x", 64, '2');
-const gpk1_1 = "0x0038c8e52318773522675cd2f3536b105c556ff788281d3439b6c048c05c9dfe1f807d0617f926f0c11a4d2e785ac2f0c48dc50b687a3918cf860aef303bae87";
-const gpk1_2 = "0x023f808ae2bfb8dfbd103d29e28b592e0f3099893538ff25e8544a93cd7f4f9f10d9b6594d5cba8b9bc4d1c0f6bf0103956cfd531af147e019edbd0a5ff7a8a9";
-const gpk2_1 = "0x160f229847d78952799aa2c665dae79436c59f0b49fee402bbdda64e7d8732a907b96d0d2c7e4aeb6e14688160ab01ba4a7b412e62d93490ce4684365ef68b6e";
-const gpk2_2 = "0x0afde15d88d8ee300cc340ddf12e0cef80672b527b5ade16155e3da4ee84576c255c4c4c10c0ab7945c37ad61d92539a9ee5835c511279d06462cf503e4cd852";
-const startTime = 1595234554;
-const endTime = 2595234554;
-// enum GroupStatus {none, initial, curveSeted, failed, selected, ready, unregistered, dismissed}
 async function mySetStoremanGroupConfig() {
+  // enum GroupStatus {none, initial, curveSeted, failed, selected, ready, unregistered, dismissed}
+  const gpk1_1 = "0x0038c8e52318773522675cd2f3536b105c556ff788281d3439b6c048c05c9dfe1f807d0617f926f0c11a4d2e785ac2f0c48dc50b687a3918cf860aef303bae87";
+  const gpk1_2 = "0x023f808ae2bfb8dfbd103d29e28b592e0f3099893538ff25e8544a93cd7f4f9f10d9b6594d5cba8b9bc4d1c0f6bf0103956cfd531af147e019edbd0a5ff7a8a9";
+  const gpk2_1 = "0x160f229847d78952799aa2c665dae79436c59f0b49fee402bbdda64e7d8732a907b96d0d2c7e4aeb6e14688160ab01ba4a7b412e62d93490ce4684365ef68b6e";
+  const gpk2_2 = "0x0afde15d88d8ee300cc340ddf12e0cef80672b527b5ade16155e3da4ee84576c255c4c4c10c0ab7945c37ad61d92539a9ee5835c511279d06462cf503e4cd852";
+  const startTime = 1595234554;
+  const endTime = 2595234554;
   const deposit1 = '0x' + web3.utils.toWei("10000000").toString('hex');
   let receipt = await setStoremanGroupConfig(sgaWanMy, smgID1, 5, deposit1, [0x8057414e, 2147483708], [1, 1], gpk1_1, gpk1_2, startTime, endTime);
   console.log(JSON.stringify(receipt));
@@ -234,18 +205,29 @@ async function deployTokenPairOrUpdateMy() {
 }
 
 setTimeout( async () => {
-  // await mintMy("0x67e3b428acbc3aa2fd38813f65dafbd5af97c6d5", "0xded23dd19136574fce6b4ab4ea76395c4088a033", 10000000);
-  // await changeOwnerMy();
-  // await upgradeToMy();
+  // const old_owner_addr = "0x2d0e7c0813a51d3bd1d08246af2a8a7a57d8922e";
+  // const old_owner_sk = "a4369e77024c2ade4994a9345af5c47598c7cfb36c65e8a4a3117519883d9014";
+  // const new_owner_addr = "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8";
+  // const new_owner_sk = "b6a03207128827eaae0d31d97a7a6243de31f2baf99eabd764e33389ecf436fc";
+  // await changeOwner([tmWanMy, oracleWanMy], old_owner_addr, old_owner_sk, new_owner_addr, new_owner_sk);
 
-  await unlockAccountMy();
-  await deployTokenPairOrUpdateMy();
-  await myRegisterStart();
-  await mySetStoremanGroupConfig();
-  await myGetStoremanGroupConfig();
+  // await mint([fnxWanMy, linkEth, eosWanMy, btcWanMy], "0x67e3b428acbc3aa2fd38813f65dafbd5af97c6d5", 10000000);
+
+  // await upgradeMyOracle();
+  // await upgradeMyTokenManager();
+
+  // await unlockAccount([chainWanMy, chainEth, chainEtc], "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8", "wanglu", 36000);
+
+  // await getBalance([chainWanMy, chainEth, chainEtc], "0x2d0e7c0813a51d3bd1d08246af2a8a7a57d8922e");
+
+  // await myRegisterStart();
+  // await mySetStoremanGroupConfig();
+  // await myGetStoremanGroupConfig();
 
   // await chainWanMy.core.closeEngine();
   // await chainEth.core.closeEngine();
+
+  // await deployTokenPairOrUpdate('../db/tokenPairMy.js', path.resolve(__dirname, '../db/tokenPairMy_deployed.json'), tms);
 }, 0);
 
 process.on('unhandledRejection', (err) => {

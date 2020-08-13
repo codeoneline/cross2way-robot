@@ -22,7 +22,7 @@ async function mint(contracts, addr, a) {
 async function unlockAccount(chains, address, password, time) {
   for(let i=0; i<chains.length; i++) {
     const result = await chains[i].core.unlockAccount(address, password, time);
-    console.log(`${chain.chainType} unlockAccount=${result}`);
+    console.log(`${chains[i].core.chainType} unlockAccount=${result}`);
   }
 }
 
@@ -30,7 +30,7 @@ async function unlockAccount(chains, address, password, time) {
 async function getBalance(chains, address) {
   for(let i=0; i<chains.length; i++) {
     const result = await chains[i].core.getBalance(address);
-    console.log(`${chain.chainType} balance=${result}`);
+    console.log(`${chains[i].core.chainType} balance=${result}`);
   }
 }
 
