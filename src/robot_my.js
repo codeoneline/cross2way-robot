@@ -176,7 +176,7 @@ setTimeout(async () => {
     
   // log.info(`prices: ${JSON.stringify(pricesMap)}`);
 
-  // await updatePrice(oracleWan, pricesMap);
+  // await updatePrice(oracleWanMy, pricesMap);
   // await updatePrice(oracleEth, pricesMap);
   // await updatePrice(oracleEtc, pricesMap);
 
@@ -188,7 +188,7 @@ setTimeout(async () => {
   // await scanEvent(sgaWan, 'registerStartEvent');
   // syncConfigToOtherChain();
 
-  scanInst.scanEvent();
+  // scanInst.scanEvent();
   // syncConfigToOtherChain();
 
 }, 0);

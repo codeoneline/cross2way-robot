@@ -1,13 +1,11 @@
-////////////////////////////////////////////////////////////////////////////////
-// normal init
-const log = require('./lib/log');
 const Oracle = require('./contract/oracle');
 const TokenManager = require('./contract/token_manager');
 const OracleProxy = require('./contract/oracle_proxy');
 const TokenManagerProxy = require('./contract/token_manager_proxy');
 const StoremanGroupAdminMy = require('./contract/storeman_group_admin_my');
 const MapToken = require('./contract/map_token');
-const { web3, sleep } = require('./lib/utils');
+
+const { web3 } = require('./lib/utils');
 const fs = require('fs');
 const path = require('path');
 
@@ -27,7 +25,6 @@ const fnxWanMy = new MapToken(chainWanMy, process.env.FNX_ADDRESS_MY, process.en
 const linkEth = new MapToken(chainEth, process.env.LINK_ETH_ADDRESS, process.env.LINK_ETH_OWNER_PV_KEY, process.env.LINK_ETH_OWNER_PV_ADDRESS);
 const eosWanMy = new MapToken(chainWanMy, "0xDDcd518E6bD473A129c31Ba4a2EC699843F10567", process.env.SK_MY, process.env.ADDRESS_MY);
 const btcEthMy = new MapToken(chainWanMy, "0x3Dd2c6BE473943d7fB9072e43Edf9c6cfd09d81f", process.env.SK_MY, process.env.ADDRESS_MY);
-
 
 const tms = {
   "WAN": tmWanMy,
