@@ -173,28 +173,28 @@ async function deployTokenPairOrUpdate() {
       const addTokenEvent = await addToken(tms[pairInfo.mapChain], pairInfo.mapToken);
       pairInfo.pair.tokenAddress = addTokenEvent.tokenAddress;
       console.log(`tokenAddress = ${addTokenEvent.tokenAddress}`)
+    }
 
-      const info = await tms[pairInfo.mapChain].getTokenPairInfo(pairInfo.pair.id);
-      if (info && info.tokenAddress !== '0x0000000000000000000000000000000000000000') {
-        await updateTokenPair(tms[pairInfo.mapChain], pairInfo.pair);
+    const info = await tms[pairInfo.mapChain].getTokenPairInfo(pairInfo.pair.id);
+    if (info && info.tokenAddress !== '0x0000000000000000000000000000000000000000') {
+      await updateTokenPair(tms[pairInfo.mapChain], pairInfo.pair);
+    } else {
+      await addTokenPair(tms[pairInfo.mapChain], pairInfo.pair);
+    }
+
+    const info2 = await tms[pairInfo.originChain].getTokenPairInfo(pairInfo.pair.id);
+    if (info2 && info2.tokenAddress !== '0x0000000000000000000000000000000000000000') {
+      await updateTokenPair(tms[pairInfo.originChain], pairInfo.pair);
+    } else {
+      await addTokenPair(tms[pairInfo.originChain], pairInfo.pair);
+    }
+
+    if(pairInfo.originChain !== 'WAN' && pairInfo.mapChain !== 'WAN') {
+      const info3 = await tms['WAN'].getTokenPairInfo(pairInfo.pair.id);
+      if (info3 && info3.tokenAddress !== '0x0000000000000000000000000000000000000000') {
+        await updateTokenPair(tms['WAN'], pairInfo.pair);
       } else {
-        await addTokenPair(tms[pairInfo.mapChain], pairInfo.pair);
-      }
-
-      const info2 = await tms[pairInfo.originChain].getTokenPairInfo(pairInfo.pair.id);
-      if (info2 && info2.tokenAddress !== '0x0000000000000000000000000000000000000000') {
-        await updateTokenPair(tms[pairInfo.originChain], pairInfo.pair);
-      } else {
-        await addTokenPair(tms[pairInfo.originChain], pairInfo.pair);
-      }
-
-      if(pairInfo.originChain !== 'WAN' && pairInfo.mapChain !== 'WAN') {
-        const info3 = await tms['WAN'].getTokenPairInfo(pairInfo.pair.id);
-        if (info3 && info3.tokenAddress !== '0x0000000000000000000000000000000000000000') {
-          await updateTokenPair(tms['WAN'], pairInfo.pair);
-        } else {
-          await addTokenPair(tms['WAN'], pairInfo.pair);
-        }
+        await addTokenPair(tms['WAN'], pairInfo.pair);
       }
     }
   }
