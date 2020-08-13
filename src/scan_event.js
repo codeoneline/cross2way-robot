@@ -2,13 +2,11 @@ const log = require('./lib/log');
 const db = require('./lib/sqlite_db');
 const logAndSendMail = require('./lib/email');
 
-class ScanInstance {
-  constructor(contract, eventName, chainType, start, step, uncertainBlockCount, delay) {
+class ScanEvent {
+  constructor(contract, eventName, chainType, step, uncertainBlockCount, delay) {
     this.contract = contract;
     this.eventName = eventName;
-    this.eventHandler = eventHandler;
     this.chainType = chainType;
-    this.start = start;
     this.step = step;
     this.uncertainBlockCount = uncertainBlockCount;
     this.delay = delay;
@@ -41,8 +39,6 @@ class ScanInstance {
         db.insertSga(config);
       }
     }
-  
-    // db.updateScan({chainType: this.chainType, blockNumber: next});
   }
 
   async doScan(from, step, to) {
@@ -54,7 +50,7 @@ class ScanInstance {
     log.info(`begin scan from=${from}, to=${next}`);
   
     const events = await this.contract.core.getPastEvents(this.contract.address, from, next, this.contract.contract, this.eventName);
-    const transaction = db.db.transaction(ScanInstance.eventHandlers[this.eventName]);
+    const transaction = db.db.transaction(ScanEvent.eventHandlers[this.eventName]);
     transaction(events, next);
     db.updateScan({chainType: this.chainType, blockNumber: next});
   
@@ -109,7 +105,7 @@ class ScanInstance {
   }
 }
 
-ScanInstance.eventHandlers['StoremanGroupRegisterStartEvent'] = ScanInstance.parseRegisterStartEvent;
+ScanEvent.eventHandlers['StoremanGroupRegisterStartEvent'] = ScanEvent.parseRegisterStartEvent;
 
 
 // setTimeout(async () => {
@@ -126,4 +122,6 @@ ScanInstance.eventHandlers['StoremanGroupRegisterStartEvent'] = ScanInstance.par
 // process.on('exit', (code) => {})
 // process.on('SIGINT', function() {});
 
-module.exports = scanEvent;
+// module.exports = scanEvent;
+
+module.exports = ScanEvent;

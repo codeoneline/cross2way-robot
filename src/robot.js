@@ -4,7 +4,7 @@ const getPrices_cmc = require("./lib/cmc");
 const getPrices_crypto = require("./lib/crypto_compare");
 const { sleep, web3 } = require('./lib/utils');
 const logAndSendMail = require('./lib/email');
-const scanEvent = require('./scan_event');
+const ScanEvent = require('./scan_event');
 const db = require('./lib/sqlite_db');
 const Oracle = require('./contract/oracle');
 const StoremanGroupAdmin = require('./contract/storeman_group_admin');
@@ -19,6 +19,15 @@ const oracleEtc = new Oracle(chainEtc, process.env.ORACLE_ADDRESS_ETC, process.e
 
 const sgaWan = new StoremanGroupAdmin(chainWan, process.env.STOREMANGROUPADMIN_ADDRESS, process.env.STOREMANGROUPADMIN_OWNER_PV_KEY, process.env.STOREMANGROUPADMIN_OWNER_PV_ADDRESS);
 
+const scanInst = new ScanEvent(
+  sgaWan,
+  process.env.REGISTER_START_EVENT,
+  process.env.IWAN_CHAINTYPE_WAN,
+  parseInt(process.env.SCAN_STEP),
+  parseInt(process.env.SCAN_UNCERTAIN_BLOCK),
+  parseInt(process.env.SCAN_DELAY),
+);
+
 async function doSchedule(func, args, tryTimes = process.env.SCHEDULE_RETRY_TIMES) {
   log.info(`${func.name} begin`);
   let leftTime = parseInt(tryTimes);
@@ -29,7 +38,7 @@ async function doSchedule(func, args, tryTimes = process.env.SCHEDULE_RETRY_TIME
       return await func(...args);
     } catch (e) {
       if (leftTime === 0) {
-        await logAndSendMail(`${func.name} exception`, `args=${args}, tried ${tryTimes} still failed, ${e instanceof Error ? e.stack : e}`);
+        // await logAndSendMail(`${func.name} exception`, `args=${args}, tried ${tryTimes} still failed, ${e instanceof Error ? e.stack : e}`);
         return;
       }
       log.error(`${func.name} exception : ${e}`);
@@ -151,7 +160,7 @@ const robotSchedules = ()=>{
 
   // sync sga to sga database
   schedule.scheduleJob('20 * * * * *', () => {
-    scanEvent(sgaWan, 'StoremanGroupRegisterStartEvent', 'wan');
+    scanInst.scanEvent();
   });
 
   // sync sga config from wan to other chain, sga database
@@ -163,22 +172,22 @@ const robotSchedules = ()=>{
 // helper functions
 
 setTimeout(async () => {
-  // const pricesMap = await doSchedule(getPrices_cmc, [process.env.SYMBOLS]);
+  const pricesMap = await doSchedule(getPrices_cmc, [process.env.SYMBOLS]);
   
-  // log.info(`prices: ${JSON.stringify(pricesMap)}`);
+  log.info(`prices: ${JSON.stringify(pricesMap)}`);
 
-  // await updatePrice(oracleWan, pricesMap);
-  // await updatePrice(oracleEth, pricesMap);
-  // await updatePrice(oracleEtc, pricesMap);
+  await updatePrice(oracleWan, pricesMap);
+  await updatePrice(oracleEth, pricesMap);
+  await updatePrice(oracleEtc, pricesMap);
 
   // const smgID = "0x111122223333444455556666777788889999AAAABBBBCCCCDDDDEEEEFFFFCCCC";
   // const amount = 500;
   // await updateDeposit(oracleWan, smgID, amount)
   // await updateDeposit(oracleEth, smgID, amount)
   
-  // await scanEvent(sgaWan, 'StoremanGroupRegisterStartEvent');
+  // scanInst.scanEvent();
   // syncConfigToOtherChain();
 }, 0);
 
-robotSchedules();
+// robotSchedules();
 

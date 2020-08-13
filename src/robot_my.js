@@ -4,12 +4,12 @@ const getPrices_cmc = require("./lib/cmc");
 const getPrices_crypto = require("./lib/crypto_compare");
 const { sleep, web3 } = require('./lib/utils');
 const logAndSendMail = require('./lib/email');
-const scanEvent = require('./scan_event');
+const ScanEvent = require('./scan_event');
 const db = require('./lib/sqlite_db');
 const Oracle = require('./contract/oracle');
 const StoremanGroupAdminMy = require('./contract/storeman_group_admin_my');
 
-const chainWanMy = require(`./chain/${process.env.MY_WAN_CHAIN_ENGINE}`);
+const chainWanMy = require(`./chain/${process.env.WAN_CHAIN_ENGINE_MY}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
 const chainEtc = require(`./chain/${process.env.ETC_CHAIN_ENGINE}`);
 
@@ -18,6 +18,15 @@ const oracleEth = new Oracle(chainEth, process.env.ORACLE_ADDRESS_ETH, process.e
 const oracleEtc = new Oracle(chainEtc, process.env.ORACLE_ADDRESS_ETC, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);
 
 const sgaWanMy = new StoremanGroupAdminMy(chainWanMy, process.env.SMGA_ADDRESS_MY, process.env.SK_MY, process.env.ADDRESS_MY);
+
+const scanInst = new ScanEvent(
+  sgaWanMy,
+  process.env.REGISTER_START_EVENT,
+  process.env.CHAINTYPE_WAN_MY,
+  parseInt(process.env.SCAN_STEP),
+  parseInt(process.env.SCAN_UNCERTAIN_BLOCK),
+  parseInt(process.env.SCAN_DELAY),
+);
 
 async function doSchedule(func, args, tryTimes = process.env.SCHEDULE_RETRY_TIMES) {
   log.info(`${func.name} begin`);
@@ -29,7 +38,7 @@ async function doSchedule(func, args, tryTimes = process.env.SCHEDULE_RETRY_TIME
       return await func(...args);
     } catch (e) {
       if (leftTime === 0) {
-        await logAndSendMail(`${func.name} exception`, `args=${args}, tried ${tryTimes} still failed, ${e instanceof Error ? e.stack : e}`);
+        // await logAndSendMail(`${func.name} exception`, `args=${args}, tried ${tryTimes} still failed, ${e instanceof Error ? e.stack : e}`);
         return;
       }
       log.error(`${func.name} exception : ${e}`);
@@ -96,7 +105,7 @@ async function syncConfigToOtherChain() {
       ) {
         const c = JSON.parse(JSON.stringify(config));
         c.updateTime = updateTime;
-        db.updateSgaMy(c);
+        db.updateSga(c);
       }
       if (!config.gpk1 || !config.gpk2) {
         continue;
@@ -151,7 +160,7 @@ const robotSchedules = ()=>{
 
   // sync sga to sga database
   schedule.scheduleJob('20 * * * * *', () => {
-    scanEvent(sgaWanMy, 'StoremanGroupRegisterStartEvent', 'my wan');
+    scanInst.scanEvent();
   });
 
   // sync sga config from wan to other chain, sga database
@@ -179,8 +188,8 @@ setTimeout(async () => {
   // await scanEvent(sgaWan, 'registerStartEvent');
   // syncConfigToOtherChain();
 
-  await scanEvent(sgaWanMy, 'StoremanGroupRegisterStartEvent', 'my wan');
-  syncConfigToOtherChain();
+  scanInst.scanEvent();
+  // syncConfigToOtherChain();
 
 }, 0);
 

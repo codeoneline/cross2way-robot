@@ -11,7 +11,7 @@ const { web3, sleep } = require('./lib/utils');
 const fs = require('fs');
 const path = require('path');
 
-const chainWanMy = require(`./chain/${process.env.MY_WAN_CHAIN_ENGINE}`);
+const chainWanMy = require(`./chain/${process.env.WAN_CHAIN_ENGINE_MY}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
 const chainEtc = require(`./chain/${process.env.ETC_CHAIN_ENGINE}`);
 

@@ -31,14 +31,14 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "robot os development",
+      "name": "robot my production",
       "skipFiles": [
         "<node_internals>/**"
       ],
       "runtimeArgs": ["-r", "dotenv/config"],
       "cwd": "${workspaceRoot}",
-      "program": "${workspaceFolder}/src/robot_os.js",
-      "args": ["dotenv_config_path=.env.development"]
+      "program": "${workspaceFolder}/src/robot_my.js",
+      "args": ["dotenv_config_path=.env.production"]
     },
     {
       "type": "node",
