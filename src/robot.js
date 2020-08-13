@@ -90,7 +90,7 @@ async function syncConfigToOtherChain() {
     const groupId = sg.groupId;
     const config = await sgaWan.getStoremanGroupConfig(groupId);
     if (config) {
-      const oracles = [oracleWan, oracleEth, oracleEtc];
+      const oracles = [oracleEth, oracleEtc];
       for(i = 0; i<oracles.length; i++) {
         const oracle = oracles[i];
         const config_eth = await oracle.getStoremanGroupConfig(groupId);
@@ -140,7 +140,7 @@ const robotSchedules = ()=>{
 
   // sync sga to sga database
   schedule.scheduleJob('20 * * * * *', () => {
-    scanEvent(sgaWan, 'registerStartEvent');
+    scanEvent(sgaWan, 'StoremanGroupRegisterStartEvent');
   });
 
   // sync sga config from wan to other chain, sga database
@@ -161,9 +161,9 @@ setTimeout(async () => {
   // await updateDeposit(oracleWan, smgID, amount)
   // await updateDeposit(oracleEth, smgID, amount)
   
-  // await scanEvent(sgaWan, 'registerStartEvent');
-  // syncConfigToOtherChain();
+  // await scanEvent(sgaWan, 'StoremanGroupRegisterStartEvent');
+  syncConfigToOtherChain();
 }, 0);
 
-robotSchedules();
+// robotSchedules();
 
