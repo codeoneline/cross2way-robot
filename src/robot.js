@@ -90,9 +90,9 @@ async function syncConfigToOtherChain() {
     const groupId = sg.groupId;
     const config = await sgaWan.getStoremanGroupConfig(groupId);
     if (config) {
-      const oracles = [oracleEth, oracleEtc];
-      for(i = 0; i<oracles.length; i++) {
-        const oracle = oracles[i];
+      const oracles = [oracleEth];
+      for(let j = 0; j<oracles.length; j++) {
+        const oracle = oracles[j];
         const config_eth = await oracle.getStoremanGroupConfig(groupId);
         if (!config_eth ||
           (config.groupId !== config_eth.groupId) ||
