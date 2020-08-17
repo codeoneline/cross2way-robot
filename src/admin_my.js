@@ -133,7 +133,7 @@ setTimeout( async () => {
   // await upgradeMyOracle();
   // await upgradeMyTokenManager();
 
-  await unlockAccount([chainWanMy, chainEth, chainEtc], "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8", "wanglu", 36000);
+  // await unlockAccount([chainWanMy, chainEth, chainEtc], "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8", "wanglu", 36000);
 
   // await getBalance([chainWanMy, chainEth, chainEtc], "0x2d0e7c0813a51d3bd1d08246af2a8a7a57d8922e");
 
@@ -144,7 +144,7 @@ setTimeout( async () => {
   // await chainWanMy.core.closeEngine();
   // await chainEth.core.closeEngine();
 
-  // await deployTokenPairOrUpdate('../db/tokenPairMy.js', path.resolve(__dirname, '../db/tokenPairMy_deployed.json'), tms);
+  await deployTokenPairOrUpdate('../db/tokenPairMy.js', path.resolve(__dirname, '../db/tokenPairMy_deployed.json'), tms);
 }, 0);
 
 process.on('unhandledRejection', (err) => {

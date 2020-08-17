@@ -18,12 +18,12 @@ module.exports = {
     mapToken: {name: 'wanETH@wanchain', symbol: 'wanETH', decimals: 18},
     originToken: {name: 'eth', symbol: 'ETH', decimals: 18},
     pair: {
-      id: 1001,
+      id: 2001,
       aInfo: [aAccount, "eth", "ETH", 18, 0x8000003c],
       fromChainID: 0x8000003c,
       fromAccount: fromAccount,
       toChainID: 0x8057414e,
-      tokenAddress: '0xC5C10af932CCD5a569dEdEc1656a02D0b6D4b4F4',
+      tokenAddress: '0x5FE10e0cC22Ec4595DB67BaF78545Cf90Fe87A00',
     },
   },
 
@@ -33,27 +33,27 @@ module.exports = {
     mapToken: {name: 'WAN@ethereum', symbol: 'WAN', decimals: 18},
     originToken: {name: 'wan', symbol: 'WAN', decimals: 18},
     pair: {
-      id: 1002,
+      id: 2002,
       aInfo: [aAccount, "wan", "WAN", 18, 0x8057414e],
       fromChainID: 0x8057414e,
       fromAccount: fromAccount,
       toChainID: 0x8000003c,
-      tokenAddress: '0xE7167882bC62e471804039eadFbc997396Fd22CB',
+      tokenAddress: '0x409D1E94517ba97474FA30F3C68bDAe61AcE7bFd',
     },
   },
 
   ETC2WAN: {
     mapChain: 'WAN',
     originChain: 'ETC',
-    mapToken: {name: 'wanETC@wanchain', symbol: 'wanETC', decimals: 18},
+    mapToken: {name: 'WAN@ethereum-classic', symbol: 'wanETC', decimals: 18},
     originToken: {name: 'etc', symbol: 'ETC', decimals: 18},
     pair: {
-      id: 1003,
+      id: 2003,
       aInfo: [aAccount, "etc", "ETC", 18, 0x8000003d],
       fromChainID: 0x8000003d,
       fromAccount: fromAccount,
       toChainID: 0x8057414e,
-      tokenAddress: '0xc1A5124Af64BCf24ef8Ed4FD866b921b57e0fD0C',
+      tokenAddress: '0xc8B1933142fA1C85012606b2Bd6d04BB164a3373',
     },
   },
 
@@ -63,12 +63,12 @@ module.exports = {
     mapToken: {name: 'WAN@ethereum-classic', symbol: 'WAN', decimals: 18},
     originToken: {name: 'wan', symbol: 'WAN', decimals: 18},
     pair: {
-      id: 1004,
+      id: 2004,
       aInfo: [aAccount, "wan", "WAN", 18, 0x8057414e],
       fromChainID: 0x8057414e,
       fromAccount: fromAccount,
       toChainID: 0x8000003d,
-      tokenAddress: '0x1c304444bFDD800acd8320497a94850bAC031B60',
+      tokenAddress: '0x217A9d1A26EFADDB3e9CdB2fc5B8b278ea7C260d',
     },
   },
 
@@ -78,12 +78,12 @@ module.exports = {
     mapToken: {name: 'wanLINK@wanchain', symbol: 'wanLINK', decimals: 18},
     originToken: {name: 'link on eth', symbol: 'LINK', decimals: 18},
     pair: {
-      id: 1005,
+      id: 2005,
       aInfo: [hexToBytes("0x64993826cDf00B4355C4f366e2C38da140Eb5f0D"), "link on eth", "LINK", 18, 0x8000003c],
       fromChainID: 0x8000003c,
       fromAccount: hexToBytes("0x64993826cDf00B4355C4f366e2C38da140Eb5f0D"),
       toChainID: 0x8057414e,
-      tokenAddress: '0x33D918636c53F499400f2AFC4b2AaC47A0Ec2d06',
+      tokenAddress: '0x4b6f851B02DFE1c56D0F54a69BE17482b9cbBD1A',
     },
   },
 
@@ -93,12 +93,12 @@ module.exports = {
     mapToken: {name: 'wanFNX@ethereum', symbol: 'wanFNX', decimals: 18},
     originToken: {name: 'fnx on wan ', symbol: 'FNX', decimals: 18},
     pair: {
-      id: 1006,
-      aInfo: [hexToBytes("0x025d32e1801d567588ef62b29435649f344a694b"), "fnx on wan", "FNX", 18, 0x8057414e],
+      id: 2006,
+      aInfo: [hexToBytes("0x76B82693b58884176B139f108b982BBf432e7d61"), "fnx on wan", "FNX", 18, 0x8057414e],
       fromChainID: 0x8057414e,
-      fromAccount: hexToBytes("0x025d32e1801d567588ef62b29435649f344a694b"),
+      fromAccount: hexToBytes("0x76B82693b58884176B139f108b982BBf432e7d61"),
       toChainID: 0x8000003c,
-      tokenAddress: '0x2e3476828e955ffb46c353C56bAC6990c46D96B8',
+      tokenAddress: '0x76F128Aa19D4BaeC535E686C107EdceF4f829EFc',
     },
-  }
+  },
 }
