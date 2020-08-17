@@ -26,8 +26,8 @@ const oracleWanMy = new Oracle(chainWanMy, process.env.ORACLE_ADDRESS_MY, proces
 
 const fnxWanMy = new MapToken(chainWanMy, process.env.FNX_ADDRESS_MY, process.env.SK_MY, process.env.ADDRESS_MY);
 const linkEth = new MapToken(chainEth, process.env.LINK_ETH_ADDRESS, process.env.LINK_ETH_OWNER_PV_KEY, process.env.LINK_ETH_OWNER_PV_ADDRESS);
-const eosWanMy = new MapToken(chainWanMy, "0xDDcd518E6bD473A129c31Ba4a2EC699843F10567", process.env.SK_MY, process.env.ADDRESS_MY);
-const btcWanMy = new MapToken(chainWanMy, "0x3Dd2c6BE473943d7fB9072e43Edf9c6cfd09d81f", process.env.SK_MY, process.env.ADDRESS_MY);
+const eosWanMy = new MapToken(chainWanMy, process.env.EOS_ADDRESS, process.env.SK_MY, process.env.ADDRESS_MY);
+const btcWanMy = new MapToken(chainWanMy, process.env.BTC_ADDRESS, process.env.SK_MY, process.env.ADDRESS_MY);
 
 const tms = {
   "WAN": tmWanMy,
@@ -43,17 +43,6 @@ async function upgradeMyOracle() {
 async function upgradeMyTokenManager() {
   const tmProxyWan = new TokenManagerProxy(chainWanMy, process.env.TM_ADDRESS_MY, process.env.SK_MY, process.env.ADDRESS_MY);
   await upgradeTo(tmProxyWan, process.env.TM_ADDRESS_MY_UP);
-}
-
-async function getBalanceMy() {
-  let result = await chainWanMy.core.getBalance("0x2d0e7c0813a51d3bd1d08246af2a8a7a57d8922e");
-  console.log(result);
-
-  result = await chainEth.core.getBalance("0x2d0e7c0813a51d3bd1d08246af2a8a7a57d8922e");
-  console.log(result);
-
-  result = await chainEtc.core.getBalance("0x2d0e7c0813a51d3bd1d08246af2a8a7a57d8922e");
-  console.log(result);
 }
 
 // # @姬世武 @詹力 
@@ -132,78 +121,6 @@ async function myRegisterStart() {
   console.log(JSON.stringify(receipt));
 }
 
-
-async function addToken(tm, token) {
-  let receipt = await tm.addToken(token.name, token.symbol, token.decimals);
-  
-  if (receipt.status) {
-    const event = tm.contract.events[receipt.logs[0].topics[0]]();
-    const logObj = event._formatOutput(receipt.logs[0]);
-    return logObj.returnValues;
-  }
-}
-
-async function addTokenPair(tm, tokenPair) {
-  const toAccount = web3.utils.hexToBytes(tokenPair.tokenAddress);
-  let receipt = await tm.addTokenPair(tokenPair.id, tokenPair.aInfo, tokenPair.fromChainID, tokenPair.fromAccount, tokenPair.toChainID, toAccount);
-
-  if (receipt.status) {
-    const event = tm.contract.events[receipt.logs[0].topics[0]]();
-    const logObj = event._formatOutput(receipt.logs[0]);
-    return logObj.returnValues;
-  }
-}
-
-async function updateTokenPair(tm, tokenPair) {
-  const toAccount = web3.utils.hexToBytes(tokenPair.tokenAddress);
-  let receipt = await tm.updateTokenPair(tokenPair.id, tokenPair.aInfo, tokenPair.fromChainID, tokenPair.fromAccount, tokenPair.toChainID, toAccount);
-
-  if (receipt.status) {
-    const event = tm.contract.events[receipt.logs[0].topics[0]]();
-    const logObj = event._formatOutput(receipt.logs[0]);
-    return logObj.returnValues;
-  }
-}
-
-async function deployTokenPairOrUpdateMy() {
-  const tokenPairs = require('../db/tokenPairMy.js');
-  const tokenPairsKeys = Object.keys(tokenPairs);
-  for (let i = 0; i < tokenPairsKeys.length; i++) {
-    const pairInfo = tokenPairs[tokenPairsKeys[i]];
-    
-    if (pairInfo.pair.tokenAddress === '0x0000000000000000000000000000000000000000') {
-      const addTokenEvent = await addToken(tms[pairInfo.mapChain], pairInfo.mapToken);
-      pairInfo.pair.tokenAddress = addTokenEvent.tokenAddress;
-      console.log(`tokenAddress = ${addTokenEvent.tokenAddress}`)
-    }
-
-    const info = await tms[pairInfo.mapChain].getTokenPairInfo(pairInfo.pair.id);
-    if (info && info.toAccount && web3.utils.bytesToHex(info.toAccount) !== '0x0000000000000000000000000000000000000000') {
-      await updateTokenPair(tms[pairInfo.mapChain], pairInfo.pair);
-    } else {
-      await addTokenPair(tms[pairInfo.mapChain], pairInfo.pair);
-    }
-
-    const info2 = await tms[pairInfo.originChain].getTokenPairInfo(pairInfo.pair.id);
-    if (info2 && info2.toAccount && web3.utils.bytesToHex(info2.toAccount) !== '0x0000000000000000000000000000000000000000') {
-      await updateTokenPair(tms[pairInfo.originChain], pairInfo.pair);
-    } else {
-      await addTokenPair(tms[pairInfo.originChain], pairInfo.pair);
-    }
-
-    if(pairInfo.originChain !== 'WAN' && pairInfo.mapChain !== 'WAN') {
-      const info3 = await tms['WAN'].getTokenPairInfo(pairInfo.pair.id);
-      if (info3 && info3.toAccount && web3.utils.bytesToHex(info3.tokenAddress) !== '0x0000000000000000000000000000000000000000') {
-        await updateTokenPair(tms['WAN'], pairInfo.pair);
-      } else {
-        await addTokenPair(tms['WAN'], pairInfo.pair);
-      }
-    }
-  }
-
-  fs.writeFileSync(path.resolve(__dirname, '../db/tokenPairMy_deployed.json'), JSON.stringify(tokenPairs, null, 2), 'utf-8');
-}
-
 setTimeout( async () => {
   // const old_owner_addr = "0x2d0e7c0813a51d3bd1d08246af2a8a7a57d8922e";
   // const old_owner_sk = "a4369e77024c2ade4994a9345af5c47598c7cfb36c65e8a4a3117519883d9014";
@@ -216,7 +133,7 @@ setTimeout( async () => {
   // await upgradeMyOracle();
   // await upgradeMyTokenManager();
 
-  // await unlockAccount([chainWanMy, chainEth, chainEtc], "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8", "wanglu", 36000);
+  await unlockAccount([chainWanMy, chainEth, chainEtc], "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8", "wanglu", 36000);
 
   // await getBalance([chainWanMy, chainEth, chainEtc], "0x2d0e7c0813a51d3bd1d08246af2a8a7a57d8922e");
 
