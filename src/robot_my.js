@@ -65,7 +65,7 @@ setTimeout(async () => {
   // const deposit = '0x' + web3.utils.toWei("10000000").toString('hex');
   // await updateDeposit(oracleWanMy, smgID, deposit);
 
-  // scanInst.scanEvent();
+  scanInst.scanEvent();
   // syncConfigToOtherChain(sgaWanMy, [oracleEth, oracleEtc]);
 
 }, 0);
