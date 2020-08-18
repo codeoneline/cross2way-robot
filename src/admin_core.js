@@ -13,8 +13,9 @@ async function upgradeTo(contract, delegator) {
 
 // fnx link mint
 async function mint(contracts, addr, a) {
-  const amount = '0x' + web3.utils.toWei(web3.utils.toBN(a)).toString('hex');
   for(let i=0; i<contracts.length; i++) {
+    const decimals = await contracts[i].getDecimals();
+    const amount = '0x' + web3.utils.toBN(a * Math.pow(10, decimals)).toString('hex');
     await contracts[i].mint(addr, amount);
   }
 }

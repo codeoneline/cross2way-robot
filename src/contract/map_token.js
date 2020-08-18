@@ -20,6 +20,13 @@ class MapToken extends Contract {
     const data = this.contract.methods.update(name, symbol).encodeABI();
     return await this.doOperator(this.update.name, data, null, '0x00', this.retryTimes, this.pv_key, this.pv_address);
   }
+
+  async getDecimals() {
+    if (!this.decimals) {
+      this.decimals = parseInt(await this.core.getScVar('decimals', this.contract, this.abi));
+    }
+    return this.decimals;
+  }
 }
 
 module.exports = MapToken;
