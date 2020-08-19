@@ -129,6 +129,7 @@ setTimeout( async () => {
   // await changeOwner([tmWanMy, oracleWanMy], old_owner_addr, old_owner_sk, new_owner_addr, new_owner_sk);
 
   // await mint([fnxWanMy, linkEth, eosWanMy, btcWanMy], "0x67e3b428acbc3aa2fd38813f65dafbd5af97c6d5", 10000000);
+  await mint([linkEth], "0xe2f31d7ba3e0098ea0e64d94c0224365812b986c", 10000000);
 
   // await upgradeMyOracle();
   // await upgradeMyTokenManager();
@@ -144,7 +145,7 @@ setTimeout( async () => {
   // await chainWanMy.core.closeEngine();
   // await chainEth.core.closeEngine();
 
-  await deployTokenPairOrUpdate('../db/tokenPairMy.js', path.resolve(__dirname, '../db/tokenPairMy_deployed.json'), tms);
+  // await deployTokenPairOrUpdate('../db/tokenPairMy.js', path.resolve(__dirname, '../db/tokenPairMy_deployed.json'), tms);
 }, 0);
 
 process.on('unhandledRejection', (err) => {

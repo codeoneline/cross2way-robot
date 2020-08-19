@@ -1,4 +1,5 @@
 const { web3 } = require('./lib/utils');
+const BigNumber = require('bignumber.js');
 const fs = require('fs');
 
 async function changeOwner(contracts, old_owner_addr, old_owner_sk, new_owner_addr, new_owner_sk) {
@@ -15,7 +16,7 @@ async function upgradeTo(contract, delegator) {
 async function mint(contracts, addr, a) {
   for(let i=0; i<contracts.length; i++) {
     const decimals = await contracts[i].getDecimals();
-    const amount = '0x' + web3.utils.toBN(a * Math.pow(10, decimals)).toString('hex');
+    const amount = '0x' + (new BigNumber(a * Math.pow(10, decimals))).toString(16);
     await contracts[i].mint(addr, amount);
   }
 }
