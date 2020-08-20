@@ -105,7 +105,7 @@ class ScanEvent {
   }
 }
 
-ScanEvent.eventHandlers['StoremanGroupRegisterStartEvent'] = ScanEvent.parseRegisterStartEvent;
+ScanEvent.eventHandlers[process.env.REGISTER_START_EVENT] = ScanEvent.parseRegisterStartEvent;
 
 
 // setTimeout(async () => {

@@ -6,7 +6,7 @@ const getPrices_crypto = require("../src/lib/crypto_compare");
 const wanChain = require(`../src/lib/${process.env.WAN_CHAIN_ENGINE}`);
 
 // wan oracle
-const oracle = new Oracle(wanChain, process.env.ORACLE_ADDRESS, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);
+const oracle = new Oracle(wanChain, process.env.OR_ADDR, process.env.OR_OWNER_SK, process.env.OR_OWNER_ADDR);
 
 before("init", async function () {
   this.timeout(1000);

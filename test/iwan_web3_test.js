@@ -7,7 +7,7 @@ const iWanWan = require(`../src/chain/iwan_wan`).core;
 // const web3Eth = require(`../src/chain/web3_eth`).core;
 // const iWanEth = require(`../src/chain/iwan_eth`).core;
 
-const ownerAddress = process.env.ORACLE_OWNER_PV_ADDRESS
+const ownerAddress = process.env.OR_OWNER_ADDR
 
 before(function () {
   console.log("init jack-pot test");

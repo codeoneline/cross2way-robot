@@ -12,81 +12,90 @@ const chainId = {
 }
 
 module.exports = {
-  // ETH2WAN: {
-  //   mapChain: 'WAN',
-  //   originChain: 'ETH',
-  //   mapToken: {name: 'wanETH@wanchain', symbol: 'wanETH', decimals: 18},
-  //   originToken: {name: 'eth', symbol: 'ETH', decimals: 18},
-  //   pair: {
-  //     id: 1001,
-  //     aInfo: [aAccount, "eth", "ETH", 18, 0x8000003c],
-  //     fromChainID: 0x8000003c,
-  //     fromAccount: fromAccount,
-  //     toChainID: 0x8057414e,
-  //     tokenAddress: '0xC5C10af932CCD5a569dEdEc1656a02D0b6D4b4F4',
-  //   },
-  // },
-
-  WAN2ETH: {
-    mapChain: 'ETH',
-    originChain: 'WAN',
-    mapToken: {name: 'WAN@ethereum', symbol: 'WAN', decimals: 18},
-    originToken: {name: 'wan', symbol: 'WAN', decimals: 18},
+  ETH2WAN: {
+    originChain: 'ETH',
+    originToken: {name: 'eth', symbol: 'ETH', decimals: 18},
+    mapChain: 'WAN',
+    mapToken: {name: 'wanETH@wanchain', symbol: 'wanETH', decimals: 18},
     pair: {
-      id: 1002,
-      aInfo: [aAccount, "wan", "WAN", 18, 0x8057414e],
-      fromChainID: 0x8057414e,
+      id: 1,
+      aInfo: [aAccount, "eth", "ETH", 18, chainId.ETH],
+      fromChainID: chainId.ETH,
       fromAccount: fromAccount,
-      toChainID: 0x8000003c,
-      tokenAddress: '0xE7167882bC62e471804039eadFbc997396Fd22CB',
+      toChainID: chainId.WAN,
+      tokenAddress: '0x8758960317BcB6fdBE29Aa3c745b311f777f1969',
+    },
+  },
+  WAN2ETH: {
+    originChain: 'WAN',
+    originToken: {name: 'wan', symbol: 'WAN', decimals: 18},
+    mapChain: 'ETH',
+    mapToken: {name: 'WAN@ethereum', symbol: 'WAN', decimals: 18},
+    pair: {
+      id: 2,
+      aInfo: [aAccount, "wan", "WAN", 18, chainId.WAN],
+      fromChainID: chainId.WAN,
+      fromAccount: fromAccount,
+      toChainID: chainId.ETH,
+      tokenAddress: '0x26FC21D4b1c6C3ca1964F8E5ff43dea3EC2Bd220',
+    },
+  },
+  LINK2WAN: {
+    originChain: 'ETH',
+    originToken: {name: 'link', symbol: 'LINK', decimals: 18},
+    mapChain: 'WAN',
+    mapToken: {name: 'wanLINK@wanchain', symbol: 'wanLINK', decimals: 18},
+    pair: {
+      id: 3,
+      aInfo: [hexToBytes("0xc6aBa254B0bea0f67Dd8E97Bf1198F96FF5c32B2"), "link", "LINK", 18, chainId.ETH],
+      fromChainID: chainId.ETH,
+      fromAccount: hexToBytes("0xc6aBa254B0bea0f67Dd8E97Bf1198F96FF5c32B2"),
+      toChainID: chainId.WAN,
+      tokenAddress: '0x217CE1c6052b8Cb0099587580464998c41306145',
+    },
+  },
+  FNX2ETH: {
+    originChain: 'WAN',
+    originToken: {name: 'fnx ', symbol: 'FNX', decimals: 18},
+    mapChain: 'ETH',
+    mapToken: {name: 'wanFNX@ethereum', symbol: 'wanFNX', decimals: 18},
+    pair: {
+      id: 4,
+      aInfo: [hexToBytes("0x2283d27be033D183F0F46E70992Ebc1356f6e8b3"), "fnx", "FNX", 18, chainId.WAN],
+      fromChainID: chainId.WAN,
+      fromAccount: hexToBytes("0x2283d27be033D183F0F46E70992Ebc1356f6e8b3"),
+      toChainID: chainId.ETH,
+      tokenAddress: '0x422504c423E7373415eEC43721F63c0B96AD39ab',
     },
   },
 
   BTC2ETH: {
-    mapChain: 'ETH',
-    originChain: 'BTC',
-    mapToken: {name: 'wanBTC@ethereum', symbol: 'wanBTC', decimals: 8},
+    originChain: 'WAN',
     originToken: {name: 'btc', symbol: 'BTC', decimals: 8},
+    mapChain: 'ETH',
+    mapToken: {name: 'wanBTC@ethereum', symbol: 'wanBTC', decimals: 8},
     pair: {
-      id: 1013,
-      aInfo: [aAccount, "btc", "BTC", 8, 0x80000000],
-      fromChainID: 0x80000000,
-      fromAccount: fromAccount,
-      toChainID: 0x8000003c,
-      tokenAddress: '0xc1A5124Af64BCf24ef8Ed4FD866b921b57e0fD0C',
+      id: 5,
+      aInfo: [hexToBytes('0x3aE58C9B8b4da8A29A98494D96f2C919E2E641B1'), "btc", "BTC", 8, chainId.WAN],
+      fromChainID: chainId.WAN,
+      fromAccount: hexToBytes('0x3aE58C9B8b4da8A29A98494D96f2C919E2E641B1'),
+      toChainID: chainId.ETH,
+      tokenAddress: '0x81c144a2082eb4E116223c70C7f70081acC8a2AB',
     },
   },
 
-  // ETH2BTC: {
-  //   mapChain: 'BTC',
-  //   originChain: 'ETH',
-  //   mapToken: {name: 'wanETH@bitcoin', symbol: 'WAN', decimals: 18},
-  //   originToken: {name: 'wan', symbol: 'WAN', decimals: 18},
-  //   pair: {
-  //     id: 1004,
-  //     aInfo: [aAccount, "wan", "WAN", 18, 0x8057414e],
-  //     fromChainID: 0x8057414e,
-  //     fromAccount: fromAccount,
-  //     toChainID: 0x8000003d,
-  //     tokenAddress: '0x1c304444bFDD800acd8320497a94850bAC031B60',
-  //   },
-  // },
-
   EOS2ETH: {
-    mapChain: 'EOS',
-    originChain: 'ETH',
-    mapToken: {name: 'wanEOS@ethereum', symbol: 'wanEOS', decimals: 4},
+    originChain: 'WAN',
     originToken: {name: 'eos', symbol: 'EOS', decimals: 4},
+    mapChain: 'ETH',
+    mapToken: {name: 'wanEOS@ethereum', symbol: 'wanEOS', decimals: 4},
     pair: {
-      id: 1023,
-      aInfo: [aAccount, "btc", "BTC", 4, 0x800000c2],
-      fromChainID: 0x800000c2,
-      fromAccount: fromAccount,
-      toChainID: 0x8000003c,
-      tokenAddress: '0xc1A5124Af64BCf24ef8Ed4FD866b921b57e0fD0C',
+      id: 6,
+      aInfo: [hexToBytes('0xd264B2a8d5938e6Eb8235EA8D4Aaa8eC135F2c56'), "eos", "EOS", 4, chainId.WAN],
+      fromChainID: chainId.WAN,
+      fromAccount: hexToBytes('0xd264B2a8d5938e6Eb8235EA8D4Aaa8eC135F2c56'),
+      toChainID: chainId.ETH,
+      tokenAddress: '0x075399B3DF085c2A04d08Db5C914fF14Bb0F23d4',
     },
-  }
-
-
-
+  },
 }

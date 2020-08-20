@@ -19,13 +19,13 @@ const chainEtc = require(`./chain/${process.env.ETC_CHAIN_ENGINE}`);
 const sgaWanMy = new StoremanGroupAdminMy(chainWanMy, process.env.SMGA_ADDRESS_MY, process.env.SK_MY, process.env.ADDRESS_MY);
 
 const tmWanMy = new TokenManager(chainWanMy, process.env.TM_ADDRESS_MY, process.env.SK_MY, process.env.ADDRESS_MY);
-const tmEth = new TokenManager(chainEth, process.env.TOKEN_MANAGER_ADDRESS_ETH, process.env.TOKEN_MANAGER_OWNER_PV_KEY, process.env.TOKEN_MANAGER_OWNER_PV_ADDRESS);
-const tmEtc = new TokenManager(chainEtc, process.env.TOKEN_MANAGER_ADDRESS_ETC, process.env.TOKEN_MANAGER_OWNER_PV_KEY, process.env.TOKEN_MANAGER_OWNER_PV_ADDRESS);
+const tmEth = new TokenManager(chainEth, process.env.TM_ADDR_ETH, process.env.TM_OWNER_SK_ETH, process.env.TM_OWNER_ADDR_ETH);
+const tmEtc = new TokenManager(chainEtc, process.env.TM_ADDR_ETC, process.env.TM_OWNER_SK_ETC, process.env.TM_OWNER_ADDR_ETC);
 
 const oracleWanMy = new Oracle(chainWanMy, process.env.ORACLE_ADDRESS_MY, process.env.SK_MY, process.env.ADDRESS_MY);
 
 const fnxWanMy = new MapToken(chainWanMy, process.env.FNX_ADDRESS_MY, process.env.SK_MY, process.env.ADDRESS_MY);
-const linkEth = new MapToken(chainEth, process.env.LINK_ETH_ADDRESS, process.env.LINK_ETH_OWNER_PV_KEY, process.env.LINK_ETH_OWNER_PV_ADDRESS);
+const linkEth = new MapToken(chainEth, process.env.LINK_ADDR_ETH, process.env.LINK_OWNER_SK_ETH, process.env.LINK_OWNER_ADDR_ETH);
 const eosWanMy = new MapToken(chainWanMy, process.env.EOS_ADDRESS, process.env.SK_MY, process.env.ADDRESS_MY);
 const btcWanMy = new MapToken(chainWanMy, process.env.BTC_ADDRESS, process.env.SK_MY, process.env.ADDRESS_MY);
 

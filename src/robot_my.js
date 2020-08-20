@@ -13,8 +13,8 @@ const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
 const chainEtc = require(`./chain/${process.env.ETC_CHAIN_ENGINE}`);
 
 const oracleWanMy = new Oracle(chainWanMy, process.env.ORACLE_ADDRESS_MY, process.env.SK_MY, process.env.ADDRESS_MY);
-const oracleEth = new Oracle(chainEth, process.env.ORACLE_ADDRESS_ETH, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);
-const oracleEtc = new Oracle(chainEtc, process.env.ORACLE_ADDRESS_ETC, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);
+const oracleEth = new Oracle(chainEth, process.env.OR_ADDR_ETH, process.env.OR_OWNER_SK_ETH, process.env.OR_OWNER_ADDR_ETH);
+const oracleEtc = new Oracle(chainEtc, process.env.OR_ADDR_ETC, process.env.OR_OWNER_SK_ETC, process.env.OR_OWNER_ADDR_ETC);
 
 const sgaWanMy = new StoremanGroupAdminMy(chainWanMy, process.env.SMGA_ADDRESS_MY, process.env.SK_MY, process.env.ADDRESS_MY);
 

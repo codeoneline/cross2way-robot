@@ -9,13 +9,11 @@ const { createScanEvent, doSchedule, updatePrice, updateDeposit, syncConfigToOth
 
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
-const chainEtc = require(`./chain/${process.env.ETC_CHAIN_ENGINE}`);
 
-const oracleWan = new Oracle(chainWan, process.env.ORACLE_ADDRESS, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);
-const oracleEth = new Oracle(chainEth, process.env.ORACLE_ADDRESS_ETH, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);
-const oracleEtc = new Oracle(chainEtc, process.env.ORACLE_ADDRESS_ETC, process.env.ORACLE_OWNER_PV_KEY, process.env.ORACLE_OWNER_PV_ADDRESS);
+const oracleWan = new Oracle(chainWan, process.env.OR_ADDR, process.env.OR_OWNER_SK, process.env.OR_OWNER_ADDR);
+const oracleEth = new Oracle(chainEth, process.env.OR_ADDR_ETH, process.env.OR_OWNER_SK_ETH, process.env.OR_OWNER_ADDR_ETH);
 
-const sgaWan = new StoremanGroupAdmin(chainWan, process.env.STOREMANGROUPADMIN_ADDRESS, process.env.STOREMANGROUPADMIN_OWNER_PV_KEY, process.env.STOREMANGROUPADMIN_OWNER_PV_ADDRESS);
+const sgaWan = new StoremanGroupAdmin(chainWan, process.env.SGA_ADDR, process.env.SGA_OWNER_SK, process.env.SGA_OWNER_ADDR);
 
 const scanInst = createScanEvent(
   sgaWan,
@@ -35,7 +33,6 @@ const robotSchedules = ()=>{
 
     await updatePrice(oracleWan, pricesMap);
     await updatePrice(oracleEth, pricesMap);
-    await updatePrice(oracleEtc, pricesMap);
   });
 
   // sync sga to sga database
@@ -45,7 +42,7 @@ const robotSchedules = ()=>{
 
   // sync sga config from wan to other chain, sga database
   schedule.scheduleJob('30 * * * * *', async () => {
-    await syncConfigToOtherChain(sgaWan, [oracleEth, oracleEtc]);
+    await syncConfigToOtherChain(sgaWan, [oracleEth]);
   });
 };
 
@@ -58,10 +55,9 @@ setTimeout(async () => {
 
   // await updatePrice(oracleWan, pricesMap);
   // await updatePrice(oracleEth, pricesMap);
-  // await updatePrice(oracleEtc, pricesMap);
   
   // scanInst.scanEvent();
-  // syncConfigToOtherChain(sgaWan, [oracleEth, oracleEtc]);
+  syncConfigToOtherChain(sgaWan, [oracleEth]);
 }, 0);
 
 // robotSchedules();
