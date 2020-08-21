@@ -26,7 +26,7 @@ const scanInst = createScanEvent(
 
 const robotSchedules = ()=>{
   // update price
-  schedule.scheduleJob('0 */10 * * * *', async () => {
+  schedule.scheduleJob('0 0 */2 * * *', async () => {
     const pricesMap = await doSchedule(getPrices_cmc, [process.env.SYMBOLS]);
     
     log.info(`prices: ${JSON.stringify(pricesMap)}`);
@@ -36,12 +36,12 @@ const robotSchedules = ()=>{
   });
 
   // sync sga to sga database
-  schedule.scheduleJob('20 * * * * *', () => {
+  schedule.scheduleJob('0 */5 * * * *', () => {
     scanInst.scanEvent();
   });
 
   // sync sga config from wan to other chain, sga database
-  schedule.scheduleJob('30 * * * * *', async () => {
+  schedule.scheduleJob('50 */5 * * * *', async () => {
     await syncConfigToOtherChain(sgaWan, [oracleEth]);
   });
 };
@@ -57,8 +57,8 @@ setTimeout(async () => {
   // await updatePrice(oracleEth, pricesMap);
   
   // scanInst.scanEvent();
-  syncConfigToOtherChain(sgaWan, [oracleEth]);
+  // syncConfigToOtherChain(sgaWan, [oracleEth]);
 }, 0);
 
-// robotSchedules();
+robotSchedules();
 
