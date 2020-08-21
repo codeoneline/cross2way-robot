@@ -55,6 +55,17 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "server development",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}/src/server.js",
+      "envFile": "${workspaceFolder}/.env.development"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "admin local",
       "skipFiles": [
         "<node_internals>/**"
