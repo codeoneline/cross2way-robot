@@ -16,6 +16,10 @@ class Contract {
     this.retryTimes = parseInt(process.env.RECEIPT_RETRY_TIMES);
   }
 
+  async implementation() {
+    return await this.core.getScFun("implementation", [], this.contract, this.abi);
+  }
+
   async getOwner() {
     return await this.core.getScVar("owner", this.contract, this.abi);
   }
