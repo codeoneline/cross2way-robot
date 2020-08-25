@@ -18,6 +18,7 @@ const OracleProxy = require('./contract/oracle_proxy');
 const TokenManagerProxy = require('./contract/token_manager_proxy');
 const db = require('./lib/sqlite_db');
 const { web3 } = require('./lib/utils');
+const SGA = require('./contract/storeman_group_admin');
 ``
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
@@ -34,6 +35,9 @@ const oracleEth = new Oracle(chainEth, process.env.OR_ADDR_ETH, process.env.OR_O
 
 const tmWan = new TokenManager(chainWan, process.env.TM_ADDR, process.env.TM_OWNER_SK, process.env.TM_OWNER_ADDR);
 const tmEth = new TokenManager(chainEth, process.env.TM_ADDR_ETH, process.env.TM_OWNER_SK_ETH, process.env.TM_OWNER_ADDR_ETH);
+
+const sgaWan = new SGA(chainWan, process.env.SGA_ADDR, process.env.SGA_OWNER_SK, process.env.SGA_OWNER_ADDR);
+
 function removeIndexField(obj) {
   const ks = Object.keys(obj)
   for (let j = 0; j < ks.length/2; j++) {
@@ -122,7 +126,7 @@ app.get('/oracles', async (req, res) => {
   for (let i = 0; i<sgAll.length; i++) {
     const sg = sgAll[i];
     const groupId = sg.groupId;
-    const config = await oracleWan.getStoremanGroupConfig(groupId);
+    const config = await sgaWan.getStoremanGroupConfig(groupId);
     const configEth = await oracleEth.getStoremanGroupConfig(groupId);
     const ks = Object.keys(config);
 
