@@ -76,6 +76,10 @@ class IWan {
     const result = await this.apiClient.getScVar(this.chainType, contract._address.toLowerCase(), name, abi);
     return this.web0ToWeb1(name, result, contract, []);
   }
+  async getScMap(name, key, contract, abi) {
+    const result = await this.apiClient.getScMap(this.chainType, contract._address.toLowerCase(), name, key, abi);
+    return this.web0ToWeb1(name, result, contract, []);
+  }
 
   async getScFun(name, args, contract, abi) {
     const result = await this.apiClient.callScFunc(this.chainType, contract._address.toLowerCase(), name, args, abi);

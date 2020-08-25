@@ -33,6 +33,9 @@ class Web3Chain {
   async getScVar(name, contract, abi) {
     return await contract.methods[name]().call();
   }
+  async getScMap(name, key, contract, abi) {
+    return await contract.methods[name](key).call();
+  }
 
   async getScFun(name, args, contract, abi) {
     return await contract.methods[name](...args).call();
@@ -120,7 +123,7 @@ class Web3Chain {
     return await this.web3.eth.personal.unlockAccount(addr, password, duration);
   }
 
-  async getScMap(key, slt) {
+  async getSmartMap(key, slt) {
     const sltStr = slt.toString();
     const slot = "0".repeat(64 - sltStr.length) + sltStr;
 

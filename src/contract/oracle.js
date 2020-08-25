@@ -57,6 +57,10 @@ class Oracle extends Contract {
   async getStoremanGroupConfig(id) {
     return await this.core.getScFun("getStoremanGroupConfig", [id], this.contract, this.abi);
   }
+
+  async admin() {
+    return await this.core.getScVar('admin', this.contract, this.abi);
+  }
 }
 
 module.exports = Oracle;

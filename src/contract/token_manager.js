@@ -40,6 +40,18 @@ class TokenManager extends Contract {
     const data = await this.contract.methods.updateToken(address, name, symbol).encodeABI();
     return await this.doOperator(this.updateToken.name, data, null, '0x00', this.retryTimes, this.pv_key, this.pv_address);
   }
+
+  async totalTokenPairs() {
+    return await this.core.getScVar('totalTokenPairs', this.contract, this.abi);
+  }
+
+  async mapTokenPairIndex(index) {
+    return await this.core.getScMap('mapTokenPairIndex', index, this.contract, this.abi);
+  }
+
+  async mapTokenPairInfo(id) {
+    return await this.core.getScMap('mapTokenPairInfo', id, this.contract, this.abi);
+  }
 }
 
 module.exports = TokenManager;

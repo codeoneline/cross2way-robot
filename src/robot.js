@@ -57,8 +57,8 @@ setTimeout(async () => {
   // await updatePrice(oracleEth, pricesMap);
   
   // scanInst.scanEvent();
-  // syncConfigToOtherChain(sgaWan, [oracleEth]);
+  syncConfigToOtherChain(sgaWan, [oracleEth]);
 }, 0);
 
-robotSchedules();
+// robotSchedules();
 

@@ -11,14 +11,13 @@ app.all('*', (req, res, next) => {
   next();
 });
 
+const log = require('./lib/log');
 const Oracle = require('./contract/oracle');
 const TokenManager = require('./contract/token_manager');
 const OracleProxy = require('./contract/oracle_proxy');
 const TokenManagerProxy = require('./contract/token_manager_proxy');
-const SGA = require('./contract/storeman_group_admin');
 const db = require('./lib/sqlite_db');
-const { Integer } = require('better-sqlite3');
-
+``
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
 
@@ -31,6 +30,73 @@ const tmEthProxy = new TokenManagerProxy(chainEth, process.env.TM_ADDR_ETH, proc
 
 const oracleWan = new Oracle(chainWan, process.env.OR_ADDR, process.env.OR_OWNER_SK, process.env.OR_OWNER_ADDR);
 const oracleEth = new Oracle(chainEth, process.env.OR_ADDR_ETH, process.env.OR_OWNER_SK_ETH, process.env.OR_OWNER_ADDR_ETH);
+
+const tmWan = new TokenManager(chainWan, process.env.TM_ADDR, process.env.TM_OWNER_SK, process.env.TM_OWNER_ADDR);
+const tmEth = new TokenManager(chainEth, process.env.TM_ADDR_ETH, process.env.TM_OWNER_SK_ETH, process.env.TM_OWNER_ADDR_ETH);
+function removeIndexField(obj) {
+  const ks = Object.keys(obj)
+  for (let j = 0; j < ks.length/2; j++) {
+    const str = j.toString();
+    delete obj[str];
+  }
+  return obj
+}
+async function getTokenPairs(tm, total) {
+  const tokenPairs = {}
+  for(let i=0; i<total; i++) {
+    const id = parseInt(await tm.mapTokenPairIndex(i));
+    const tokenPairInfo = removeIndexField(await tm.getTokenPairInfo(id));
+    const ancestorInfo = removeIndexField(await tm.getAncestorInfo(id));
+    const tokenPair = {id: id}
+    
+    Object.assign(tokenPair, ancestorInfo, tokenPairInfo);
+    tokenPairs[id] = tokenPair;
+  }
+  return tokenPairs;
+}
+app.get('/tms', async (req, res) => {
+  // mapTokenPairInfo, mapTokenPairIndex
+  const totalTokenPairs = await tmWan.totalTokenPairs();
+  const totalTokenPairs_eth = await tmEth.totalTokenPairs();
+
+  const tokenPairs = await getTokenPairs(tmWan, totalTokenPairs)
+  const tokenPairs_eth = await getTokenPairs(tmEth, totalTokenPairs_eth)
+
+  const result = {
+    'wan' : {
+      tokenPairs: tokenPairs,
+    },
+    'eth' : {
+      tokenPairs: tokenPairs_eth,
+    }
+  }
+
+  // this.state = result;
+  // const chainNames = Object.keys(this.state);
+  // const tmColumns = ['name'];
+  // let tmsTmp = [];
+  // if (chainNames.length > 0) {
+  //   tmColumns.push(...chainNames);
+  //   const ids = Object.keys(this.state.wan.tokenPairs);
+  //   ids.forEach(id => {
+  //     const fields = Object.keys(this.state.wan.tokenPairs[id]);
+  //     const data = fields.map(field => {
+  //       const obj = {name: field}
+  //       chainNames.forEach(i => {
+  //         if (this.state[i].tokenPairs[id]) {
+  //           obj[i] = this.state[i].tokenPairs[id][field]
+  //         } else {
+  //           obj[i] = 'empty'
+  //         }
+  //       })
+  //       return obj;
+  //     })
+  //     // tmsTmp.push(<Fields columns={tmColumns} data={data} />)
+  //     tmsTmp.push(data);
+  //   })
+  // }
+  res.send(result)
+})
 
 app.get('/oracles', async (req, res) => {
   const prePricesArray = await oracleWan.getValues(process.env.SYMBOLS);
@@ -52,13 +118,15 @@ app.get('/oracles', async (req, res) => {
     const configEth = await oracleEth.getStoremanGroupConfig(groupId);
     const ks = Object.keys(config);
 
-    for (let j = 0; j < ks.length/2; j++) {
-      const str = j.toString();
-      delete config[str];
-      delete configEth[str];
+    if (config.gpk1 !== null || configEth.gpk1 !== null) {
+      for (let j = 0; j < ks.length/2; j++) {
+        const str = j.toString();
+        delete config[str];
+        delete configEth[str];
+      }
+      sgs_eth[groupId] = configEth;
+      sgs[groupId] = config;
     }
-    sgs[groupId] = config;
-    sgs_eth[groupId] = configEth[i];
   }
 
   const result = {
@@ -71,6 +139,31 @@ app.get('/oracles', async (req, res) => {
       sgs: sgs_eth,
     }
   }
+
+  // this.state = result
+  // const chainNames = Object.keys(this.state);
+  // const sgColumns = ['name'];
+  // let sgDate = [];
+  // if (chainNames.length > 0) {
+  //   sgColumns.push(...chainNames);
+  //   const groupIds = Object.keys(this.state.wan.sgs);
+  //   groupIds.forEach(id => {
+  //     const fields = Object.keys(this.state.wan.sgs[id]);
+  //     const data = fields.map(field => {
+  //       const obj = {name: field}
+  //       chainNames.forEach(i => {
+  //         if (this.state[i].sgs[id]) {
+  //           obj[i] = this.state[i].sgs[id][field]
+  //         } else {
+  //           obj[i] = 'empty'
+  //         }
+  //       })
+  //       return obj;
+  //     })
+  //     console.log(JSON.stringify(data));
+  //     sgDate.push(data);
+  //   })
+  // }
 
   res.send(result);
 })
