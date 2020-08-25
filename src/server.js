@@ -17,6 +17,7 @@ const TokenManager = require('./contract/token_manager');
 const OracleProxy = require('./contract/oracle_proxy');
 const TokenManagerProxy = require('./contract/token_manager_proxy');
 const db = require('./lib/sqlite_db');
+const { web3 } = require('./lib/utils');
 ``
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
@@ -63,10 +64,10 @@ app.get('/tms', async (req, res) => {
   const tokenPairs_eth = await getTokenPairs(tmEth, totalTokenPairs_eth)
 
   const result = {
-    'wan' : {
+    'WanChain' : {
       tokenPairs: tokenPairs,
     },
-    'eth' : {
+    'Ethereum' : {
       tokenPairs: tokenPairs_eth,
     }
   }
@@ -98,15 +99,22 @@ app.get('/tms', async (req, res) => {
   res.send(result)
 })
 
+const ether = Math.pow(10,18);
 app.get('/oracles', async (req, res) => {
   const prePricesArray = await oracleWan.getValues(process.env.SYMBOLS);
   const symbolsStringArray = process.env.SYMBOLS.replace(/\s+/g,"").split(',');
   const prePricesMap = {}
-  symbolsStringArray.forEach((v,i) => {prePricesMap[v] = prePricesArray[i];})
+  symbolsStringArray.forEach((v,i) => {
+    const padPrice = web3.utils.padLeft(prePricesArray[i], 19, '0');
+    prePricesMap[v] = padPrice.substr(0, padPrice.length - 18)+ '.'+ padPrice.substr(padPrice.length - 18, 18);
+  })
 
   const prePricesMap_Eth = {}
   const prePricesArray_Eth = await oracleEth.getValues(process.env.SYMBOLS);
-  symbolsStringArray.forEach((v,i) => {prePricesMap_Eth[v] = prePricesArray_Eth[i];})
+  symbolsStringArray.forEach((v,i) => {
+    const padPrice = web3.utils.padLeft(prePricesArray_Eth[i], 19, '0');
+    prePricesMap_Eth[v] = padPrice.substr(0, padPrice.length - 18)+ '.'+ padPrice.substr(padPrice.length - 18, 18);
+  })
 
   const sgs = {}
   const sgs_eth = {}
@@ -130,11 +138,11 @@ app.get('/oracles', async (req, res) => {
   }
 
   const result = {
-    'wan' : {
+    'WanChain' : {
       prices: prePricesMap,
       sgs: sgs,
     },
-    'eth' : {
+    'Ethereum' : {
       prices: prePricesMap_Eth,
       sgs: sgs_eth,
     }
@@ -179,7 +187,7 @@ app.get('/chains', async (req, res) => {
   const tm = new TokenManager(chainWan, odAddr);
   const tm_eth = new TokenManager(chainEth, odAddr_eth);
   const result = {
-    'wan' : {
+    'WanChain' : {
       blockNumber: await chainWan.core.getBlockNumber(),
 
       oracleProxy: process.env.OR_ADDR,
@@ -192,7 +200,7 @@ app.get('/chains', async (req, res) => {
       tokenManagerProxyOwner: await tmWanProxy.getOwner(),
       tokenManagerDelegatorOwner: await tm.getOwner(),
     },
-    'eth' : {
+    'Ethereum' : {
       blockNumber: await chainEth.core.getBlockNumber(),
 
       oracleProxy: process.env.OR_ADDR_ETH,
