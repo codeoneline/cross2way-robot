@@ -79,7 +79,37 @@ async function refreshTMS() {
       tokenPairs: tokenPairs_eth,
     }
   }
-  tmsResult = result;
+  // tmsResult = result;
+  const chainNames = Object.keys(result);
+  const tmColumns = ['name'];
+  let tmsTmp = [];
+  if (chainNames.length > 0) {
+    tmColumns.push(...chainNames);
+    const ids = Object.keys(result.WanChain.tokenPairs);
+    ids.forEach(id => {
+      const fields = Object.keys(result.WanChain.tokenPairs[id]);
+      const data = fields.map(field => {
+        const obj = {name: field}
+        chainNames.forEach(i => {
+          if (result[i].tokenPairs[id]) {
+            obj[i] = result[i].tokenPairs[id][field]
+          } else {
+            obj[i] = 'empty'
+          }
+        })
+        return obj;
+      })
+      tmsTmp.push({
+        title: `TokenPairID: ${id}`,
+        columns: tmColumns,
+        data: data
+      })
+    })
+  }
+
+  tmsResult = {
+    tms: tmsTmp,
+  }
 }
 
 async function refreshOracles() {
@@ -130,32 +160,52 @@ async function refreshOracles() {
     }
   }
 
-  oracleResult = result;
+  // oracleResult = result;
+  const priceColumns = ['name'];
+  const chainNames = Object.keys(result);
+  let priceData = [];
+  priceColumns.push(...chainNames);
+  priceData = Object.keys(result.WanChain.prices).map(field => {
+    const obj = {name: field}
+    chainNames.forEach(i => (obj[i] = result[i].prices[field]))
+    return obj;
+  })
 
-  // this.state = result
-  // const chainNames = Object.keys(this.state);
-  // const sgColumns = ['name'];
-  // let sgDate = [];
-  // if (chainNames.length > 0) {
-  //   sgColumns.push(...chainNames);
-  //   const groupIds = Object.keys(this.state.wan.sgs);
-  //   groupIds.forEach(id => {
-  //     const fields = Object.keys(this.state.wan.sgs[id]);
-  //     const data = fields.map(field => {
-  //       const obj = {name: field}
-  //       chainNames.forEach(i => {
-  //         if (this.state[i].sgs[id]) {
-  //           obj[i] = this.state[i].sgs[id][field]
-  //         } else {
-  //           obj[i] = 'empty'
-  //         }
-  //       })
-  //       return obj;
-  //     })
-  //     console.log(JSON.stringify(data));
-  //     sgDate.push(data);
-  //   })
-  // }
+  const sgColumns = ['name'];
+  const sgsTmp = [];
+  if (chainNames.length > 0) {
+    sgColumns.push(...chainNames);
+    const groupIds = Object.keys(result.WanChain.sgs);
+    groupIds.forEach(id => {
+      const fields = Object.keys(result.WanChain.sgs[id]);
+      const data = fields.map(field => {
+        const obj = {name: field}
+        chainNames.forEach(i => {
+          if (result[i].sgs[id] && result[i].sgs[id].gpk1 !== null) {
+            obj[i] = result[i].sgs[id][field]
+          } else {
+            obj[i] = 'empty'
+          }
+        })
+        return obj;
+      })
+      
+      sgsTmp.push({
+        title: `StoreManGroupID: ${id}`,
+        columns: sgColumns,
+        data: data,
+      })
+    })
+  }
+
+  oracleResult = {
+    prices: {
+      title: "Prices",
+      columns: priceColumns,
+      data: priceData
+    },
+    sgs: sgsTmp,
+  }
 }
 
 async function refreshChains() {
@@ -196,8 +246,21 @@ async function refreshChains() {
       tokenManagerDelegatorOwner: await tm_eth.getOwner(),
     }
   }
+  // chainsResult = result;
 
-  chainsResult = result;
+  const chainInfoColumns = ['name'];
+  const chainsNames = Object.keys(result);
+  chainInfoColumns.push(...chainsNames);
+  const chainInfoData = Object.keys(result.WanChain).map(field => {
+    const obj = {name: field}
+    chainsNames.forEach(i => (obj[i] = result[i][field]))
+    return obj;
+  })
+
+  chainsResult = {
+    columns: chainInfoColumns,
+    data: chainInfoData
+  };
 }
 
 setTimeout(async function() {
