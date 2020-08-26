@@ -17,7 +17,7 @@ const TokenManager = require('./contract/token_manager');
 const OracleProxy = require('./contract/oracle_proxy');
 const TokenManagerProxy = require('./contract/token_manager_proxy');
 const db = require('./lib/sqlite_db');
-const { web3 } = require('./lib/utils');
+const { web3, sleep } = require('./lib/utils');
 const SGA = require('./contract/storeman_group_admin');
 ``
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
@@ -59,8 +59,12 @@ async function getTokenPairs(tm, total) {
   }
   return tokenPairs;
 }
-app.get('/tms', async (req, res) => {
-  // mapTokenPairInfo, mapTokenPairIndex
+
+let tmsResult = {};
+let oracleResult = null;
+let chainsResult = null;
+
+async function refreshTMS() {
   const totalTokenPairs = await tmWan.totalTokenPairs();
   const totalTokenPairs_eth = await tmEth.totalTokenPairs();
 
@@ -75,36 +79,10 @@ app.get('/tms', async (req, res) => {
       tokenPairs: tokenPairs_eth,
     }
   }
+  tmsResult = result;
+}
 
-  // this.state = result;
-  // const chainNames = Object.keys(this.state);
-  // const tmColumns = ['name'];
-  // let tmsTmp = [];
-  // if (chainNames.length > 0) {
-  //   tmColumns.push(...chainNames);
-  //   const ids = Object.keys(this.state.wan.tokenPairs);
-  //   ids.forEach(id => {
-  //     const fields = Object.keys(this.state.wan.tokenPairs[id]);
-  //     const data = fields.map(field => {
-  //       const obj = {name: field}
-  //       chainNames.forEach(i => {
-  //         if (this.state[i].tokenPairs[id]) {
-  //           obj[i] = this.state[i].tokenPairs[id][field]
-  //         } else {
-  //           obj[i] = 'empty'
-  //         }
-  //       })
-  //       return obj;
-  //     })
-  //     // tmsTmp.push(<Fields columns={tmColumns} data={data} />)
-  //     tmsTmp.push(data);
-  //   })
-  // }
-  res.send(result)
-})
-
-const ether = Math.pow(10,18);
-app.get('/oracles', async (req, res) => {
+async function refreshOracles() {
   const prePricesArray = await oracleWan.getValues(process.env.SYMBOLS);
   const symbolsStringArray = process.env.SYMBOLS.replace(/\s+/g,"").split(',');
   const prePricesMap = {}
@@ -152,6 +130,8 @@ app.get('/oracles', async (req, res) => {
     }
   }
 
+  oracleResult = result;
+
   // this.state = result
   // const chainNames = Object.keys(this.state);
   // const sgColumns = ['name'];
@@ -176,11 +156,9 @@ app.get('/oracles', async (req, res) => {
   //     sgDate.push(data);
   //   })
   // }
+}
 
-  res.send(result);
-})
-
-app.get('/chains', async (req, res) => {
+async function refreshChains() {
   const odAddr = await oracleWanProxy.implementation();
   const odAddr_eth = await oracleEthProxy.implementation();
   const od = new Oracle(chainWan, odAddr);
@@ -219,7 +197,36 @@ app.get('/chains', async (req, res) => {
     }
   }
 
-  res.send(result)
+  chainsResult = result;
+}
+
+setTimeout(async function() {
+  await refreshTMS();
+  await refreshOracles();
+  await refreshChains();
+}, 0);
+
+setInterval(async function() {
+  try {
+    await refreshTMS();
+    await refreshOracles();
+    await refreshChains();
+  } catch(e) {
+    console.log(e);
+  }
+}, 60000);
+
+app.get('/tms', (req, res) => {
+  res.send(tmsResult);
+})
+
+
+app.get('/oracles', async (req, res) => {
+  res.send(oracleResult);
+})
+
+app.get('/chains', async (req, res) => {
+  res.send(chainsResult)
 })
 
 app.listen(port, () => {
