@@ -23,7 +23,7 @@ module.exports = {
       fromChainID: chainId.ETH,
       fromAccount: fromAccount,
       toChainID: chainId.WAN,
-      tokenAddress: '0x8758960317BcB6fdBE29Aa3c745b311f777f1969',
+      tokenAddress: '0x0046ed8875FBF56e541879d045fA8DFd4B2377D2',
     },
   },
   WAN2ETH: {
@@ -37,7 +37,7 @@ module.exports = {
       fromChainID: chainId.WAN,
       fromAccount: fromAccount,
       toChainID: chainId.ETH,
-      tokenAddress: '0x26FC21D4b1c6C3ca1964F8E5ff43dea3EC2Bd220',
+      tokenAddress: '0xb616cDd6c16784847e6279Ed2bdeF1083181fa8e',
     },
   },
   LINK2WAN: {
@@ -47,11 +47,11 @@ module.exports = {
     mapToken: {name: 'wanLINK@wanchain', symbol: 'wanLINK', decimals: 18},
     pair: {
       id: 3,
-      aInfo: [hexToBytes("0xc6aBa254B0bea0f67Dd8E97Bf1198F96FF5c32B2"), "link", "LINK", 18, chainId.ETH],
+      aInfo: [hexToBytes("0x01be23585060835e02b77ef475b0cc51aa1e0709"), "link", "LINK", 18, chainId.ETH],
       fromChainID: chainId.ETH,
-      fromAccount: hexToBytes("0xc6aBa254B0bea0f67Dd8E97Bf1198F96FF5c32B2"),
+      fromAccount: hexToBytes("0x01be23585060835e02b77ef475b0cc51aa1e0709"),
       toChainID: chainId.WAN,
-      tokenAddress: '0x217CE1c6052b8Cb0099587580464998c41306145',
+      tokenAddress: '0x5F441FC295bD05BeFe06347E826Fb5aD720344c4',
     },
   },
   FNX2ETH: {
@@ -65,7 +65,7 @@ module.exports = {
       fromChainID: chainId.WAN,
       fromAccount: hexToBytes("0x2283d27be033D183F0F46E70992Ebc1356f6e8b3"),
       toChainID: chainId.ETH,
-      tokenAddress: '0x422504c423E7373415eEC43721F63c0B96AD39ab',
+      tokenAddress: '0x726DEe245B6B0FFa6DA754882bAEc59927C24dC6',
     },
   },
 
@@ -76,11 +76,11 @@ module.exports = {
     mapToken: {name: 'wanBTC@ethereum', symbol: 'wanBTC', decimals: 8},
     pair: {
       id: 5,
-      aInfo: [hexToBytes('0x3aE58C9B8b4da8A29A98494D96f2C919E2E641B1'), "btc", "BTC", 8, chainId.WAN],
+      aInfo: [hexToBytes('0xC978c14020b4a5965337fb141D2187f387De5Ce8'), "btc", "BTC", 8, chainId.WAN],
       fromChainID: chainId.WAN,
-      fromAccount: hexToBytes('0x3aE58C9B8b4da8A29A98494D96f2C919E2E641B1'),
+      fromAccount: hexToBytes('0xC978c14020b4a5965337fb141D2187f387De5Ce8'),
       toChainID: chainId.ETH,
-      tokenAddress: '0x81c144a2082eb4E116223c70C7f70081acC8a2AB',
+      tokenAddress: '0x556f6EB6e6181289FDe40ddA4E873245c3Ec8d4a',
     },
   },
 
@@ -91,11 +91,11 @@ module.exports = {
     mapToken: {name: 'wanEOS@ethereum', symbol: 'wanEOS', decimals: 4},
     pair: {
       id: 6,
-      aInfo: [hexToBytes('0xd264B2a8d5938e6Eb8235EA8D4Aaa8eC135F2c56'), "eos", "EOS", 4, chainId.WAN],
+      aInfo: [hexToBytes('0x31DdD0Bd73bb1fD4068ACC91c966B99C24B016D8'), "eos", "EOS", 4, chainId.WAN],
       fromChainID: chainId.WAN,
-      fromAccount: hexToBytes('0xd264B2a8d5938e6Eb8235EA8D4Aaa8eC135F2c56'),
+      fromAccount: hexToBytes('0x31DdD0Bd73bb1fD4068ACC91c966B99C24B016D8'),
       toChainID: chainId.ETH,
-      tokenAddress: '0x075399B3DF085c2A04d08Db5C914fF14Bb0F23d4',
+      tokenAddress: '0xB4dedA9260B81414B3dE517e754D8F182d5854F7',
     },
   },
 }
