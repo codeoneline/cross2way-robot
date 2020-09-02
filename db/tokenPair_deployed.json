@@ -2,13 +2,13 @@
   "ETH2WAN": {
     "originChain": "ETH",
     "originToken": {
-      "name": "eth",
+      "name": "Ethereum",
       "symbol": "ETH",
       "decimals": 18
     },
     "mapChain": "WAN",
     "mapToken": {
-      "name": "wanETH@wanchain",
+      "name": "wanETH@Wanchain",
       "symbol": "wanETH",
       "decimals": 18
     },
@@ -37,7 +37,7 @@
           0,
           0
         ],
-        "eth",
+        "Ethereum",
         "ETH",
         18,
         2147483708
@@ -72,13 +72,13 @@
   "WAN2ETH": {
     "originChain": "WAN",
     "originToken": {
-      "name": "wan",
+      "name": "Wanchain",
       "symbol": "WAN",
       "decimals": 18
     },
     "mapChain": "ETH",
     "mapToken": {
-      "name": "WAN@ethereum",
+      "name": "WAN@Ethereum",
       "symbol": "WAN",
       "decimals": 18
     },
@@ -107,7 +107,7 @@
           0,
           0
         ],
-        "wan",
+        "Wanchain",
         "WAN",
         18,
         2153201998
@@ -142,13 +142,13 @@
   "LINK2WAN": {
     "originChain": "ETH",
     "originToken": {
-      "name": "link",
+      "name": "Chain Link",
       "symbol": "LINK",
       "decimals": 18
     },
     "mapChain": "WAN",
     "mapToken": {
-      "name": "wanLINK@wanchain",
+      "name": "wanLINK@Wanchain",
       "symbol": "wanLINK",
       "decimals": 18
     },
@@ -177,7 +177,7 @@
           7,
           9
         ],
-        "link",
+        "Chain Link",
         "LINK",
         18,
         2147483708
@@ -212,13 +212,13 @@
   "FNX2ETH": {
     "originChain": "WAN",
     "originToken": {
-      "name": "fnx ",
+      "name": "FinNexus ",
       "symbol": "FNX",
       "decimals": 18
     },
     "mapChain": "ETH",
     "mapToken": {
-      "name": "wanFNX@ethereum",
+      "name": "wanFNX@Ethereum",
       "symbol": "wanFNX",
       "decimals": 18
     },
@@ -247,7 +247,7 @@
           232,
           179
         ],
-        "fnx",
+        "FinNexus",
         "FNX",
         18,
         2153201998
@@ -282,13 +282,13 @@
   "BTC2ETH": {
     "originChain": "WAN",
     "originToken": {
-      "name": "btc",
+      "name": "Bitcoin",
       "symbol": "BTC",
       "decimals": 8
     },
     "mapChain": "ETH",
     "mapToken": {
-      "name": "wanBTC@ethereum",
+      "name": "wanBTC@Ethereum",
       "symbol": "wanBTC",
       "decimals": 8
     },
@@ -317,7 +317,7 @@
           92,
           232
         ],
-        "btc",
+        "Bitcoin",
         "BTC",
         8,
         2153201998
@@ -352,13 +352,13 @@
   "EOS2ETH": {
     "originChain": "WAN",
     "originToken": {
-      "name": "eos",
+      "name": "EOS",
       "symbol": "EOS",
       "decimals": 4
     },
     "mapChain": "ETH",
     "mapToken": {
-      "name": "wanEOS@ethereum",
+      "name": "wanEOS@Ethereum",
       "symbol": "wanEOS",
       "decimals": 4
     },
@@ -387,7 +387,7 @@
           22,
           216
         ],
-        "eos",
+        "EOS",
         "EOS",
         4,
         2153201998
