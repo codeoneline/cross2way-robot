@@ -77,6 +77,17 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "robot development testnet",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}/src/robot.js",
+      "envFile": "${workspaceFolder}/.env.development.testnet"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "admin local",
       "skipFiles": [
         "<node_internals>/**"
