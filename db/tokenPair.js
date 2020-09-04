@@ -23,7 +23,7 @@ module.exports = {
       fromChainID: chainId.ETH,
       fromAccount: fromAccount,
       toChainID: chainId.WAN,
-      tokenAddress: '0x0046ed8875FBF56e541879d045fA8DFd4B2377D2',
+      tokenAddress: '0xFABd5d341dd3b933Ea9906d921Df7BE79c156E8D',
     },
   },
   WAN2ETH: {
@@ -37,7 +37,7 @@ module.exports = {
       fromChainID: chainId.WAN,
       fromAccount: fromAccount,
       toChainID: chainId.ETH,
-      tokenAddress: '0xb616cDd6c16784847e6279Ed2bdeF1083181fa8e',
+      tokenAddress: '0xf832a671af322a28493b26D56c952795C05d7B11',
     },
   },
   LINK2WAN: {
@@ -51,7 +51,7 @@ module.exports = {
       fromChainID: chainId.ETH,
       fromAccount: hexToBytes("0x01be23585060835e02b77ef475b0cc51aa1e0709"),
       toChainID: chainId.WAN,
-      tokenAddress: '0x5F441FC295bD05BeFe06347E826Fb5aD720344c4',
+      tokenAddress: '0x6e7bC85ab206965a4118DA06C9E66Bd49bDc33B8',
     },
   },
   FNX2ETH: {
@@ -65,7 +65,7 @@ module.exports = {
       fromChainID: chainId.WAN,
       fromAccount: hexToBytes("0x2283d27be033D183F0F46E70992Ebc1356f6e8b3"),
       toChainID: chainId.ETH,
-      tokenAddress: '0x726DEe245B6B0FFa6DA754882bAEc59927C24dC6',
+      tokenAddress: '0xf9a9Ef6078Bd6679d530ad61c6108AB3Ea3b1bA8',
     },
   },
 
@@ -80,7 +80,7 @@ module.exports = {
       fromChainID: chainId.WAN,
       fromAccount: hexToBytes('0xC978c14020b4a5965337fb141D2187f387De5Ce8'),
       toChainID: chainId.ETH,
-      tokenAddress: '0x556f6EB6e6181289FDe40ddA4E873245c3Ec8d4a',
+      tokenAddress: '0x1c5E5C977f95681923A026AB1ED72fF1a12b0737',
     },
   },
 
@@ -95,7 +95,7 @@ module.exports = {
       fromChainID: chainId.WAN,
       fromAccount: hexToBytes('0x31DdD0Bd73bb1fD4068ACC91c966B99C24B016D8'),
       toChainID: chainId.ETH,
-      tokenAddress: '0xB4dedA9260B81414B3dE517e754D8F182d5854F7',
+      tokenAddress: '0xdD8AD504B0FFbF5188C69EF8914f9bd3B5b8E4Df',
     },
   },
 }
