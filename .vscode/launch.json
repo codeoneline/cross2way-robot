@@ -112,6 +112,18 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "admin development my",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "runtimeArgs": ["-r", "dotenv/config"],
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}/src/admin_my.js",
+      "args": ["dotenv_config_path=.env.development"]
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "admin production",
       "skipFiles": [
         "<node_internals>/**"

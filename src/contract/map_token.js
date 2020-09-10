@@ -16,6 +16,11 @@ class MapToken extends Contract {
     return await this.doOperator(this.burn.name, data, null, '0x00', this.retryTimes, this.pv_key, this.pv_address);
   }
 
+  async transfer(to, amount) {
+    const data = this.contract.methods.transfer(to, amount).encodeABI();
+    return await this.doOperator(this.transfer.name, data, null, '0x00', this.retryTimes, this.pv_key, this.pv_address);
+  }
+
   async update(name, symbol) {
     const data = this.contract.methods.update(name, symbol).encodeABI();
     return await this.doOperator(this.update.name, data, null, '0x00', this.retryTimes, this.pv_key, this.pv_address);

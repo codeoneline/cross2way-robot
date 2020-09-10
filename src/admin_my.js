@@ -6,7 +6,7 @@ const StoremanGroupAdminMy = require('./contract/storeman_group_admin_my');
 const MapToken = require('./contract/map_token');
 
 const {changeOwner, upgradeTo, mint, unlockAccount, getBalance,
-  addToken, addTokenPair, updateTokenPair, deployTokenPairOrUpdate} = require('./admin_core');
+  addToken, addTokenPair, updateTokenPair, deployTokenPairOrUpdate, transfer} = require('./admin_core');
 
 const { web3 } = require('./lib/utils');
 const fs = require('fs');
@@ -130,7 +130,11 @@ setTimeout( async () => {
 
   // await mint([fnxWanMy, linkEth, eosWanMy, btcWanMy], "0x67e3b428acbc3aa2fd38813f65dafbd5af97c6d5", 10000000);
   // await mint([linkEth], "0xe2f31d7ba3e0098ea0e64d94c0224365812b986c", 10000000);
-  await mint([fnxWanMy], "0xFB683bDDB0ACBB00Dd162CD5E3798c7Fc6E5CFc0".toLowerCase(), 10000000);
+  // await mint([fnxWanMy], "0xFB683bDDB0ACBB00Dd162CD5E3798c7Fc6E5CFc0".toLowerCase(), 10000000);
+  // await mint([fnxWanMy], "0x2d0e7c0813a51d3bd1d08246af2a8a7a57d8922e".toLowerCase(), 10000000);
+  // await mint([fnxWanMy], "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8".toLowerCase(), 10000000);
+  // await transfer(fnxWanMy, "0x0d5A1204c001693D86E70566Ae57D49F40d04C00".toLowerCase(), 1);
+  await transfer(fnxWanMy, "0x0d5A1204c001693D86E70566Ae57D49F40d04C90", 1);
 
   // await upgradeMyOracle();
   // await upgradeMyTokenManager();

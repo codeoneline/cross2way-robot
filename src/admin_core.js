@@ -21,6 +21,10 @@ async function mint(contracts, addr, a) {
   }
 }
 
+async function transfer(coin, to, a) {
+  await coin.transfer(to, a);
+}
+
 async function unlockAccount(chains, address, password, time) {
   for(let i=0; i<chains.length; i++) {
     const result = await chains[i].core.unlockAccount(address, password, time);
@@ -137,4 +141,5 @@ module.exports = {
   addTokenPair,
   updateTokenPair,
   deployTokenPairOrUpdate,
+  transfer,
 }
