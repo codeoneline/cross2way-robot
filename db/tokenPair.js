@@ -61,9 +61,9 @@ module.exports = {
     mapToken: {name: 'wanFNX@Ethereum', symbol: 'wanFNX', decimals: 18},
     pair: {
       id: 4,
-      aInfo: [hexToBytes("0xb9e6403c3d221bb5fa91b2e27aab75bf7e7dcc48"), "FinNexus", "FNX", 18, chainId.WAN],
+      aInfo: [hexToBytes("0x974AB46969D3D9a4569546051a797729E301d6Eb"), "FinNexus", "FNX", 18, chainId.WAN],
       fromChainID: chainId.WAN,
-      fromAccount: hexToBytes("0xb9e6403c3d221bb5fa91b2e27aab75bf7e7dcc48"),
+      fromAccount: hexToBytes("0x974AB46969D3D9a4569546051a797729E301d6Eb"),
       toChainID: chainId.ETH,
       tokenAddress: '0xf9a9Ef6078Bd6679d530ad61c6108AB3Ea3b1bA8',
     },
