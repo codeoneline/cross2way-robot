@@ -42,25 +42,6 @@
     "type": "function"
   },
   {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "badAddrs",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "constant": false,
     "inputs": [
       {
@@ -118,25 +99,6 @@
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "badTypes",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -417,6 +379,10 @@
           },
           {
             "name": "minDelegateIn",
+            "type": "uint256"
+          },
+          {
+            "name": "minPartIn",
             "type": "uint256"
           },
           {
@@ -886,12 +852,12 @@
         "type": "bytes32"
       },
       {
-        "name": "slashType",
-        "type": "uint8[]"
+        "name": "indexs",
+        "type": "uint256[]"
       },
       {
-        "name": "badAddrs",
-        "type": "address[]"
+        "name": "slashTypes",
+        "type": "uint8[]"
       }
     ],
     "name": "setInvalidSm",
@@ -967,7 +933,7 @@
     "type": "function"
   },
   {
-    "constant": false,
+    "constant": true,
     "inputs": [
       {
         "name": "groupId",
@@ -982,7 +948,7 @@
       }
     ],
     "payable": false,
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -1168,6 +1134,10 @@
           },
           {
             "name": "minDelegateIn",
+            "type": "uint256"
+          },
+          {
+            "name": "minPartIn",
             "type": "uint256"
           },
           {

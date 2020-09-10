@@ -134,7 +134,7 @@ setTimeout( async () => {
   // await mint([fnxWanMy], "0x2d0e7c0813a51d3bd1d08246af2a8a7a57d8922e".toLowerCase(), 10000000);
   // await mint([fnxWanMy], "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8".toLowerCase(), 10000000);
   // await transfer(fnxWanMy, "0x0d5A1204c001693D86E70566Ae57D49F40d04C00".toLowerCase(), 1);
-  await transfer(fnxWanMy, "0x0d5A1204c001693D86E70566Ae57D49F40d04C90", 1);
+  // await transfer(fnxWanMy, "0x0d5A1204c001693D86E70566Ae57D49F40d04C90", 1);
 
   // await upgradeMyOracle();
   // await upgradeMyTokenManager();
