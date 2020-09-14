@@ -1,358 +1,10 @@
 [
   {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "admin",
-        "type": "address"
-      }
-    ],
-    "name": "removeAdmin",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "mapTokenPairIndex",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "mapTokenPairInfo",
-    "outputs": [
-      {
-        "components": [
-          {
-            "name": "account",
-            "type": "bytes"
-          },
-          {
-            "name": "name",
-            "type": "string"
-          },
-          {
-            "name": "symbol",
-            "type": "string"
-          },
-          {
-            "name": "decimals",
-            "type": "uint8"
-          },
-          {
-            "name": "chainID",
-            "type": "uint256"
-          }
-        ],
-        "name": "aInfo",
-        "type": "tuple"
-      },
-      {
-        "name": "fromChainID",
-        "type": "uint256"
-      },
-      {
-        "name": "fromAccount",
-        "type": "bytes"
-      },
-      {
-        "name": "toChainID",
-        "type": "uint256"
-      },
-      {
-        "name": "toAccount",
-        "type": "bytes"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "admin",
-        "type": "address"
-      }
-    ],
-    "name": "addAdmin",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [],
-    "name": "renounceOwnership",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [],
-    "name": "acceptOwnership",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "owner",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "_newOwner",
-        "type": "address"
-      }
-    ],
-    "name": "changeOwner",
-    "outputs": [],
-    "payable": false,
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "totalTokenPairs",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [],
-    "name": "newOwner",
-    "outputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "constant": true,
-    "inputs": [
-      {
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "name": "mapAdmin",
-    "outputs": [
-      {
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "anonymous": false,
     "inputs": [
       {
         "indexed": false,
-        "name": "tokenAddress",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "name": "symbol",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "name": "decimals",
-        "type": "uint8"
-      }
-    ],
-    "name": "AddToken",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "name": "id",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "name": "fromChainID",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "name": "fromAccount",
-        "type": "bytes"
-      },
-      {
-        "indexed": false,
-        "name": "toChainID",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "name": "toAccount",
-        "type": "bytes"
-      }
-    ],
-    "name": "AddTokenPair",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "name": "id",
-        "type": "uint256"
-      },
-      {
-        "components": [
-          {
-            "name": "account",
-            "type": "bytes"
-          },
-          {
-            "name": "name",
-            "type": "string"
-          },
-          {
-            "name": "symbol",
-            "type": "string"
-          },
-          {
-            "name": "decimals",
-            "type": "uint8"
-          },
-          {
-            "name": "chainID",
-            "type": "uint256"
-          }
-        ],
-        "indexed": false,
-        "name": "aInfo",
-        "type": "tuple"
-      },
-      {
-        "indexed": false,
-        "name": "fromChainID",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "name": "fromAccount",
-        "type": "bytes"
-      },
-      {
-        "indexed": false,
-        "name": "toChainID",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "name": "toAccount",
-        "type": "bytes"
-      }
-    ],
-    "name": "UpdateTokenPair",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "name": "id",
-        "type": "uint256"
-      }
-    ],
-    "name": "RemoveTokenPair",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "name": "tokenAddress",
-        "type": "address"
-      },
-      {
-        "indexed": false,
-        "name": "name",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "name": "symbol",
-        "type": "string"
-      }
-    ],
-    "name": "UpdateToken",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
+        "internalType": "address",
         "name": "admin",
         "type": "address"
       }
@@ -365,6 +17,75 @@
     "inputs": [
       {
         "indexed": false,
+        "internalType": "address",
+        "name": "tokenAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "symbol",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "decimals",
+        "type": "uint8"
+      }
+    ],
+    "name": "AddToken",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "fromChainID",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes",
+        "name": "fromAccount",
+        "type": "bytes"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "toChainID",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes",
+        "name": "toAccount",
+        "type": "bytes"
+      }
+    ],
+    "name": "AddTokenPair",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
         "name": "admin",
         "type": "address"
       }
@@ -373,251 +94,508 @@
     "type": "event"
   },
   {
-    "constant": false,
+    "anonymous": false,
     "inputs": [
       {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      }
+    ],
+    "name": "RemoveTokenPair",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "tokenAddress",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "symbol",
+        "type": "string"
+      }
+    ],
+    "name": "UpdateToken",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
         "name": "id",
         "type": "uint256"
       },
       {
+        "components": [
+          {
+            "internalType": "bytes",
+            "name": "account",
+            "type": "bytes"
+          },
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "string",
+            "name": "symbol",
+            "type": "string"
+          },
+          {
+            "internalType": "uint8",
+            "name": "decimals",
+            "type": "uint8"
+          },
+          {
+            "internalType": "uint256",
+            "name": "chainID",
+            "type": "uint256"
+          }
+        ],
+        "indexed": false,
+        "internalType": "struct TokenManagerStorage.AncestorInfo",
+        "name": "aInfo",
+        "type": "tuple"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "fromChainID",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes",
+        "name": "fromAccount",
+        "type": "bytes"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "toChainID",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes",
+        "name": "toAccount",
+        "type": "bytes"
+      }
+    ],
+    "name": "UpdateTokenPair",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "acceptOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "admin",
+        "type": "address"
+      }
+    ],
+    "name": "addAdmin",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "changeOwner",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "mapAdmin",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "mapTokenPairIndex",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "newOwner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "admin",
+        "type": "address"
+      }
+    ],
+    "name": "removeAdmin",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalTokenPairs",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
         "name": "to",
         "type": "address"
       },
       {
+        "internalType": "uint256",
         "name": "value",
         "type": "uint256"
       }
     ],
     "name": "mintToken",
     "outputs": [],
-    "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "constant": false,
     "inputs": [
       {
+        "internalType": "uint256",
         "name": "id",
         "type": "uint256"
       },
       {
+        "internalType": "uint256",
         "name": "value",
         "type": "uint256"
       }
     ],
     "name": "burnToken",
     "outputs": [],
-    "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "constant": false,
     "inputs": [
       {
+        "internalType": "string",
         "name": "name",
         "type": "string"
       },
       {
+        "internalType": "string",
         "name": "symbol",
         "type": "string"
       },
       {
+        "internalType": "uint8",
         "name": "decimals",
         "type": "uint8"
       }
     ],
     "name": "addToken",
     "outputs": [],
-    "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "constant": false,
     "inputs": [
       {
+        "internalType": "uint256",
         "name": "id",
         "type": "uint256"
       },
       {
         "components": [
           {
+            "internalType": "bytes",
             "name": "account",
             "type": "bytes"
           },
           {
+            "internalType": "string",
             "name": "name",
             "type": "string"
           },
           {
+            "internalType": "string",
             "name": "symbol",
             "type": "string"
           },
           {
+            "internalType": "uint8",
             "name": "decimals",
             "type": "uint8"
           },
           {
+            "internalType": "uint256",
             "name": "chainID",
             "type": "uint256"
           }
         ],
+        "internalType": "struct TokenManagerStorage.AncestorInfo",
         "name": "aInfo",
         "type": "tuple"
       },
       {
+        "internalType": "uint256",
         "name": "fromChainID",
         "type": "uint256"
       },
       {
+        "internalType": "bytes",
         "name": "fromAccount",
         "type": "bytes"
       },
       {
+        "internalType": "uint256",
         "name": "toChainID",
         "type": "uint256"
       },
       {
+        "internalType": "bytes",
         "name": "toAccount",
         "type": "bytes"
       }
     ],
     "name": "addTokenPair",
     "outputs": [],
-    "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "constant": false,
     "inputs": [
       {
+        "internalType": "uint256",
         "name": "id",
         "type": "uint256"
       },
       {
         "components": [
           {
+            "internalType": "bytes",
             "name": "account",
             "type": "bytes"
           },
           {
+            "internalType": "string",
             "name": "name",
             "type": "string"
           },
           {
+            "internalType": "string",
             "name": "symbol",
             "type": "string"
           },
           {
+            "internalType": "uint8",
             "name": "decimals",
             "type": "uint8"
           },
           {
+            "internalType": "uint256",
             "name": "chainID",
             "type": "uint256"
           }
         ],
+        "internalType": "struct TokenManagerStorage.AncestorInfo",
         "name": "aInfo",
         "type": "tuple"
       },
       {
+        "internalType": "uint256",
         "name": "fromChainID",
         "type": "uint256"
       },
       {
+        "internalType": "bytes",
         "name": "fromAccount",
         "type": "bytes"
       },
       {
+        "internalType": "uint256",
         "name": "toChainID",
         "type": "uint256"
       },
       {
+        "internalType": "bytes",
         "name": "toAccount",
         "type": "bytes"
       }
     ],
     "name": "updateTokenPair",
     "outputs": [],
-    "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "constant": false,
     "inputs": [
       {
+        "internalType": "uint256",
         "name": "id",
         "type": "uint256"
       }
     ],
     "name": "removeTokenPair",
     "outputs": [],
-    "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "constant": false,
     "inputs": [
       {
+        "internalType": "address",
         "name": "tokenAddress",
         "type": "address"
       },
       {
+        "internalType": "string",
         "name": "name",
         "type": "string"
       },
       {
+        "internalType": "string",
         "name": "symbol",
         "type": "string"
       }
     ],
     "name": "updateToken",
     "outputs": [],
-    "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "constant": false,
     "inputs": [
       {
+        "internalType": "address",
         "name": "tokenAddress",
         "type": "address"
       },
       {
+        "internalType": "address",
         "name": "_newOwner",
         "type": "address"
       }
     ],
     "name": "changeTokenOwner",
     "outputs": [],
-    "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "constant": false,
     "inputs": [
       {
+        "internalType": "address",
         "name": "tokenAddress",
         "type": "address"
       }
     ],
     "name": "acceptTokenOwnership",
     "outputs": [],
-    "payable": false,
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "constant": true,
     "inputs": [
       {
+        "internalType": "uint256",
         "name": "id",
         "type": "uint256"
       }
@@ -625,30 +603,33 @@
     "name": "getTokenPairInfo",
     "outputs": [
       {
+        "internalType": "uint256",
         "name": "fromChainID",
         "type": "uint256"
       },
       {
+        "internalType": "bytes",
         "name": "fromAccount",
         "type": "bytes"
       },
       {
+        "internalType": "uint256",
         "name": "toChainID",
         "type": "uint256"
       },
       {
+        "internalType": "bytes",
         "name": "toAccount",
         "type": "bytes"
       }
     ],
-    "payable": false,
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "constant": true,
     "inputs": [
       {
+        "internalType": "uint256",
         "name": "id",
         "type": "uint256"
       }
@@ -656,30 +637,33 @@
     "name": "getTokenInfo",
     "outputs": [
       {
+        "internalType": "address",
         "name": "addr",
         "type": "address"
       },
       {
+        "internalType": "string",
         "name": "name",
         "type": "string"
       },
       {
+        "internalType": "string",
         "name": "symbol",
         "type": "string"
       },
       {
+        "internalType": "uint8",
         "name": "decimals",
         "type": "uint8"
       }
     ],
-    "payable": false,
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "constant": true,
     "inputs": [
       {
+        "internalType": "uint256",
         "name": "id",
         "type": "uint256"
       }
@@ -687,76 +671,86 @@
     "name": "getAncestorInfo",
     "outputs": [
       {
+        "internalType": "bytes",
         "name": "account",
         "type": "bytes"
       },
       {
+        "internalType": "string",
         "name": "name",
         "type": "string"
       },
       {
+        "internalType": "string",
         "name": "symbol",
         "type": "string"
       },
       {
+        "internalType": "uint8",
         "name": "decimals",
         "type": "uint8"
       },
       {
+        "internalType": "uint256",
         "name": "chainId",
         "type": "uint256"
       }
     ],
-    "payable": false,
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "constant": true,
     "inputs": [],
     "name": "getTokenPairs",
     "outputs": [
       {
+        "internalType": "uint256[]",
         "name": "id",
         "type": "uint256[]"
       },
       {
+        "internalType": "uint256[]",
         "name": "fromChainID",
         "type": "uint256[]"
       },
       {
+        "internalType": "bytes[]",
         "name": "fromAccount",
         "type": "bytes[]"
       },
       {
+        "internalType": "uint256[]",
         "name": "toChainID",
         "type": "uint256[]"
       },
       {
+        "internalType": "bytes[]",
         "name": "toAccount",
         "type": "bytes[]"
       },
       {
+        "internalType": "string[]",
         "name": "ancestorSymbol",
         "type": "string[]"
       },
       {
+        "internalType": "uint8[]",
         "name": "ancestorDecimals",
         "type": "uint8[]"
       }
     ],
-    "payable": false,
     "stateMutability": "view",
     "type": "function"
   },
   {
-    "constant": true,
     "inputs": [
       {
+        "internalType": "uint256",
         "name": "chainID1",
         "type": "uint256"
       },
       {
+        "internalType": "uint256",
         "name": "chainID2",
         "type": "uint256"
       }
@@ -764,35 +758,41 @@
     "name": "getTokenPairsByChainID",
     "outputs": [
       {
+        "internalType": "uint256[]",
         "name": "id",
         "type": "uint256[]"
       },
       {
+        "internalType": "uint256[]",
         "name": "fromChainID",
         "type": "uint256[]"
       },
       {
+        "internalType": "bytes[]",
         "name": "fromAccount",
         "type": "bytes[]"
       },
       {
+        "internalType": "uint256[]",
         "name": "toChainID",
         "type": "uint256[]"
       },
       {
+        "internalType": "bytes[]",
         "name": "toAccount",
         "type": "bytes[]"
       },
       {
+        "internalType": "string[]",
         "name": "ancestorSymbol",
         "type": "string[]"
       },
       {
+        "internalType": "uint8[]",
         "name": "ancestorDecimals",
         "type": "uint8[]"
       }
     ],
-    "payable": false,
     "stateMutability": "view",
     "type": "function"
   }
