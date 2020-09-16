@@ -23,7 +23,7 @@ module.exports = {
       fromChainID: chainId.ETH,
       fromAccount: fromAccount,
       toChainID: chainId.WAN,
-      tokenAddress: '0x6008D4CDA6C0d082f9f8D8Fc1Bb0A93b561545D6',
+      tokenAddress: '0xec2F1b90403c7DfcC72b4133A53ed84C355Fb31E',
     },
   },
   WAN2ETH: {
@@ -37,7 +37,7 @@ module.exports = {
       fromChainID: chainId.WAN,
       fromAccount: fromAccount,
       toChainID: chainId.ETH,
-      tokenAddress: '0xa6e1c6ed56e5aD845dFe73b267892c99B204d651',
+      tokenAddress: '0x931861219B87FFE4C58E42d682651fBe8E4473DA',
     },
   },
   LINK2WAN: {
@@ -47,11 +47,11 @@ module.exports = {
     mapToken: {name: 'wanLINK@Wanchain', symbol: 'wanLINK', decimals: 18},
     pair: {
       id: 3,
-      aInfo: [hexToBytes("0x01be23585060835e02b77ef475b0cc51aa1e0709"), "Chain Link", "LINK", 18, chainId.ETH],
+      aInfo: [hexToBytes("0xf19b8310fD591dfe7701FD203BdBd7DE9661e3f9"), "Chain Link", "LINK", 18, chainId.ETH],
       fromChainID: chainId.ETH,
-      fromAccount: hexToBytes("0x01be23585060835e02b77ef475b0cc51aa1e0709"),
+      fromAccount: hexToBytes("0xf19b8310fD591dfe7701FD203BdBd7DE9661e3f9"),
       toChainID: chainId.WAN,
-      tokenAddress: '0x72eab65c35d005cf12b0a19F6025dBAb5eD273B1',
+      tokenAddress: '0x94842606956bc0EA35935976fb8A0F5AC2C589ab',
     },
   },
   FNX2ETH: {
@@ -65,7 +65,7 @@ module.exports = {
       fromChainID: chainId.WAN,
       fromAccount: hexToBytes("0x391dD875cBC5955C151182396604F5e97B00d3f2"),
       toChainID: chainId.ETH,
-      tokenAddress: '0x5A6EE804fa22f80Fd1aC2aBd635542ce526CAb85',
+      tokenAddress: '0xe47330858469A0db9dDe13af8B353c718b778E68',
     },
   },
 
@@ -80,7 +80,7 @@ module.exports = {
       fromChainID: chainId.WAN,
       fromAccount: hexToBytes('0xBb661e11772f719263058c030aC47678a1e2f463'),
       toChainID: chainId.ETH,
-      tokenAddress: '0xb428E58C0612441b51DB6C51cc9488fa285c2E26',
+      tokenAddress: '0x09c6f912f88945694f425e654A9A1Cdb36E9dbA8',
     },
   },
 
@@ -95,7 +95,7 @@ module.exports = {
       fromChainID: chainId.WAN,
       fromAccount: hexToBytes('0xf601685D7999A323082C6dd29F10ec166F4A8d14'),
       toChainID: chainId.ETH,
-      tokenAddress: '0x66c495222335894f60dE102F6f5871a764911B35',
+      tokenAddress: '0x77588099C5312BA93ecA3c7b2A16E2b0757482bE',
     },
   },
 }

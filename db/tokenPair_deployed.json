@@ -66,7 +66,7 @@
         0
       ],
       "toChainID": 2153201998,
-      "tokenAddress": "0x6008D4CDA6C0d082f9f8D8Fc1Bb0A93b561545D6"
+      "tokenAddress": "0xec2F1b90403c7DfcC72b4133A53ed84C355Fb31E"
     }
   },
   "WAN2ETH": {
@@ -136,7 +136,7 @@
         0
       ],
       "toChainID": 2147483708,
-      "tokenAddress": "0xa6e1c6ed56e5aD845dFe73b267892c99B204d651"
+      "tokenAddress": "0x931861219B87FFE4C58E42d682651fBe8E4473DA"
     }
   },
   "LINK2WAN": {
@@ -156,26 +156,26 @@
       "id": 3,
       "aInfo": [
         [
-          1,
-          190,
-          35,
-          88,
-          80,
-          96,
+          241,
+          155,
           131,
-          94,
-          2,
-          183,
-          126,
-          244,
-          117,
-          176,
-          204,
-          81,
-          170,
-          30,
-          7,
-          9
+          16,
+          253,
+          89,
+          29,
+          254,
+          119,
+          1,
+          253,
+          32,
+          59,
+          219,
+          215,
+          222,
+          150,
+          97,
+          227,
+          249
         ],
         "Chain Link",
         "LINK",
@@ -184,29 +184,29 @@
       ],
       "fromChainID": 2147483708,
       "fromAccount": [
-        1,
-        190,
-        35,
-        88,
-        80,
-        96,
+        241,
+        155,
         131,
-        94,
-        2,
-        183,
-        126,
-        244,
-        117,
-        176,
-        204,
-        81,
-        170,
-        30,
-        7,
-        9
+        16,
+        253,
+        89,
+        29,
+        254,
+        119,
+        1,
+        253,
+        32,
+        59,
+        219,
+        215,
+        222,
+        150,
+        97,
+        227,
+        249
       ],
       "toChainID": 2153201998,
-      "tokenAddress": "0x72eab65c35d005cf12b0a19F6025dBAb5eD273B1"
+      "tokenAddress": "0x94842606956bc0EA35935976fb8A0F5AC2C589ab"
     }
   },
   "FNX2ETH": {
@@ -276,7 +276,7 @@
         242
       ],
       "toChainID": 2147483708,
-      "tokenAddress": "0x5A6EE804fa22f80Fd1aC2aBd635542ce526CAb85"
+      "tokenAddress": "0xe47330858469A0db9dDe13af8B353c718b778E68"
     }
   },
   "BTC2ETH": {
@@ -346,7 +346,7 @@
         99
       ],
       "toChainID": 2147483708,
-      "tokenAddress": "0xb428E58C0612441b51DB6C51cc9488fa285c2E26"
+      "tokenAddress": "0x09c6f912f88945694f425e654A9A1Cdb36E9dbA8"
     }
   },
   "EOS2ETH": {
@@ -416,7 +416,7 @@
         20
       ],
       "toChainID": 2147483708,
-      "tokenAddress": "0x66c495222335894f60dE102F6f5871a764911B35"
+      "tokenAddress": "0x77588099C5312BA93ecA3c7b2A16E2b0757482bE"
     }
   }
 }

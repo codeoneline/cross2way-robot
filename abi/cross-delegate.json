@@ -1,0 +1,874 @@
+[
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "bytes32",
+        "name": "smgID",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "timeStamp",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "receiver",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "fee",
+        "type": "uint256"
+      }
+    ],
+    "name": "SmgWithdrawFeeLogger",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "acceptOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "changeOwner",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "halted",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "lockedTime",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "newOwner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bool",
+        "name": "halt",
+        "type": "bool"
+      }
+    ],
+    "name": "setHalt",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "smgFeeReceiverTimeout",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "xHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "smgID",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenPairID",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "userAccount",
+        "type": "bytes"
+      }
+    ],
+    "name": "userMintLock",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "xHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "smgID",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenPairID",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "userAccount",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes",
+        "name": "r",
+        "type": "bytes"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "s",
+        "type": "bytes32"
+      }
+    ],
+    "name": "smgMintLock",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "x",
+        "type": "bytes32"
+      }
+    ],
+    "name": "userMintRedeem",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "x",
+        "type": "bytes32"
+      }
+    ],
+    "name": "smgMintRedeem",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "xHash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "smgMintRevoke",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "xHash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "userMintRevoke",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "xHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "smgID",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenPairID",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "userAccount",
+        "type": "bytes"
+      }
+    ],
+    "name": "userBurnLock",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "xHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "smgID",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenPairID",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "userAccount",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes",
+        "name": "r",
+        "type": "bytes"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "s",
+        "type": "bytes32"
+      }
+    ],
+    "name": "smgBurnLock",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "x",
+        "type": "bytes32"
+      }
+    ],
+    "name": "userBurnRedeem",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "x",
+        "type": "bytes32"
+      }
+    ],
+    "name": "smgBurnRedeem",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "xHash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "smgBurnRevoke",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "xHash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "userBurnRevoke",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "smgID",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenPairID",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "userAccount",
+        "type": "bytes"
+      }
+    ],
+    "name": "userFastMint",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "uniqueID",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "smgID",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenPairID",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "userAccount",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes",
+        "name": "r",
+        "type": "bytes"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "s",
+        "type": "bytes32"
+      }
+    ],
+    "name": "smgFastMint",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "smgID",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenPairID",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "userAccount",
+        "type": "bytes"
+      }
+    ],
+    "name": "userFastBurn",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "uniqueID",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "smgID",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint256",
+        "name": "tokenPairID",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "userAccount",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes",
+        "name": "r",
+        "type": "bytes"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "s",
+        "type": "bytes32"
+      }
+    ],
+    "name": "smgFastBurn",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "xHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "srcSmgID",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "destSmgID",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes",
+        "name": "r",
+        "type": "bytes"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "s",
+        "type": "bytes32"
+      }
+    ],
+    "name": "srcDebtLock",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "xHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "srcSmgID",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "destSmgID",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes",
+        "name": "r",
+        "type": "bytes"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "s",
+        "type": "bytes32"
+      }
+    ],
+    "name": "destDebtLock",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "x",
+        "type": "bytes32"
+      }
+    ],
+    "name": "srcDebtRedeem",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "x",
+        "type": "bytes32"
+      }
+    ],
+    "name": "destDebtRedeem",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "xHash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "destDebtRevoke",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "xHash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "srcDebtRevoke",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "smgID",
+        "type": "bytes32"
+      }
+    ],
+    "name": "getStoremanFee",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "fee",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "origChainID",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "shadowChainID",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "lockFee",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "revokeFee",
+        "type": "uint256"
+      }
+    ],
+    "name": "setFees",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "origChainID",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "shadowChainID",
+        "type": "uint256"
+      }
+    ],
+    "name": "getFees",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "lockFee",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "revokeFee",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "time",
+        "type": "uint256"
+      }
+    ],
+    "name": "setLockedTime",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "xHash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "getLeftLockedTime",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "leftLockedTime",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "tokenManager",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "smgAdminProxy",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "smgFeeProxy",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "quota",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "sigVerifier",
+        "type": "address"
+      }
+    ],
+    "name": "setPartners",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getPartners",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "tokenManager",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "smgAdminProxy",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "smgFeeProxy",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "quota",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "sigVerifier",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "timeout",
+        "type": "uint256"
+      }
+    ],
+    "name": "setWithdrawFeeTimeout",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "smgID",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint256",
+        "name": "timeStamp",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "receiver",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes",
+        "name": "r",
+        "type": "bytes"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "s",
+        "type": "bytes32"
+      }
+    ],
+    "name": "smgWithdrawFee",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
