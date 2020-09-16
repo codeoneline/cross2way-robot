@@ -48,21 +48,21 @@ const robotSchedules = ()=>{
 
 // helper functions
 
-setTimeout(async () => {
-  // const pricesMap = await doSchedule(getPrices_cmc, [process.env.SYMBOLS]);
+// setTimeout(async () => {
+//   const pricesMap = await doSchedule(getPrices_cmc, [process.env.SYMBOLS]);
   
-  // log.info(`prices: ${JSON.stringify(pricesMap)}`);
+//   log.info(`prices: ${JSON.stringify(pricesMap)}`);
 
-  // await updatePrice(oracleWan, pricesMap);
-  // await updatePrice(oracleEth, pricesMap);
+//   await updatePrice(oracleWan, pricesMap);
+//   await updatePrice(oracleEth, pricesMap);
   
-  // scanInst.scanEvent();
-  syncConfigToOtherChain(sgaWan, [oracleEth]);
-}, 0);
+//   scanInst.scanEvent();
+//   syncConfigToOtherChain(sgaWan, [oracleEth]);
+// }, 0);
 
 // setTimeout(async() => {
 //   syncConfigToOtherChain(sgaWan, [oracleEth]);
 // }, 30000);
 
-// robotSchedules();
+robotSchedules();
 
