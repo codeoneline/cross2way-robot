@@ -16,9 +16,11 @@ const Oracle = require('./contract/oracle');
 const TokenManager = require('./contract/token_manager');
 const OracleProxy = require('./contract/oracle_proxy');
 const TokenManagerProxy = require('./contract/token_manager_proxy');
+const SGA = require('./contract/storeman_group_admin');
+const Quota = require('./contract/quota');
+const Cross = require('./contract/cross');
 const db = require('./lib/sqlite_db');
 const { web3, sleep } = require('./lib/utils');
-const SGA = require('./contract/storeman_group_admin');
 ``
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
@@ -37,6 +39,8 @@ const tmWan = new TokenManager(chainWan, process.env.TM_ADDR, process.env.TM_OWN
 const tmEth = new TokenManager(chainEth, process.env.TM_ADDR_ETH, process.env.TM_OWNER_SK_ETH, process.env.TM_OWNER_ADDR_ETH);
 
 const sgaWan = new SGA(chainWan, process.env.SGA_ADDR, process.env.SGA_OWNER_SK, process.env.SGA_OWNER_ADDR);
+
+const quota = new Qu
 
 function removeIndexField(obj) {
   const ks = Object.keys(obj)
@@ -63,6 +67,8 @@ async function getTokenPairs(tm, total) {
 let tmsResult = {};
 let oracleResult = null;
 let chainsResult = null;
+let quotaResult = {};
+let crossResult = {};
 
 async function refreshTMS() {
   const totalTokenPairs = await tmWan.totalTokenPairs();
@@ -263,15 +269,46 @@ async function refreshChains() {
   };
 }
 
-async function refreshChecks() {
+async function refreshQuota() {
+  const result = {
+    'WanChain' : {
+      'getPartners': {
+        'tokenManager': 
+      }
+    },
+    'Ethereum' : {
 
+    }
+  }
+
+  quotaResult = {
+    columns: col,
+    data: data
+  }
+}
+
+async function refreshCross() {
+  const result = {
+    'WanChain' : {
+
+    },
+    'Ethereum' : {
+      
+    }
+  }
+
+  quotaResult = {
+    columns: col,
+    data: data
+  }
 }
 
 setTimeout(async function() {
   await refreshTMS();
   await refreshOracles();
   await refreshChains();
-  await refreshChecks();
+  await refreshQuota();
+  await refreshCross();
 }, 0);
 
 setInterval(async function() {
@@ -279,7 +316,8 @@ setInterval(async function() {
     await refreshTMS();
     await refreshOracles();
     await refreshChains();
-    await refreshChecks();
+    await refreshQuota();
+    await refreshCross();
   } catch(e) {
     console.log(e);
   }
@@ -289,13 +327,19 @@ app.get('/tms', (req, res) => {
   res.send(tmsResult);
 })
 
-
 app.get('/oracles', async (req, res) => {
   res.send(oracleResult);
 })
 
 app.get('/chains', async (req, res) => {
   res.send(chainsResult)
+})
+
+app.get('/quotas', async (req, res) => {
+  res.send(quotasResult)
+})
+app.get('/crosses', async (req, res) => {
+  res.send(crossesResult)
 })
 
 app.listen(port, () => {

@@ -74,6 +74,15 @@ class Contract {
     log.debug(`${this.core.chainType} ${opName} receipt: ${JSON.stringify(receipt)}`);
     return  { status: receipt.status, logs: receipt.logs};
   }
+
+
+  async getFun(funcName) {
+    return await this.core.getScFun(funcName, arguments.slice[1], this.contract, this.abi);
+  }
+
+  async getVar(varName) {
+    return await this.core.getScVar(varName, this.contract, this.abi);
+  }
 }
 
 module.exports = Contract;
