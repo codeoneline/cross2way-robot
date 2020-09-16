@@ -263,10 +263,15 @@ async function refreshChains() {
   };
 }
 
+async function refreshChecks() {
+
+}
+
 setTimeout(async function() {
   await refreshTMS();
   await refreshOracles();
   await refreshChains();
+  await refreshChecks();
 }, 0);
 
 setInterval(async function() {
@@ -274,6 +279,7 @@ setInterval(async function() {
     await refreshTMS();
     await refreshOracles();
     await refreshChains();
+    await refreshChecks();
   } catch(e) {
     console.log(e);
   }

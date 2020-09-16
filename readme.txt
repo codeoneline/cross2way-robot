@@ -45,3 +45,31 @@ grp2:
 curveId
         bn128              1
         secp256k1      0
+
+
+
+todo:
+
+crossApproach
+  getPartners
+    address tokenManager, address smgAdminProxy, address smgFeeProxy, address quota, address sigVerifier
+    tokenManager地址、
+    smgAdminProxy - wan侧与storemanAdmin合约地址相同，ETH侧为Oracle地址
+    smgFeeProxy - wan侧与storemanAdmin合约地址相同，ETH侧为Oracle地址
+    quota地址
+    sigVerifier地址
+  getFees - 输入参数fromChainID和toChainID
+    校验lockFee和revokeFee
+  lockedTime() - 显示htlc时间
+  smgFeeReceiverTimeout() - 显示smgFeeReceiverTimeout时间
+
+Quota
+  priceOracleAddress() - 与oracle地址校验
+  depositOracleAddress() - wan侧与storemanAdmin合约地址相同，ETH侧为Oracle地址
+  tokenManagerAddress() - 与tokenManager地址校验
+  depositTokenSymbol() - coin symbol, WAN链是"WAN"
+  isDebtClean() - 显示是否平账完成
+
+tokenManager
+  过event校验AddAdmin配置
+  过event校验addToken/pair等
