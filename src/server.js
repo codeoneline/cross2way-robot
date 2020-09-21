@@ -40,8 +40,6 @@ const tmEth = new TokenManager(chainEth, process.env.TM_ADDR_ETH, process.env.TM
 
 const sgaWan = new SGA(chainWan, process.env.SGA_ADDR, process.env.SGA_OWNER_SK, process.env.SGA_OWNER_ADDR);
 
-const quota = new Qu
-
 function removeIndexField(obj) {
   const ks = Object.keys(obj)
   for (let j = 0; j < ks.length/2; j++) {
@@ -270,37 +268,37 @@ async function refreshChains() {
 }
 
 async function refreshQuota() {
-  const result = {
-    'WanChain' : {
-      'getPartners': {
-        'tokenManager': 
-      }
-    },
-    'Ethereum' : {
+  // const result = {
+  //   'WanChain' : {
+  //     'getPartners': {
+  //       'tokenManager': 
+  //     }
+  //   },
+  //   'Ethereum' : {
 
-    }
-  }
+  //   }
+  // }
 
-  quotaResult = {
-    columns: col,
-    data: data
-  }
+  // quotaResult = {
+  //   columns: col,
+  //   data: data
+  // }
 }
 
 async function refreshCross() {
-  const result = {
-    'WanChain' : {
+  // const result = {
+  //   'WanChain' : {
 
-    },
-    'Ethereum' : {
+  //   },
+  //   'Ethereum' : {
       
-    }
-  }
+  //   }
+  // }
 
-  quotaResult = {
-    columns: col,
-    data: data
-  }
+  // quotaResult = {
+  //   columns: col,
+  //   data: data
+  // }
 }
 
 setTimeout(async function() {
