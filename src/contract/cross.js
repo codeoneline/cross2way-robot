@@ -1,5 +1,5 @@
 const Contract = require('./contract');
-const abi = require('../../abi/cross-delegate.json');
+const abi = require('../../abi/abi.CrossDelegate.json');
 
 class Cross extends Contract {
   constructor(chain, address, ownerPV, ownerAddress) {

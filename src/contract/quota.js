@@ -1,5 +1,5 @@
 const Contract = require('./contract');
-const abi = require('../../abi/quota-delegate.json');
+const abi = require('../../abi/abi.QuotaDelegate.json');
 
 class Quota extends Contract {
   constructor(chain, address, ownerPV, ownerAddress) {

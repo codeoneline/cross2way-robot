@@ -1,5 +1,5 @@
 const Contract = require('./contract');
-const abiTokenManager = require('../../abi/token-manager-delegate.json');
+const abiTokenManager = require('../../abi/abi.TokenManagerDelegate.json');
 
 class TokenManager extends Contract {
   constructor(chain, address, ownerPV, ownerAddress) {

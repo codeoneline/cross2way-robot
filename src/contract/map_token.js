@@ -1,5 +1,5 @@
 const Contract = require('./contract');
-const abiMapToken = require('../../abi/map-token.json');
+const abiMapToken = require('../../abi/abi.MappingToken.json');
 
 class MapToken extends Contract {
   constructor(chain, address, ownerPV, ownerAddress) {
