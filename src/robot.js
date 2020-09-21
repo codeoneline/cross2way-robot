@@ -61,7 +61,7 @@ setTimeout(async () => {
 
 setTimeout(async() => {
   syncConfigToOtherChain(sgaWan, [oracleEth]);
-}, 30000);
+}, 15000);
 
-robotSchedules();
+// robotSchedules();
 
