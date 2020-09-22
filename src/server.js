@@ -142,7 +142,7 @@ async function refreshOracles() {
     const configEth = await oracleEth.getStoremanGroupConfig(groupId);
     const ks = Object.keys(config);
 
-    if (config.gpk1 !== null || configEth.gpk1 !== null) {
+    // if (config.gpk1 !== null || configEth.gpk1 !== null) {
       for (let j = 0; j < ks.length/2; j++) {
         const str = j.toString();
         delete config[str];
@@ -150,7 +150,7 @@ async function refreshOracles() {
       }
       sgs_eth[groupId] = configEth;
       sgs[groupId] = config;
-    }
+    // }
   }
 
   const result = {
@@ -185,8 +185,8 @@ async function refreshOracles() {
       const data = fields.map(field => {
         const obj = {name: field}
         chainNames.forEach(i => {
-          if (result[i].sgs[id] && result[i].sgs[id].gpk1 !== null) {
-            obj[i] = result[i].sgs[id][field]
+          if (result[i].sgs[id]) {
+            obj[i] = result[i].sgs[id][field] ? result[i].sgs[id][field] : 'empty'
           } else {
             obj[i] = 'empty'
           }
