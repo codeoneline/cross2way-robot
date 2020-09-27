@@ -75,7 +75,8 @@ setTimeout( async () => {
   // await changeOwner([tmWan, oracleWan], old_owner_addr, old_owner_sk, new_owner_addr, new_owner_sk);
 ``
   // await wanEth.update('WAN@ethereum', 'WAN', {from: "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8"});
-
+  
+  await mint([fnxWan], "0xc3d4bbb13c471969275076e4ba0badea214d68e1".toLowerCase(), 100000000);
   // await mint([fnxWan], "0x67e3b428acbc3aa2fd38813f65dafbd5af97c6d5".toLowerCase(), 100000000);
   // await mint([fnxWan], "0xFB683bDDB0ACBB00Dd162CD5E3798c7Fc6E5CFc0".toLowerCase(), 100000000);
   // await mint([fnxWan, btcWan, eosWan], "0xFB683bDDB0ACBB00Dd162CD5E3798c7Fc6E5CFc0".toLowerCase(), 1000);
@@ -100,7 +101,7 @@ setTimeout( async () => {
   // await getBalance([chainWan, chainEth, chainEtc], "0x2d0e7c0813a51d3bd1d08246af2a8a7a57d8922e");
 
   // await unlockAccount([chainWan], "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8", "wanglu", 36000);
-  await deployTokenPairOrUpdate('../db/tokenPair.js', path.resolve(__dirname, '../db/tokenPair_deployed.json'), tms);
+  // await deployTokenPairOrUpdate('../db/tokenPair.js', path.resolve(__dirname, '../db/tokenPair_deployed.json'), tms);
 
 
   // await mint([linkEth], "0xe2f31d7ba3e0098ea0e64d94c0224365812b986c", 10000000)
