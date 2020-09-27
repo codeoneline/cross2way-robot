@@ -75,9 +75,9 @@ class Contract {
     return  { status: receipt.status, logs: receipt.logs};
   }
 
-
-  async getFun(funcName) {
-    return await this.core.getScFun(funcName, arguments.slice[1], this.contract, this.abi);
+  async getFun(funcName, ...rest) {
+    console.log(`getFun = ${funcName}, rest = ${rest}`)
+    return await this.core.getScFun(funcName, rest, this.contract, this.abi);
   }
 
   async getVar(varName) {
