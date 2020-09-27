@@ -76,7 +76,6 @@ class Contract {
   }
 
   async getFun(funcName, ...rest) {
-    console.log(`getFun = ${funcName}, rest = ${rest}`)
     return await this.core.getScFun(funcName, rest, this.contract, this.abi);
   }
 

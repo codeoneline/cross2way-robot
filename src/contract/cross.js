@@ -8,22 +8,22 @@ class Cross extends Contract {
 
   // returns(address tokenManager, address smgAdminProxy, address smgFeeProxy, address quota, address sigVerifier)
   async getPartners() {
-    await this.getFun(this.getPartners.name)
+    return await this.getFun(this.getPartners.name)
   }
 
   // returns(uint lockFee, uint revokeFee)
   async getFees(fromChainId, toChainId) {
-    await this.getFun(this.getPartners.name, fromChainId, toChainId)
+    return await this.getFun(this.getFees.name, fromChainId, toChainId)
   }
 
   // htlc time uint256
   async lockedTime() {
-    await this.getVar('lockedTime')
+    return await this.getVar('lockedTime')
   }
 
   // smgFeeReceiverTimeout time uint256
   async smgFeeReceiverTimeout() {
-    await this.getVar('smgFeeReceiverTimeout')
+    return await this.getVar('smgFeeReceiverTimeout')
   }
 }
 
