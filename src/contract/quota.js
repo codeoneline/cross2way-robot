@@ -42,8 +42,8 @@ class Quota extends Contract {
   }
 
   // isDebtClean bool
-  async isDebtClean() {
-    await this.getFun('isDebtClean')
+  async isDebtClean(storeManId) {
+    await this.getFun('isDebtClean', storeManId)
   }
 
   // getUserMintQuota(uint tokenId, bytes32 storemanGroupId) external view returns (uint)
