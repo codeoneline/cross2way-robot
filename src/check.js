@@ -19,7 +19,7 @@ const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
 
 const iWanWan = require(`./chain/${process.env.IWAN_WAN_CHAIN_ENGINE}`);
-const iWanEth = require(`./chain/${process.env.IWAN_WAN_CHAIN_ENGINE}`);
+const iWanEth = require(`./chain/${process.env.IWAN_ETH_CHAIN_ENGINE}`);
 
 const oracleWanProxy = new OracleProxy(chainWan, process.env.OR_ADDR, process.env.OR_OWNER_SK, process.env.OR_OWNER_ADDR);
 const oracleEthProxy = new OracleProxy(chainEth, process.env.OR_ADDR_ETH, process.env.OR_OWNER_SK_ETH, process.env.OR_OWNER_ADDR_ETH);
@@ -37,6 +37,7 @@ const tmWan = new TokenManager(chainWan, process.env.TM_ADDR, process.env.TM_OWN
 const tmEth = new TokenManager(chainEth, process.env.TM_ADDR_ETH, process.env.TM_OWNER_SK_ETH, process.env.TM_OWNER_ADDR_ETH);
 
 const sgaWan = new SGA(chainWan, process.env.SGA_ADDR, process.env.SGA_OWNER_SK, process.env.SGA_OWNER_ADDR);
+const iWanSgaWan = new SGA(iWanWan, process.env.SGA_ADDR, process.env.SGA_OWNER_SK, process.env.SGA_OWNER_ADDR);
 
 const quotaWan = new Quota(chainWan, process.env.QUOTA_ADDR)
 const quotaEth = new Quota(chainEth, process.env.QUOTA_ADDR_ETH)
@@ -164,7 +165,7 @@ const getOracle = async () => {
 }
 
 const getIWanOracle = async () => {
-  const prePricesArray = await oracleWan.getValues(process.env.SYMBOLS);
+  const prePricesArray = await iWanOracleWan.getValues(process.env.SYMBOLS);
   const symbolsStringArray = process.env.SYMBOLS.replace(/\s+/g,"").split(',');
   const prePricesMap = {}
   symbolsStringArray.forEach((v,i) => {
@@ -173,7 +174,7 @@ const getIWanOracle = async () => {
   })
 
   const prePricesMap_Eth = {}
-  const prePricesArray_Eth = await oracleEth.getValues(process.env.SYMBOLS);
+  const prePricesArray_Eth = await iWanOracleEth.getValues(process.env.SYMBOLS);
   symbolsStringArray.forEach((v,i) => {
     const padPrice = web3.utils.padLeft(prePricesArray_Eth[i], 19, '0');
     prePricesMap_Eth[v] = padPrice.substr(0, padPrice.length - 18)+ '.'+ padPrice.substr(padPrice.length - 18, 18);
@@ -185,8 +186,8 @@ const getIWanOracle = async () => {
   for (let i = 0; i<sgAll.length; i++) {
     const sg = sgAll[i];
     const groupId = sg.groupId;
-    const config = await sgaWan.getStoremanGroupConfig(groupId);
-    const configEth = await oracleEth.getStoremanGroupConfig(groupId);
+    const config = await iWanSgaWan.getStoremanGroupConfig(groupId);
+    const configEth = await iWanOracleEth.getStoremanGroupConfig(groupId);
     const ks = Object.keys(config);
 
     // if (config.gpk1 !== null || configEth.gpk1 !== null) {
@@ -598,6 +599,15 @@ setInterval(async () => {
     await check();
   }
 }, 3600000)
+
+// setTimeout(async () => {
+//   const oracle = await getOracle();
+//   const iWanOracle = await getIWanOracle()
+//   checkObject(oracle.WanChain.prices, iWanOracle.Ethereum.prices, "iWan wan chain oracle price")
+//   checkObject(oracle.Ethereum.prices, iWanOracle.WanChain.prices, "iWan wan chain oracle price")
+//   checkObjectObject(oracle.WanChain.sgs, iWanOracle.Ethereum.sgs, "iWan ethereum oracle store man group config", ObjectType.StoreMan)
+//   checkObjectObject(oracle.Ethereum.sgs, iWanOracle.WanChain.sgs, "iWan ethereum oracle store man group config", ObjectType.StoreMan)
+// }, 0);
 
 app.get('/', async (req, res) => {
   await check();
