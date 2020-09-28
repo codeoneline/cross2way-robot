@@ -521,6 +521,12 @@ const forceCheck = async () => {
   await check();
 }
 
+setInterval(async () => {
+  if (!bChecking) {
+    await check();
+  }
+}, 3600000)
+
 app.get('/', async (req, res) => {
   g_msg = '<html><body>';
   writePrint(`you can use /force to get the newest state`)
