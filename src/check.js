@@ -401,6 +401,14 @@ function omitStoreManGroup(a, b) {
   return false
 }
 
+function checkDebtAsset(a, b, isDebt) {
+  if (isDebt === 'asset') {
+    return a.debt === b.asset && a.debt_receivable === b.asset_receivable && a.debt_payable === b.asset_payable
+  } else if (isDebt === 'debt') {
+    return b.debt === a.asset && b.debt_receivable === a.asset_receivable && b.debt_payable === a.asset_payable
+  }
+}
+
 function checkObject(a, b, info, type) {
   const keys_a = Object.keys(a)
   const keys_b = Object.keys(b)
@@ -431,7 +439,8 @@ function checkObject(a, b, info, type) {
             if (keys_a[i] === 'asset') { key_b = 'debt', isDebt = keys_a[i]}
             else if (keys_a[i] === 'debt') { key_b = 'asset', isDebt = keys_a[i]}
             if (isDebt) {
-              if (!checkObject(a[keys_a[i]], b[key_b], `  ${info} ${isDebt}`)) {
+              if (!checkDebtAsset(a[keys_a[i]], b[key_b], `  ${info} ${isDebt}`)) {
+                writePrint(`  ${info} ${isDebt} ❌, ${JSON.stringify(a[keys_a[i]], null, 2)} != ${JSON.stringify(b[key_b], null, 2)}`)
                 return false
               } else {
                 continue;
