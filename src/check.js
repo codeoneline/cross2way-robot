@@ -453,6 +453,8 @@ const check = async () => {
     if (new Date().getTime() - CheckingAt > 3600000) {
       bChecking = true
       CheckingAt = new Date().getTime();
+      g_msg = '<html><body>';
+      writePrint(`you can use /force to get the newest state`)
     } else {
       // use old
       return
@@ -512,6 +514,8 @@ const check = async () => {
 
 
   bChecking = false
+  writePrint(`checking At ${new Date(CheckingAt).toLocaleDateString()}`)
+  g_msg = g_msg + '</body></html>'
 };
 
 const forceCheck = async () => {
@@ -528,18 +532,11 @@ setInterval(async () => {
 }, 3600000)
 
 app.get('/', async (req, res) => {
-  g_msg = '<html><body>';
-  writePrint(`you can use /force to get the newest state`)
   await check();
-  writePrint(`checking At ${new Date(CheckingAt).toLocaleDateString()}`)
-  g_msg = g_msg + '</body></html>'
   res.send(g_msg)
 })
 app.get('/force', async (req, res) => {
-  g_msg = '<html><body>';
   await forceCheck();
-  writePrint(`checking At ${new Date(CheckingAt).toLocaleDateString()}`)
-  g_msg = g_msg + '</body></html>'
   res.send(g_msg)
 })
 
