@@ -58,10 +58,18 @@ let bChecking = false
 let CheckingAt = null;
 
 function writePrint(...message) {
+  let color = 'color: black'
+  if (message[0].indexOf('pass check') != -1) {
+    color = 'color: orange'
+  } else if (message[0].indexOf('&#967;') != -1) {
+    color = 'color: red'
+  } else if (message[0].indexOf('&#8730;') != -1) {
+    color = 'color: green'
+  }
   if (message[0][0] === ' ') {
-    g_msg = `${g_msg} <div style="color: #222">&nbsp;&nbsp;${message[0]}</div>`
+    g_msg = `${g_msg} <div style="${color}">&nbsp;&nbsp;${message[0]}</div>`
   } else {
-    g_msg = `${g_msg} <div>${message[0]}</div>`
+    g_msg = `${g_msg} <div style="${color}">${message[0]}</div>`
   }
   console.log(...message)
 }
@@ -303,19 +311,19 @@ const getCross = async () => {
 /////////////////////////////////////////////////////
 function checkValue(a, b, info) {
   if (a === b) {
-    writePrint(`  ${info} is good`)
+    writePrint(`  ${info} &#8730;`)
     return true
   } else {
-    writePrint(`  ${info} is bad, ${a} != ${b}`)
+    writePrint(`  ${info} &#967;, ${a} != ${b}`)
     return false
   }
 }
 function checkThreeValue(a, b, c, info) {
   if (a === b && a === c) {
-    writePrint(`  ${info} is good`)
+    writePrint(`  ${info} &#8730;`)
     return true
   } else {
-    writePrint(`  ${info} is bad, ${a} != ${ a === b ? c : b}`)
+    writePrint(`  ${info} &#967;, ${a} != ${ a === b ? c : b}`)
     return false
   }
 }
@@ -351,7 +359,7 @@ function checkObject(a, b, info, type) {
         if (type) {
           if (type & ObjectType.StoreMan) {
             if (omitStoreManGroup(a, b)) {
-              writePrint(`  ${info} storeman status < 4, pass check`)
+              writePrint(`  ${info} storeman status < 4, pass check &#8730;`)
               return true;
             }
 
@@ -385,19 +393,19 @@ function checkObject(a, b, info, type) {
         const type_a = typeof(a[keys_a[i]])
         if (type_a === type_b) {
           if (a[keys_a[i]] !== b[key_b]) {
-            writePrint(`  ${info} is bad, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
+            writePrint(`  ${info} &#967;, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
             return false;
           }
         } else {
-          writePrint(`  ${info} is bad, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
+          writePrint(`  ${info} &#967;, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
           return false;
         }
       }
-      writePrint(`  ${info} is good`)
+      writePrint(`  ${info} &#8730;`)
       return true
     }
   }
-  writePrint(`  ${info} is bad, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
+  writePrint(`  ${info} &#967;, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
   return false
 }
 
@@ -410,7 +418,7 @@ function checkObjectObject(a, b, info, type) {
       writePrint(`  ${info} check begin`)
       for (let i = 0; i < a_.length; i++) {
         if(a_[i][0] !== b_[i][0]) {
-          writePrint(`  ${info} is bad, ${JSON.stringify(a_, null, 2)} != ${JSON.stringify(b_, null, 2)}`)
+          writePrint(`  ${info} &#967;, ${JSON.stringify(a_, null, 2)} != ${JSON.stringify(b_, null, 2)}`)
           return false
         } else {
           if (!checkObject(a_[i][1], b_[i][1], `${info} ${a_[i][0]}`, type)) {
@@ -422,7 +430,7 @@ function checkObjectObject(a, b, info, type) {
       return true
     }
   }
-  writePrint(`  ${info} is bad, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
+  writePrint(`  ${info} &#967;, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
   return false
 }
 
@@ -435,7 +443,7 @@ function checkObjectObjectObject(a, b, info, type) {
       writePrint(`-${info} check begin`)
       for (let i = 0; i < a_.length; i++) {
         if(a_[i][0] !== b_[i][0]) {
-          writePrint(`  ${info} is bad, ${JSON.stringify(a_, null, 2)} != ${JSON.stringify(b_, null, 2)}`)
+          writePrint(`  ${info} &#967;, ${JSON.stringify(a_, null, 2)} != ${JSON.stringify(b_, null, 2)}`)
         } else {
           checkObjectObject(a_[i][1], b_[i][1], `${info} ${a_[i][0]}`, type)
         }
@@ -444,7 +452,7 @@ function checkObjectObjectObject(a, b, info, type) {
       return true
     }
   }
-  writePrint(`-${info} is bad, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
+  writePrint(`-${info} &#967;, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
   return false
 }
 
