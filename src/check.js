@@ -439,17 +439,6 @@ setTimeout(async () => {
 
   console.log(`cross check`)
   const cross = await getCross();
-  // 'WanChain' : {
-  //   tokenManager: partner.tokenManager,
-  //   smgAdminProxy: partner.smgAdminProxy,
-  //   smgFeeProxy: partner.smgFeeProxy,
-  //   quota: partner.quota,
-  //   sigVerifier: partner.sigVerifier,
-  //   'fee: wan -> eth': await crossWan.getFees(chainId.WAN, chainId.ETH),
-  //   'fee: eth -> wan': await crossWan.getFees(chainId.ETH, chainId.WAN),
-  //   lockedTime: await crossWan.lockedTime(),
-  //   smgFeeReceiverTimeout: await crossWan.smgFeeReceiverTimeout(),
-  // },
   checkValue(cross.WanChain.tokenManager, oracle.WanChain.tokenManagerProxy, "  cross tokenManager check on WanChain")
   checkValue(cross.WanChain.smgAdminProxy.toLowerCase(), sgaWan.address, "  cross smgAdminProxy check on WanChain")
   checkValue(cross.WanChain.smgFeeProxy.toLowerCase(), sgaWan.address, "  cross smgFeeProxy check on WanChain")
