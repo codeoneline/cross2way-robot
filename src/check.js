@@ -18,6 +18,9 @@ const { getTestMessageUrl } = require('nodemailer');
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
 
+const iWanWan = require(`./chain/${process.env.IWAN_WAN_CHAIN_ENGINE}`);
+const iWanEth = require(`./chain/${process.env.IWAN_WAN_CHAIN_ENGINE}`);
+
 const oracleWanProxy = new OracleProxy(chainWan, process.env.OR_ADDR, process.env.OR_OWNER_SK, process.env.OR_OWNER_ADDR);
 const oracleEthProxy = new OracleProxy(chainEth, process.env.OR_ADDR_ETH, process.env.OR_OWNER_SK_ETH, process.env.OR_OWNER_ADDR_ETH);
 
@@ -26,7 +29,9 @@ const tmEthProxy = new TokenManagerProxy(chainEth, process.env.TM_ADDR_ETH, proc
 
 
 const oracleWan = new Oracle(chainWan, process.env.OR_ADDR, process.env.OR_OWNER_SK, process.env.OR_OWNER_ADDR);
+const iWanOracleWan = new Oracle(iWanWan, process.env.OR_ADDR, process.env.OR_OWNER_SK, process.env.OR_OWNER_ADDR);
 const oracleEth = new Oracle(chainEth, process.env.OR_ADDR_ETH, process.env.OR_OWNER_SK_ETH, process.env.OR_OWNER_ADDR_ETH);
+const iWanOracleEth = new Oracle(iWanEth, process.env.OR_ADDR_ETH, process.env.OR_OWNER_SK_ETH, process.env.OR_OWNER_ADDR_ETH);
 
 const tmWan = new TokenManager(chainWan, process.env.TM_ADDR, process.env.TM_OWNER_SK, process.env.TM_OWNER_ADDR);
 const tmEth = new TokenManager(chainEth, process.env.TM_ADDR_ETH, process.env.TM_OWNER_SK_ETH, process.env.TM_OWNER_ADDR_ETH);
@@ -58,13 +63,13 @@ let bChecking = false
 let CheckingAt = null;
 
 function writePrint(...message) {
-  let color = 'color: black'
+  let color = 'color: gray;font-weight:bold;font-size:16px;'
   if (message[0].indexOf('pass check') != -1) {
-    color = 'color: orange'
-  } else if (message[0].indexOf('&#967;') != -1) {
-    color = 'color: red'
-  } else if (message[0].indexOf('&#8730;') != -1) {
-    color = 'color: green'
+    color = 'color: orange;font-weight:bold;font-size:16px;'
+  } else if (message[0].indexOf('❌') != -1) {
+    color = 'color: red;font-weight:bold;font-size:16px;'
+  } else if (message[0].indexOf('✅') != -1) {
+    color = 'color: green;font-weight:bold;font-size:16px;'
   }
   if (message[0][0] === ' ') {
     g_msg = `${g_msg} <div style="${color}">&nbsp;&nbsp;${message[0]}</div>`
@@ -156,6 +161,55 @@ const getOracle = async () => {
 
   g_oracle = oracle;
   return oracle;
+}
+
+const getIWanOracle = async () => {
+  const prePricesArray = await oracleWan.getValues(process.env.SYMBOLS);
+  const symbolsStringArray = process.env.SYMBOLS.replace(/\s+/g,"").split(',');
+  const prePricesMap = {}
+  symbolsStringArray.forEach((v,i) => {
+    const padPrice = web3.utils.padLeft(prePricesArray[i], 19, '0');
+    prePricesMap[v] = padPrice.substr(0, padPrice.length - 18)+ '.'+ padPrice.substr(padPrice.length - 18, 18);
+  })
+
+  const prePricesMap_Eth = {}
+  const prePricesArray_Eth = await oracleEth.getValues(process.env.SYMBOLS);
+  symbolsStringArray.forEach((v,i) => {
+    const padPrice = web3.utils.padLeft(prePricesArray_Eth[i], 19, '0');
+    prePricesMap_Eth[v] = padPrice.substr(0, padPrice.length - 18)+ '.'+ padPrice.substr(padPrice.length - 18, 18);
+  })
+
+  const sgs = {}
+  const sgs_eth = {}
+  const sgAll = db.getAllSga();
+  for (let i = 0; i<sgAll.length; i++) {
+    const sg = sgAll[i];
+    const groupId = sg.groupId;
+    const config = await sgaWan.getStoremanGroupConfig(groupId);
+    const configEth = await oracleEth.getStoremanGroupConfig(groupId);
+    const ks = Object.keys(config);
+
+    // if (config.gpk1 !== null || configEth.gpk1 !== null) {
+      for (let j = 0; j < ks.length/2; j++) {
+        const str = j.toString();
+        delete config[str];
+        delete configEth[str];
+      }
+      sgs_eth[groupId] = configEth;
+      sgs[groupId] = config;
+    // }
+  }
+
+  return {
+    'WanChain' : {
+      prices: prePricesMap,
+      sgs: sgs,
+    },
+    'Ethereum' : {
+      prices: prePricesMap_Eth,
+      sgs: sgs_eth,
+    }
+  }
 }
 
 /////////////////////////////////////////////
@@ -311,19 +365,19 @@ const getCross = async () => {
 /////////////////////////////////////////////////////
 function checkValue(a, b, info) {
   if (a === b) {
-    writePrint(`  ${info} &#8730;`)
+    writePrint(`  ${info} ✅`)
     return true
   } else {
-    writePrint(`  ${info} &#967;, ${a} != ${b}`)
+    writePrint(`  ${info} ❌, ${a} != ${b}`)
     return false
   }
 }
 function checkThreeValue(a, b, c, info) {
   if (a === b && a === c) {
-    writePrint(`  ${info} &#8730;`)
+    writePrint(`  ${info} ✅`)
     return true
   } else {
-    writePrint(`  ${info} &#967;, ${a} != ${ a === b ? c : b}`)
+    writePrint(`  ${info} ❌, ${a} != ${ a === b ? c : b}`)
     return false
   }
 }
@@ -359,7 +413,7 @@ function checkObject(a, b, info, type) {
         if (type) {
           if (type & ObjectType.StoreMan) {
             if (omitStoreManGroup(a, b)) {
-              writePrint(`  ${info} storeman status < 4, pass check &#8730;`)
+              writePrint(`  ${info} storeman status < 4, pass check ✅`)
               return true;
             }
 
@@ -393,19 +447,19 @@ function checkObject(a, b, info, type) {
         const type_a = typeof(a[keys_a[i]])
         if (type_a === type_b) {
           if (a[keys_a[i]] !== b[key_b]) {
-            writePrint(`  ${info} &#967;, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
+            writePrint(`  ${info} ❌, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
             return false;
           }
         } else {
-          writePrint(`  ${info} &#967;, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
+          writePrint(`  ${info} ❌, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
           return false;
         }
       }
-      writePrint(`  ${info} &#8730;`)
+      writePrint(`  ${info} ✅`)
       return true
     }
   }
-  writePrint(`  ${info} &#967;, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
+  writePrint(`  ${info} ❌, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
   return false
 }
 
@@ -418,7 +472,7 @@ function checkObjectObject(a, b, info, type) {
       writePrint(`  ${info} check begin`)
       for (let i = 0; i < a_.length; i++) {
         if(a_[i][0] !== b_[i][0]) {
-          writePrint(`  ${info} &#967;, ${JSON.stringify(a_, null, 2)} != ${JSON.stringify(b_, null, 2)}`)
+          writePrint(`  ${info} ❌, ${JSON.stringify(a_, null, 2)} != ${JSON.stringify(b_, null, 2)}`)
           return false
         } else {
           if (!checkObject(a_[i][1], b_[i][1], `${info} ${a_[i][0]}`, type)) {
@@ -430,7 +484,7 @@ function checkObjectObject(a, b, info, type) {
       return true
     }
   }
-  writePrint(`  ${info} &#967;, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
+  writePrint(`  ${info} ❌, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
   return false
 }
 
@@ -443,7 +497,7 @@ function checkObjectObjectObject(a, b, info, type) {
       writePrint(`-${info} check begin`)
       for (let i = 0; i < a_.length; i++) {
         if(a_[i][0] !== b_[i][0]) {
-          writePrint(`  ${info} &#967;, ${JSON.stringify(a_, null, 2)} != ${JSON.stringify(b_, null, 2)}`)
+          writePrint(`  ${info} ❌, ${JSON.stringify(a_, null, 2)} != ${JSON.stringify(b_, null, 2)}`)
         } else {
           checkObjectObject(a_[i][1], b_[i][1], `${info} ${a_[i][0]}`, type)
         }
@@ -452,7 +506,7 @@ function checkObjectObjectObject(a, b, info, type) {
       return true
     }
   }
-  writePrint(`-${info} &#967;, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
+  writePrint(`-${info} ❌, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
   return false
 }
 
@@ -520,6 +574,12 @@ const check = async () => {
   writePrint(`lockedTime on WanChain is ${cross.WanChain['lockedTime']}, on Ethereum is ${cross.Ethereum['lockedTime']}`)
   writePrint(`smgFeeReceiverTimeout on WanChain is ${cross.WanChain['smgFeeReceiverTimeout']}, on Ethereum is ${cross.Ethereum['smgFeeReceiverTimeout']}`)
 
+  writePrint(`iWan sdk check`)
+  const iWanOracle = await getIWanOracle()
+  checkObject(oracle.WanChain.prices, iWanOracle.Ethereum.prices, "iWan wan chain oracle price")
+  checkObject(oracle.Ethereum.prices, iWanOracle.WanChain.prices, "iWan wan chain oracle price")
+  checkObjectObject(oracle.WanChain.sgs, iWanOracle.Ethereum.sgs, "iWan ethereum oracle store man group config", ObjectType.StoreMan)
+  checkObjectObject(oracle.Ethereum.sgs, iWanOracle.WanChain.sgs, "iWan ethereum oracle store man group config", ObjectType.StoreMan)
 
   bChecking = false
   writePrint(`checking At ${new Date(CheckingAt).toLocaleDateString()}`)
