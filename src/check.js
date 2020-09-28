@@ -194,8 +194,8 @@ async function getQuotaTokenAmounts(quotaContract, tps, sgsIds) {
       quota.userBurns = await quotaContract.getUserBurnQuota(tokenId, storeManGroupId)
       quota.smgBurns = await quotaContract.getSmgBurnQuota(tokenId, storeManGroupId)
 
-      quota.asset = await quotaContract.getAsset(tokenId, storeManGroupId)
-      quota.debt = await quotaContract.getDebt(tokenId, storeManGroupId)
+      quota.asset = removeIndexField(await quotaContract.getAsset(tokenId, storeManGroupId))
+      quota.debt = removeIndexField(await quotaContract.getDebt(tokenId, storeManGroupId))
     }
   }
 
@@ -300,35 +300,48 @@ function checkThreeValue(a, b, c, info) {
 function omitStoreManGroup(a, b) {
   if (!!a.storeManGroupId && !!b.storeManGroupId) {
     if (a.storeManGroupId === b.storeManGroupId) {
-      if (g_oracle.WanChain.sgs[a.storeManGroupId].status < 5) {
+      if (g_oracle.WanChain.sgs[a.storeManGroupId].status < 4) {
         return true;
       }
     }
   }
   if (!!a.groupId && !!b.groupId) {
     if (a.groupId === b.groupId) {
-      if (g_oracle.WanChain.sgs[a.groupId].status < 5) {
+      if (g_oracle.WanChain.sgs[a.groupId].status < 4) {
         return true;
       }
     }
   }
   return false
 }
-function checkObject(a, b, info) {
+function checkObject(a, b, info, bStoreMan) {
   const keys_a = Object.keys(a)
   const keys_b = Object.keys(b)
 
   if (!!keys_a && !!keys_b) {
     if (keys_a.length === keys_b.length) {
       for (let i = 0; i < keys_a.length; i++) {
-        const type_a = typeof(a[keys_a[i]])
-        const type_b = typeof(b[keys_b[i]])
-        if (omitStoreManGroup(a, b)) {
-          console.log(`  ${info} storeman status < 5, pass check`)
-          return true;
+        // for store man --
+        if (bStoreMan) {
+          if (omitStoreManGroup(a, b)) {
+            console.log(`  ${info} storeman status < 4, pass check`)
+            return true;
+          }
         }
+        // for store man gpk1 should compare to gpk2
+        let key_b = keys_b[i]
+        if (bStoreMan) {
+          if (keys_a[i] === 'gpk1') { key_b = 'gpk2' }
+          else if (keys_a[i] === 'gpk2') { key_b = 'gpk1' }
+          else if (keys_a[i] === 'curve1') { key_b = 'curve2' }
+          else if (keys_a[i] === 'curve2') { key_b = 'curve1' }
+          else if (keys_a[i] === 'chain1') { key_b = 'chain2' }
+          else if (keys_a[i] === 'chain2') { key_b = 'chain1' }
+        }
+        const type_b = typeof(b[key_b])
+        const type_a = typeof(a[keys_a[i]])
         if (type_a === type_b) {
-          if (a[keys_a[i]] !== b[keys_b[i]]) {
+          if (a[keys_a[i]] !== b[key_b]) {
             console.log(`  ${info} is bad, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
             return false;
           }
@@ -345,7 +358,7 @@ function checkObject(a, b, info) {
   return false
 }
 
-function checkObjectObject(a, b, info) {
+function checkObjectObject(a, b, info, bStoreMan = false) {
   const a_ = Object.entries(a)
   const b_ = Object.entries(b)
 
@@ -357,7 +370,7 @@ function checkObjectObject(a, b, info) {
           console.log(`  ${info} is bad, ${JSON.stringify(a_, null, 2)} != ${JSON.stringify(b_, null, 2)}`)
           return false
         } else {
-          if (!checkObject(a_[i][1], b_[i][1], `${info} ${a_[i][0]}`)) {
+          if (!checkObject(a_[i][1], b_[i][1], `${info} ${a_[i][0]}`, bStoreMan)) {
             return false
           }
         }
@@ -370,7 +383,7 @@ function checkObjectObject(a, b, info) {
   return false
 }
 
-function checkObjectObjectObject(a, b, info) {
+function checkObjectObjectObject(a, b, info, bStoreMan) {
   const a_ = Object.entries(a)
   const b_ = Object.entries(b)
 
@@ -381,7 +394,7 @@ function checkObjectObjectObject(a, b, info) {
         if(a_[i][0] !== b_[i][0]) {
           console.log(`  ${info} is bad, ${JSON.stringify(a_, null, 2)} != ${JSON.stringify(b_, null, 2)}`)
         } else {
-          checkObjectObject(a_[i][1], b_[i][1], `${info} ${a_[i][0]}`)
+          checkObjectObject(a_[i][1], b_[i][1], `${info} ${a_[i][0]}`, bStoreMan)
         }
       }
       console.log(`-${info} check end`)
@@ -403,7 +416,7 @@ setTimeout(async () => {
   checkValue(oracle.Ethereum.tokenManagerProxyOwner, oracle.Ethereum.tokenManagerDelegatorOwner, "token manager proxy and delegator owner on Ethereum")
 
   checkObject(oracle.WanChain.prices, oracle.Ethereum.prices, "oracle price")
-  checkObjectObject(oracle.WanChain.sgs, oracle.Ethereum.sgs, "oracle store man group config")
+  checkObjectObject(oracle.WanChain.sgs, oracle.Ethereum.sgs, "oracle store man group config", true)
 
   const tm = await getTokenManager();
 
@@ -421,7 +434,7 @@ setTimeout(async () => {
   checkValue(quota.Ethereum.status.tokenManagerAddress, oracle.Ethereum.tokenManagerProxy, "quota tokenManagerAddress on Ethereum")
   checkThreeValue(quota.WanChain.status.depositTokenSymbol, quota.Ethereum.status.depositTokenSymbol, "WAN", "quota depositTokenSymbol")
 
-  checkObjectObjectObject(quota.WanChain.quotaTokens, quota.Ethereum.quotaTokens, "quota token")
+  checkObjectObjectObject(quota.WanChain.quotaTokens, quota.Ethereum.quotaTokens, "quota token", true)
 
 
   console.log(`cross check`)
@@ -437,14 +450,15 @@ setTimeout(async () => {
   //   lockedTime: await crossWan.lockedTime(),
   //   smgFeeReceiverTimeout: await crossWan.smgFeeReceiverTimeout(),
   // },
-  checkValue(cross.WanChain.tokenManager, oracle.WanChain.tokenManagerProxy, "  cross token manager check on WanChain")
-  checkValue(cross.WanChain.smgAdminProxy.toLowerCase(), sgaWan.address, "  cross store man group check on WanChain")
-  checkValue(cross.WanChain.smgFeeProxy.toLowerCase(), sgaWan.address, "  cross store fee check on WanChain")
+  checkValue(cross.WanChain.tokenManager, oracle.WanChain.tokenManagerProxy, "  cross tokenManager check on WanChain")
+  checkValue(cross.WanChain.smgAdminProxy.toLowerCase(), sgaWan.address, "  cross smgAdminProxy check on WanChain")
+  checkValue(cross.WanChain.smgFeeProxy.toLowerCase(), sgaWan.address, "  cross smgFeeProxy check on WanChain")
   checkValue(cross.WanChain.quota.toLowerCase(), quotaWan.address, "  cross quota check on WanChain")
-  checkValue(cross.Ethereum.tokenManager, oracle.Ethereum.tokenManagerProxy, "  cross token manager check on Ethereum")
-  checkValue(cross.Ethereum.smgAdminProxy.toLowerCase(), oracle.Ethereum.oracleProxy, "  cross store man group check on Ethereum")
-  checkValue(cross.Ethereum.smgFeeProxy.toLowerCase(), oracle.Ethereum.oracleProxy, "  cross store fee check on Ethereum")
+  checkValue(cross.Ethereum.tokenManager, oracle.Ethereum.tokenManagerProxy, "  cross tokenManager check on Ethereum")
+  checkValue(cross.Ethereum.smgAdminProxy, oracle.Ethereum.oracleProxy, "  cross smgAdminProxy check on Ethereum")
+  checkValue(cross.Ethereum.smgFeeProxy, oracle.Ethereum.oracleProxy, "  cross smgFeeProxy check on Ethereum")
   checkValue(cross.Ethereum.quota.toLowerCase(), quotaEth.address, "  cross quota check on Ethereum")
+  console.log(`cross sigVerifier on WanChain is ${cross.WanChain.sigVerifier}, on Ethereum is ${cross.Ethereum.sigVerifier}`)
   console.log(`fee: wan -> eth on WanChain is ${JSON.stringify(cross.WanChain['fee: wan -> eth'])}, on Ethereum is ${JSON.stringify(cross.Ethereum['fee: wan -> eth'])}`)
   console.log(`fee: eth -> wan on WanChain is ${JSON.stringify(cross.WanChain['fee: eth -> wan'])}, on Ethereum is ${JSON.stringify(cross.Ethereum['fee: eth -> wan'])}`)
   console.log(`lockedTime on WanChain is ${cross.WanChain['lockedTime']}, on Ethereum is ${cross.Ethereum['lockedTime']}`)
