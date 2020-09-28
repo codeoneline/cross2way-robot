@@ -13,7 +13,7 @@
     		address tokenManager, address smgAdminProxy, address smgFeeProxy, address quota, address sigVerifier
     		tokenManager地址、
     		smgAdminProxy - wan侧与storemanAdmin合约地址相同，ETH侧为Oracle地址
-    		smgFeeProxy - wan侧与storemanAdmin合约地址相同，ETH侧为Oracle地址
+    		smgFeeProxy - wan侧与storemanAdmin合约地址相同，ETH侧为0地址
     		quota地址
     		sigVerifier地址
   	getFees – 输入参数fromChainID和toChainID (校验fee)

@@ -43,6 +43,12 @@ const chainId = {
   EOS: 0x800000c2,
 }
 
+const ObjectType = {
+  Normal: 0,
+  StoreMan: 1,
+  QuotaToken: 2,
+}
+
 //////////////////////////////////////////////
 let g_oracle = {}
 const getOracle = async () => {
@@ -314,29 +320,49 @@ function omitStoreManGroup(a, b) {
   }
   return false
 }
-function checkObject(a, b, info, bStoreMan) {
+
+function checkObject(a, b, info, type) {
   const keys_a = Object.keys(a)
   const keys_b = Object.keys(b)
 
   if (!!keys_a && !!keys_b) {
     if (keys_a.length === keys_b.length) {
       for (let i = 0; i < keys_a.length; i++) {
-        // for store man --
-        if (bStoreMan) {
-          if (omitStoreManGroup(a, b)) {
-            console.log(`  ${info} storeman status < 4, pass check`)
-            return true;
-          }
-        }
         // for store man gpk1 should compare to gpk2
         let key_b = keys_b[i]
-        if (bStoreMan) {
-          if (keys_a[i] === 'gpk1') { key_b = 'gpk2' }
-          else if (keys_a[i] === 'gpk2') { key_b = 'gpk1' }
-          else if (keys_a[i] === 'curve1') { key_b = 'curve2' }
-          else if (keys_a[i] === 'curve2') { key_b = 'curve1' }
-          else if (keys_a[i] === 'chain1') { key_b = 'chain2' }
-          else if (keys_a[i] === 'chain2') { key_b = 'chain1' }
+        // for store man --
+        if (type) {
+          if (type & ObjectType.StoreMan) {
+            if (omitStoreManGroup(a, b)) {
+              console.log(`  ${info} storeman status < 4, pass check`)
+              return true;
+            }
+
+            if (keys_a[i] === 'gpk1') { key_b = 'gpk2' }
+            else if (keys_a[i] === 'gpk2') { key_b = 'gpk1' }
+            else if (keys_a[i] === 'curve1') { key_b = 'curve2' }
+            else if (keys_a[i] === 'curve2') { key_b = 'curve1' }
+            else if (keys_a[i] === 'chain1') { key_b = 'chain2' }
+            else if (keys_a[i] === 'chain2') { key_b = 'chain1' }
+          }
+
+          if (type & ObjectType.QuotaToken) {
+            let isDebt = null
+            if (keys_a[i] === 'asset') { key_b = 'debt', isDebt = keys_a[i]}
+            else if (keys_a[i] === 'debt') { key_b = 'asset', isDebt = keys_a[i]}
+            if (isDebt) {
+              if (!checkObject(a[keys_a[i]], b[key_b], `  ${info} ${isDebt}`)) {
+                return false
+              } else {
+                continue;
+              }
+            }
+
+            if (keys_a[i] === 'userMints') { key_b = 'smgMints' }
+            else if (keys_a[i] === 'userBurns') { key_b = 'smgBurns' }
+            else if (keys_a[i] === 'smgMints') { key_b = 'userMints' }
+            else if (keys_a[i] === 'smgBurns') { key_b = 'userBurns' }
+          }
         }
         const type_b = typeof(b[key_b])
         const type_a = typeof(a[keys_a[i]])
@@ -358,7 +384,7 @@ function checkObject(a, b, info, bStoreMan) {
   return false
 }
 
-function checkObjectObject(a, b, info, bStoreMan = false) {
+function checkObjectObject(a, b, info, type) {
   const a_ = Object.entries(a)
   const b_ = Object.entries(b)
 
@@ -370,7 +396,7 @@ function checkObjectObject(a, b, info, bStoreMan = false) {
           console.log(`  ${info} is bad, ${JSON.stringify(a_, null, 2)} != ${JSON.stringify(b_, null, 2)}`)
           return false
         } else {
-          if (!checkObject(a_[i][1], b_[i][1], `${info} ${a_[i][0]}`, bStoreMan)) {
+          if (!checkObject(a_[i][1], b_[i][1], `${info} ${a_[i][0]}`, type)) {
             return false
           }
         }
@@ -383,7 +409,7 @@ function checkObjectObject(a, b, info, bStoreMan = false) {
   return false
 }
 
-function checkObjectObjectObject(a, b, info, bStoreMan) {
+function checkObjectObjectObject(a, b, info, type) {
   const a_ = Object.entries(a)
   const b_ = Object.entries(b)
 
@@ -394,7 +420,7 @@ function checkObjectObjectObject(a, b, info, bStoreMan) {
         if(a_[i][0] !== b_[i][0]) {
           console.log(`  ${info} is bad, ${JSON.stringify(a_, null, 2)} != ${JSON.stringify(b_, null, 2)}`)
         } else {
-          checkObjectObject(a_[i][1], b_[i][1], `${info} ${a_[i][0]}`, bStoreMan)
+          checkObjectObject(a_[i][1], b_[i][1], `${info} ${a_[i][0]}`, type)
         }
       }
       console.log(`-${info} check end`)
@@ -416,7 +442,7 @@ setTimeout(async () => {
   checkValue(oracle.Ethereum.tokenManagerProxyOwner, oracle.Ethereum.tokenManagerDelegatorOwner, "token manager proxy and delegator owner on Ethereum")
 
   checkObject(oracle.WanChain.prices, oracle.Ethereum.prices, "oracle price")
-  checkObjectObject(oracle.WanChain.sgs, oracle.Ethereum.sgs, "oracle store man group config", true)
+  checkObjectObject(oracle.WanChain.sgs, oracle.Ethereum.sgs, "oracle store man group config", ObjectType.StoreMan)
 
   const tm = await getTokenManager();
 
@@ -434,7 +460,7 @@ setTimeout(async () => {
   checkValue(quota.Ethereum.status.tokenManagerAddress, oracle.Ethereum.tokenManagerProxy, "quota tokenManagerAddress on Ethereum")
   checkThreeValue(quota.WanChain.status.depositTokenSymbol, quota.Ethereum.status.depositTokenSymbol, "WAN", "quota depositTokenSymbol")
 
-  checkObjectObjectObject(quota.WanChain.quotaTokens, quota.Ethereum.quotaTokens, "quota token", true)
+  checkObjectObjectObject(quota.WanChain.quotaTokens, quota.Ethereum.quotaTokens, "quota token", ObjectType.QuotaToken | ObjectType.StoreMan)
 
 
   console.log(`cross check`)
@@ -445,7 +471,7 @@ setTimeout(async () => {
   checkValue(cross.WanChain.quota.toLowerCase(), quotaWan.address, "  cross quota check on WanChain")
   checkValue(cross.Ethereum.tokenManager, oracle.Ethereum.tokenManagerProxy, "  cross tokenManager check on Ethereum")
   checkValue(cross.Ethereum.smgAdminProxy, oracle.Ethereum.oracleProxy, "  cross smgAdminProxy check on Ethereum")
-  checkValue(cross.Ethereum.smgFeeProxy, oracle.Ethereum.oracleProxy, "  cross smgFeeProxy check on Ethereum")
+  checkValue(cross.Ethereum.smgFeeProxy, "0x0000000000000000000000000000000000000000", "  cross smgFeeProxy check on Ethereum")
   checkValue(cross.Ethereum.quota.toLowerCase(), quotaEth.address, "  cross quota check on Ethereum")
   console.log(`cross sigVerifier on WanChain is ${cross.WanChain.sigVerifier}, on Ethereum is ${cross.Ethereum.sigVerifier}`)
   console.log(`fee: wan -> eth on WanChain is ${JSON.stringify(cross.WanChain['fee: wan -> eth'])}, on Ethereum is ${JSON.stringify(cross.Ethereum['fee: wan -> eth'])}`)
