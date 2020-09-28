@@ -59,7 +59,7 @@ let CheckingAt = null;
 
 function writePrint(...message) {
   if (message[0][0] === ' ') {
-    g_msg = `${g_msg} <div style="color: #bbb">&nbsp;&nbsp;${message[0]}</div>`
+    g_msg = `${g_msg} <div style="color: #222">&nbsp;&nbsp;${message[0]}</div>`
   } else {
     g_msg = `${g_msg} <div>${message[0]}</div>`
   }
@@ -454,7 +454,7 @@ const check = async () => {
       bChecking = true
       CheckingAt = new Date().getTime();
       g_msg = '<html><body>';
-      writePrint(`you can use /force to get the newest state`)
+      writePrint(`you can use /force to get the latest state`)
     } else {
       // use old
       return
