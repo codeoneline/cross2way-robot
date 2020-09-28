@@ -1,3 +1,7 @@
+const express = require('express')
+const app = express()
+const port = 9999
+
 const Oracle = require('./contract/oracle');
 const TokenManager = require('./contract/token_manager');
 const OracleProxy = require('./contract/oracle_proxy');
@@ -47,6 +51,19 @@ const ObjectType = {
   Normal: 0,
   StoreMan: 1,
   QuotaToken: 2,
+}
+
+let g_msg = '';
+let bChecking = false
+let CheckingAt = null;
+
+function writePrint(...message) {
+  if (message[0][0] === ' ') {
+    g_msg = `${g_msg} <div style="color: #bbb">&nbsp;&nbsp;${message[0]}</div>`
+  } else {
+    g_msg = `${g_msg} <div>${message[0]}</div>`
+  }
+  console.log(...message)
 }
 
 //////////////////////////////////////////////
@@ -286,19 +303,19 @@ const getCross = async () => {
 /////////////////////////////////////////////////////
 function checkValue(a, b, info) {
   if (a === b) {
-    console.log(`  ${info} is good`)
+    writePrint(`  ${info} is good`)
     return true
   } else {
-    console.log(`  ${info} is bad, ${a} != ${b}`)
+    writePrint(`  ${info} is bad, ${a} != ${b}`)
     return false
   }
 }
 function checkThreeValue(a, b, c, info) {
   if (a === b && a === c) {
-    console.log(`  ${info} is good`)
+    writePrint(`  ${info} is good`)
     return true
   } else {
-    console.log(`  ${info} is bad, ${a} != ${ a === b ? c : b}`)
+    writePrint(`  ${info} is bad, ${a} != ${ a === b ? c : b}`)
     return false
   }
 }
@@ -334,7 +351,7 @@ function checkObject(a, b, info, type) {
         if (type) {
           if (type & ObjectType.StoreMan) {
             if (omitStoreManGroup(a, b)) {
-              console.log(`  ${info} storeman status < 4, pass check`)
+              writePrint(`  ${info} storeman status < 4, pass check`)
               return true;
             }
 
@@ -368,19 +385,19 @@ function checkObject(a, b, info, type) {
         const type_a = typeof(a[keys_a[i]])
         if (type_a === type_b) {
           if (a[keys_a[i]] !== b[key_b]) {
-            console.log(`  ${info} is bad, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
+            writePrint(`  ${info} is bad, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
             return false;
           }
         } else {
-          console.log(`  ${info} is bad, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
+          writePrint(`  ${info} is bad, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
           return false;
         }
       }
-      console.log(`  ${info} is good`)
+      writePrint(`  ${info} is good`)
       return true
     }
   }
-  console.log(`  ${info} is bad, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
+  writePrint(`  ${info} is bad, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
   return false
 }
 
@@ -390,10 +407,10 @@ function checkObjectObject(a, b, info, type) {
 
   if (!!a_ && !!b_) {
     if (a_.length === b_.length) {
-      console.log(`  ${info} check begin`)
+      writePrint(`  ${info} check begin`)
       for (let i = 0; i < a_.length; i++) {
         if(a_[i][0] !== b_[i][0]) {
-          console.log(`  ${info} is bad, ${JSON.stringify(a_, null, 2)} != ${JSON.stringify(b_, null, 2)}`)
+          writePrint(`  ${info} is bad, ${JSON.stringify(a_, null, 2)} != ${JSON.stringify(b_, null, 2)}`)
           return false
         } else {
           if (!checkObject(a_[i][1], b_[i][1], `${info} ${a_[i][0]}`, type)) {
@@ -401,11 +418,11 @@ function checkObjectObject(a, b, info, type) {
           }
         }
       }
-      console.log(`  ${info} check end`)
+      writePrint(`  ${info} check end`)
       return true
     }
   }
-  console.log(`  ${info} is bad, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
+  writePrint(`  ${info} is bad, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
   return false
 }
 
@@ -415,26 +432,40 @@ function checkObjectObjectObject(a, b, info, type) {
 
   if (!!a_ && !!b_) {
     if (a_.length === b_.length) {
-      console.log(`-${info} check begin`)
+      writePrint(`-${info} check begin`)
       for (let i = 0; i < a_.length; i++) {
         if(a_[i][0] !== b_[i][0]) {
-          console.log(`  ${info} is bad, ${JSON.stringify(a_, null, 2)} != ${JSON.stringify(b_, null, 2)}`)
+          writePrint(`  ${info} is bad, ${JSON.stringify(a_, null, 2)} != ${JSON.stringify(b_, null, 2)}`)
         } else {
           checkObjectObject(a_[i][1], b_[i][1], `${info} ${a_[i][0]}`, type)
         }
       }
-      console.log(`-${info} check end`)
+      writePrint(`-${info} check end`)
       return true
     }
   }
-  console.log(`-${info} is bad, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
+  writePrint(`-${info} is bad, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
   return false
 }
 
-setTimeout(async () => {
+const check = async () => {
+  if (!bChecking) {
+    if (new Date().getTime() - CheckingAt > 3600000) {
+      bChecking = true
+      CheckingAt = new Date().getTime();
+    } else {
+      // use old
+      return
+    }
+  } else {
+    while(bChecking) {
+      await sleep(5000)
+    }
+  }
+
   const oracle = await getOracle();
 
-  console.log(`oracle check`)
+  writePrint(`oracle check`)
   checkValue(oracle.WanChain.oracleProxyOwner, oracle.WanChain.oracleDelegatorOwner, "oracle proxy and delegator owner on WanChain")
   checkValue(oracle.Ethereum.oracleProxyOwner, oracle.Ethereum.oracleDelegatorOwner, "oracle proxy and delegator owner on Ethereum")
 
@@ -446,11 +477,11 @@ setTimeout(async () => {
 
   const tm = await getTokenManager();
 
-  console.log(`token manager check`)
+  writePrint(`token manager check`)
   checkValue(tm.WanChain.total, tm.Ethereum.total, "token manager total token pair")
   checkObjectObject(tm.WanChain.tokenPairs, tm.Ethereum.tokenPairs, "token manager token pair")
 
-  console.log(`quota check`)
+  writePrint(`quota check`)
   const quota = await getQuota(oracle, tm);
   checkValue(quota.WanChain.status.priceOracleAddress, oracle.WanChain.oracleProxy, "quota priceOracleAddress on WanChain")
   checkValue(quota.WanChain.status.depositOracleAddress.toLowerCase(), sgaWan.address, "quota depositOracleAddress on WanChain")
@@ -463,7 +494,7 @@ setTimeout(async () => {
   checkObjectObjectObject(quota.WanChain.quotaTokens, quota.Ethereum.quotaTokens, "quota token", ObjectType.QuotaToken | ObjectType.StoreMan)
 
 
-  console.log(`cross check`)
+  writePrint(`cross check`)
   const cross = await getCross();
   checkValue(cross.WanChain.tokenManager, oracle.WanChain.tokenManagerProxy, "  cross tokenManager check on WanChain")
   checkValue(cross.WanChain.smgAdminProxy.toLowerCase(), sgaWan.address, "  cross smgAdminProxy check on WanChain")
@@ -473,9 +504,39 @@ setTimeout(async () => {
   checkValue(cross.Ethereum.smgAdminProxy, oracle.Ethereum.oracleProxy, "  cross smgAdminProxy check on Ethereum")
   checkValue(cross.Ethereum.smgFeeProxy, "0x0000000000000000000000000000000000000000", "  cross smgFeeProxy check on Ethereum")
   checkValue(cross.Ethereum.quota.toLowerCase(), quotaEth.address, "  cross quota check on Ethereum")
-  console.log(`cross sigVerifier on WanChain is ${cross.WanChain.sigVerifier}, on Ethereum is ${cross.Ethereum.sigVerifier}`)
-  console.log(`fee: wan -> eth on WanChain is ${JSON.stringify(cross.WanChain['fee: wan -> eth'])}, on Ethereum is ${JSON.stringify(cross.Ethereum['fee: wan -> eth'])}`)
-  console.log(`fee: eth -> wan on WanChain is ${JSON.stringify(cross.WanChain['fee: eth -> wan'])}, on Ethereum is ${JSON.stringify(cross.Ethereum['fee: eth -> wan'])}`)
-  console.log(`lockedTime on WanChain is ${cross.WanChain['lockedTime']}, on Ethereum is ${cross.Ethereum['lockedTime']}`)
-  console.log(`smgFeeReceiverTimeout on WanChain is ${cross.WanChain['smgFeeReceiverTimeout']}, on Ethereum is ${cross.Ethereum['smgFeeReceiverTimeout']}`)
-}, 0);
+  writePrint(`cross sigVerifier on WanChain is ${cross.WanChain.sigVerifier}, on Ethereum is ${cross.Ethereum.sigVerifier}`)
+  writePrint(`fee: wan -> eth on WanChain is ${JSON.stringify(cross.WanChain['fee: wan -> eth'])}, on Ethereum is ${JSON.stringify(cross.Ethereum['fee: wan -> eth'])}`)
+  writePrint(`fee: eth -> wan on WanChain is ${JSON.stringify(cross.WanChain['fee: eth -> wan'])}, on Ethereum is ${JSON.stringify(cross.Ethereum['fee: eth -> wan'])}`)
+  writePrint(`lockedTime on WanChain is ${cross.WanChain['lockedTime']}, on Ethereum is ${cross.Ethereum['lockedTime']}`)
+  writePrint(`smgFeeReceiverTimeout on WanChain is ${cross.WanChain['smgFeeReceiverTimeout']}, on Ethereum is ${cross.Ethereum['smgFeeReceiverTimeout']}`)
+
+
+  bChecking = false
+};
+
+const forceCheck = async () => {
+  if (!bChecking) {
+    CheckingAt = 0;
+  }
+  await check();
+}
+
+app.get('/', async (req, res) => {
+  g_msg = '<html><body>';
+  writePrint(`you can use /force to get the newest state`)
+  await check();
+  writePrint(`checking At ${new Date(CheckingAt).toLocaleDateString()}`)
+  g_msg = g_msg + '</body></html>'
+  res.send(g_msg)
+})
+app.get('/force', async (req, res) => {
+  g_msg = '<html><body>';
+  await forceCheck();
+  writePrint(`checking At ${new Date(CheckingAt).toLocaleDateString()}`)
+  g_msg = g_msg + '</body></html>'
+  res.send(g_msg)
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`);
+})
