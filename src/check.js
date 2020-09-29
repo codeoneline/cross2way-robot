@@ -561,8 +561,9 @@ const check = async () => {
     }
   } else {
     while(bChecking) {
-      await sleep(5000)
+      await sleep(1000)
     }
+    return
   }
 
   const oracle = await getOracle();
@@ -633,9 +634,7 @@ const forceCheck = async () => {
 }
 
 setInterval(async () => {
-  if (!bChecking) {
-    await check();
-  }
+  await check();
 }, checkInterval)
 
 setTimeout(async () => {
@@ -646,9 +645,7 @@ setTimeout(async () => {
   // checkObjectObject(oracle.WanChain.sgs, iWanOracle.Ethereum.sgs, "iWan ethereum oracle store man group config", ObjectType.StoreMan)
   // checkObjectObject(oracle.Ethereum.sgs, iWanOracle.WanChain.sgs, "iWan ethereum oracle store man group config", ObjectType.StoreMan)
   // await dingSend("Hello DingTalk")
-  if (!bChecking) {
-    await check();
-  }
+  await check();
 }, 0);
 
 app.get('/', async (req, res) => {
