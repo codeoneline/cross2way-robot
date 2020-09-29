@@ -9,6 +9,7 @@ const TokenManagerProxy = require('./contract/token_manager_proxy');
 const SGA = require('./contract/storeman_group_admin');
 const Quota = require('./contract/quota');
 const Cross = require('./contract/cross');
+const axios = require('axios')
 
 const log = require('./lib/log');
 const db = require('./lib/sqlite_db');
@@ -45,6 +46,18 @@ const quotaEth = new Quota(chainEth, process.env.QUOTA_ADDR_ETH)
 const crossWan = new Cross(chainWan, process.env.CROSS_ADDR)
 const crossEth = new Cross(chainEth, process.env.CROSS_ADDR_ETH)
 
+const reportUrl = "https://oapi.dingtalk.com/robot/send?access_token=1dc5dac099ef42e0ba17927593b24d0f7b79460d5d7c3887cd4a81b1b6d70d83"
+const dingSend = async (msg) => {
+  let format = {
+    "msgtype": "text",
+    "text": {
+      "content": msg
+    },
+  };
+  let ret = await axios.post(reportUrl, format);
+  console.log(ret.data);
+}
+
 const chainId = {
   ETH: 0x8000003c,
   WAN: 0x8057414e,
@@ -63,12 +76,25 @@ let g_msg = '';
 let bChecking = false
 let CheckingAt = null;
 
+let oldErrors = {};
+let newErrors = [];
+
+function reportError(msg) {
+  newErrors[msg] = true;
+
+  if (!oldErrors[msg]) {
+    dingSend(msg)
+  }
+}
+
 function writePrint(...message) {
   let color = 'color: gray;font-weight:bold;font-size:16px;'
   if (message[0].indexOf('pass check') != -1) {
     color = 'color: orange;font-weight:bold;font-size:16px;'
   } else if (message[0].indexOf('❌') != -1) {
     color = 'color: red;font-weight:bold;font-size:16px;'
+
+    reportError(message[0]);
   } else if (message[0].indexOf('✅') != -1) {
     color = 'color: green;font-weight:bold;font-size:16px;'
   }
@@ -524,6 +550,7 @@ const check = async () => {
   if (!bChecking) {
     if (new Date().getTime() - CheckingAt > 3600000) {
       bChecking = true
+      newErrors = {}
       CheckingAt = new Date().getTime();
       g_msg = '<html><body>';
       writePrint(`you can use /force to get the latest state`)
@@ -592,6 +619,7 @@ const check = async () => {
   checkObjectObject(oracle.Ethereum.sgs, iWanOracle.WanChain.sgs, "iWan ethereum oracle store man group config", ObjectType.StoreMan)
 
   bChecking = false
+  oldErrors = newErrors
   writePrint(`checking At ${new Date(CheckingAt).toLocaleDateString()}`)
   g_msg = g_msg + '</body></html>'
 };
@@ -607,16 +635,18 @@ setInterval(async () => {
   if (!bChecking) {
     await check();
   }
-}, 3600000)
+}, 60000)
 
-// setTimeout(async () => {
-//   const oracle = await getOracle();
-//   const iWanOracle = await getIWanOracle()
-//   checkObject(oracle.WanChain.prices, iWanOracle.Ethereum.prices, "iWan wan chain oracle price")
-//   checkObject(oracle.Ethereum.prices, iWanOracle.WanChain.prices, "iWan wan chain oracle price")
-//   checkObjectObject(oracle.WanChain.sgs, iWanOracle.Ethereum.sgs, "iWan ethereum oracle store man group config", ObjectType.StoreMan)
-//   checkObjectObject(oracle.Ethereum.sgs, iWanOracle.WanChain.sgs, "iWan ethereum oracle store man group config", ObjectType.StoreMan)
-// }, 0);
+setTimeout(async () => {
+  // const oracle = await getOracle();
+  // const iWanOracle = await getIWanOracle()
+  // checkObject(oracle.WanChain.prices, iWanOracle.Ethereum.prices, "iWan wan chain oracle price")
+  // checkObject(oracle.Ethereum.prices, iWanOracle.WanChain.prices, "iWan wan chain oracle price")
+  // checkObjectObject(oracle.WanChain.sgs, iWanOracle.Ethereum.sgs, "iWan ethereum oracle store man group config", ObjectType.StoreMan)
+  // checkObjectObject(oracle.Ethereum.sgs, iWanOracle.WanChain.sgs, "iWan ethereum oracle store man group config", ObjectType.StoreMan)
+  // await dingSend("Hello DingTalk")
+  await check()
+}, 0);
 
 app.get('/', async (req, res) => {
   await check();
