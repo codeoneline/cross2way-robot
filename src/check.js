@@ -77,7 +77,7 @@ let bChecking = false
 let CheckingAt = null;
 
 let oldErrors = {};
-let newErrors = [];
+let newErrors = {};
 
 function reportError(msg) {
   newErrors[msg] = true;
@@ -546,9 +546,10 @@ function checkObjectObjectObject(a, b, info, type) {
   return false
 }
 
+const checkInterval = 3600000
 const check = async () => {
   if (!bChecking) {
-    if (new Date().getTime() - CheckingAt > 3600000) {
+    if (new Date().getTime() - CheckingAt > checkInterval) {
       bChecking = true
       newErrors = {}
       CheckingAt = new Date().getTime();
@@ -620,7 +621,7 @@ const check = async () => {
 
   bChecking = false
   oldErrors = newErrors
-  writePrint(`checking At ${new Date(CheckingAt).toLocaleDateString()}`)
+  writePrint(`checking At ${new Date(CheckingAt).toLocaleString()}`)
   g_msg = g_msg + '</body></html>'
 };
 
@@ -635,7 +636,7 @@ setInterval(async () => {
   if (!bChecking) {
     await check();
   }
-}, 3600000)
+}, checkInterval)
 
 setTimeout(async () => {
   // const oracle = await getOracle();
