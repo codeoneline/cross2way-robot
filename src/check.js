@@ -94,7 +94,7 @@ function writePrint(...message) {
   } else if (message[0].indexOf('❌') != -1) {
     color = 'color: red;font-weight:bold;font-size:16px;'
 
-    reportError(message[0]);
+    // reportError(message[0]);
   } else if (message[0].indexOf('✅') != -1) {
     color = 'color: green;font-weight:bold;font-size:16px;'
   }
