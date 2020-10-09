@@ -509,19 +509,23 @@ function checkObjectObject(a, b, info, type) {
       for (let i = 0; i < a_.length; i++) {
         if(a_[i][0] !== b_[i][0]) {
           writePrint(`  ${info} ❌, ${JSON.stringify(a_, null, 2)} != ${JSON.stringify(b_, null, 2)}`)
-          return false
+          continue;
+          // return false
         } else {
           if (!checkObject(a_[i][1], b_[i][1], `${info} ${a_[i][0]}`, type)) {
-            return false
+            continue;
+            // return false
           }
         }
       }
       writePrint(`  ${info} check end`)
-      return true
+      // return true
+      return
     }
   }
   writePrint(`  ${info} ❌, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
-  return false
+  // return false
+  return
 }
 
 function checkObjectObjectObject(a, b, info, type) {
@@ -566,60 +570,64 @@ const check = async () => {
     return
   }
 
-  const oracle = await getOracle();
+  try {
+    const oracle = await getOracle();
 
-  writePrint(`oracle check`)
-  checkValue(oracle.WanChain.oracleProxyOwner, oracle.WanChain.oracleDelegatorOwner, "oracle proxy and delegator owner on WanChain")
-  checkValue(oracle.Ethereum.oracleProxyOwner, oracle.Ethereum.oracleDelegatorOwner, "oracle proxy and delegator owner on Ethereum")
+    writePrint(`oracle check`)
+    checkValue(oracle.WanChain.oracleProxyOwner, oracle.WanChain.oracleDelegatorOwner, "oracle proxy and delegator owner on WanChain")
+    checkValue(oracle.Ethereum.oracleProxyOwner, oracle.Ethereum.oracleDelegatorOwner, "oracle proxy and delegator owner on Ethereum")
 
-  checkValue(oracle.WanChain.tokenManagerProxyOwner, oracle.WanChain.tokenManagerDelegatorOwner, "token manager proxy and delegator owner on WanChain")
-  checkValue(oracle.Ethereum.tokenManagerProxyOwner, oracle.Ethereum.tokenManagerDelegatorOwner, "token manager proxy and delegator owner on Ethereum")
+    checkValue(oracle.WanChain.tokenManagerProxyOwner, oracle.WanChain.tokenManagerDelegatorOwner, "token manager proxy and delegator owner on WanChain")
+    checkValue(oracle.Ethereum.tokenManagerProxyOwner, oracle.Ethereum.tokenManagerDelegatorOwner, "token manager proxy and delegator owner on Ethereum")
 
-  checkObject(oracle.WanChain.prices, oracle.Ethereum.prices, "oracle price")
-  checkObjectObject(oracle.WanChain.sgs, oracle.Ethereum.sgs, "oracle store man group config", ObjectType.StoreMan)
+    checkObject(oracle.WanChain.prices, oracle.Ethereum.prices, "oracle price")
+    checkObjectObject(oracle.WanChain.sgs, oracle.Ethereum.sgs, "oracle store man group config", ObjectType.StoreMan)
 
-  const tm = await getTokenManager();
+    const tm = await getTokenManager();
 
-  writePrint(`token manager check`)
-  checkValue(tm.WanChain.total, tm.Ethereum.total, "token manager total token pair")
-  checkObjectObject(tm.WanChain.tokenPairs, tm.Ethereum.tokenPairs, "token manager token pair")
+    writePrint(`token manager check`)
+    checkValue(tm.WanChain.total, tm.Ethereum.total, "token manager total token pair")
+    checkObjectObject(tm.WanChain.tokenPairs, tm.Ethereum.tokenPairs, "token manager token pair")
 
-  writePrint(`quota check`)
-  const quota = await getQuota(oracle, tm);
-  checkValue(quota.WanChain.status.priceOracleAddress, oracle.WanChain.oracleProxy, "quota priceOracleAddress on WanChain")
-  checkValue(quota.WanChain.status.depositOracleAddress.toLowerCase(), sgaWan.address, "quota depositOracleAddress on WanChain")
-  checkValue(quota.WanChain.status.tokenManagerAddress, oracle.WanChain.tokenManagerProxy, "quota tokenManagerAddress on WanChain")
-  checkValue(quota.Ethereum.status.priceOracleAddress, oracle.Ethereum.oracleProxy, "quota priceOracleAddress on Ethereum")
-  checkValue(quota.Ethereum.status.depositOracleAddress, oracle.Ethereum.oracleProxy, "quota depositOracleAddress on Ethereum")
-  checkValue(quota.Ethereum.status.tokenManagerAddress, oracle.Ethereum.tokenManagerProxy, "quota tokenManagerAddress on Ethereum")
-  checkThreeValue(quota.WanChain.status.depositTokenSymbol, quota.Ethereum.status.depositTokenSymbol, "WAN", "quota depositTokenSymbol")
+    writePrint(`quota check`)
+    const quota = await getQuota(oracle, tm);
+    checkValue(quota.WanChain.status.priceOracleAddress, oracle.WanChain.oracleProxy, "quota priceOracleAddress on WanChain")
+    checkValue(quota.WanChain.status.depositOracleAddress.toLowerCase(), sgaWan.address, "quota depositOracleAddress on WanChain")
+    checkValue(quota.WanChain.status.tokenManagerAddress, oracle.WanChain.tokenManagerProxy, "quota tokenManagerAddress on WanChain")
+    checkValue(quota.Ethereum.status.priceOracleAddress, oracle.Ethereum.oracleProxy, "quota priceOracleAddress on Ethereum")
+    checkValue(quota.Ethereum.status.depositOracleAddress, oracle.Ethereum.oracleProxy, "quota depositOracleAddress on Ethereum")
+    checkValue(quota.Ethereum.status.tokenManagerAddress, oracle.Ethereum.tokenManagerProxy, "quota tokenManagerAddress on Ethereum")
+    checkThreeValue(quota.WanChain.status.depositTokenSymbol, quota.Ethereum.status.depositTokenSymbol, "WAN", "quota depositTokenSymbol")
 
-  checkObjectObjectObject(quota.WanChain.quotaTokens, quota.Ethereum.quotaTokens, "quota token", ObjectType.QuotaToken | ObjectType.StoreMan)
+    checkObjectObjectObject(quota.WanChain.quotaTokens, quota.Ethereum.quotaTokens, "quota token", ObjectType.QuotaToken | ObjectType.StoreMan)
 
 
-  writePrint(`cross check`)
-  const cross = await getCross();
-  checkValue(cross.WanChain.tokenManager, oracle.WanChain.tokenManagerProxy, "  cross tokenManager check on WanChain")
-  checkValue(cross.WanChain.smgAdminProxy.toLowerCase(), sgaWan.address, "  cross smgAdminProxy check on WanChain")
-  checkValue(cross.WanChain.smgFeeProxy.toLowerCase(), sgaWan.address, "  cross smgFeeProxy check on WanChain")
-  checkValue(cross.WanChain.quota.toLowerCase(), quotaWan.address, "  cross quota check on WanChain")
-  checkValue(cross.Ethereum.tokenManager, oracle.Ethereum.tokenManagerProxy, "  cross tokenManager check on Ethereum")
-  checkValue(cross.Ethereum.smgAdminProxy, oracle.Ethereum.oracleProxy, "  cross smgAdminProxy check on Ethereum")
-  checkValue(cross.Ethereum.smgFeeProxy, "0x0000000000000000000000000000000000000000", "  cross smgFeeProxy check on Ethereum")
-  checkValue(cross.Ethereum.quota.toLowerCase(), quotaEth.address, "  cross quota check on Ethereum")
-  writePrint(`-cross sigVerifier on WanChain is ${cross.WanChain.sigVerifier}, on Ethereum is ${cross.Ethereum.sigVerifier}`)
-  writePrint(`-fee: wan -> eth on WanChain is ${JSON.stringify(cross.WanChain['fee: wan -> eth'])}, on Ethereum is ${JSON.stringify(cross.Ethereum['fee: wan -> eth'])}`)
-  writePrint(`-fee: eth -> wan on WanChain is ${JSON.stringify(cross.WanChain['fee: eth -> wan'])}, on Ethereum is ${JSON.stringify(cross.Ethereum['fee: eth -> wan'])}`)
-  writePrint(`-lockedTime on WanChain is ${cross.WanChain['lockedTime']}, on Ethereum is ${cross.Ethereum['lockedTime']}`)
-  writePrint(`-smgFeeReceiverTimeout on WanChain is ${cross.WanChain['smgFeeReceiverTimeout']}, on Ethereum is ${cross.Ethereum['smgFeeReceiverTimeout']}`)
+    writePrint(`cross check`)
+    const cross = await getCross();
+    checkValue(cross.WanChain.tokenManager, oracle.WanChain.tokenManagerProxy, "  cross tokenManager check on WanChain")
+    checkValue(cross.WanChain.smgAdminProxy.toLowerCase(), sgaWan.address, "  cross smgAdminProxy check on WanChain")
+    checkValue(cross.WanChain.smgFeeProxy.toLowerCase(), sgaWan.address, "  cross smgFeeProxy check on WanChain")
+    checkValue(cross.WanChain.quota.toLowerCase(), quotaWan.address, "  cross quota check on WanChain")
+    checkValue(cross.Ethereum.tokenManager, oracle.Ethereum.tokenManagerProxy, "  cross tokenManager check on Ethereum")
+    checkValue(cross.Ethereum.smgAdminProxy, oracle.Ethereum.oracleProxy, "  cross smgAdminProxy check on Ethereum")
+    checkValue(cross.Ethereum.smgFeeProxy, "0x0000000000000000000000000000000000000000", "  cross smgFeeProxy check on Ethereum")
+    checkValue(cross.Ethereum.quota.toLowerCase(), quotaEth.address, "  cross quota check on Ethereum")
+    writePrint(`-cross sigVerifier on WanChain is ${cross.WanChain.sigVerifier}, on Ethereum is ${cross.Ethereum.sigVerifier}`)
+    writePrint(`-fee: wan -> eth on WanChain is ${JSON.stringify(cross.WanChain['fee: wan -> eth'])}, on Ethereum is ${JSON.stringify(cross.Ethereum['fee: wan -> eth'])}`)
+    writePrint(`-fee: eth -> wan on WanChain is ${JSON.stringify(cross.WanChain['fee: eth -> wan'])}, on Ethereum is ${JSON.stringify(cross.Ethereum['fee: eth -> wan'])}`)
+    writePrint(`-lockedTime on WanChain is ${cross.WanChain['lockedTime']}, on Ethereum is ${cross.Ethereum['lockedTime']}`)
+    writePrint(`-smgFeeReceiverTimeout on WanChain is ${cross.WanChain['smgFeeReceiverTimeout']}, on Ethereum is ${cross.Ethereum['smgFeeReceiverTimeout']}`)
 
-  writePrint(`iWan sdk check`)
-  const iWanOracle = await getIWanOracle()
-  checkObject(oracle.WanChain.prices, iWanOracle.Ethereum.prices, "iWan wan chain oracle price")
-  checkObject(oracle.Ethereum.prices, iWanOracle.WanChain.prices, "iWan wan chain oracle price")
-  checkObjectObject(oracle.WanChain.sgs, iWanOracle.Ethereum.sgs, "iWan ethereum oracle store man group config", ObjectType.StoreMan)
-  checkObjectObject(oracle.Ethereum.sgs, iWanOracle.WanChain.sgs, "iWan ethereum oracle store man group config", ObjectType.StoreMan)
-
+    writePrint(`iWan sdk check`)
+    const iWanOracle = await getIWanOracle()
+    checkObject(oracle.WanChain.prices, iWanOracle.Ethereum.prices, "iWan wan chain oracle price")
+    checkObject(oracle.Ethereum.prices, iWanOracle.WanChain.prices, "iWan wan chain oracle price")
+    checkObjectObject(oracle.WanChain.sgs, iWanOracle.Ethereum.sgs, "iWan ethereum oracle store man group config", ObjectType.StoreMan)
+    checkObjectObject(oracle.Ethereum.sgs, iWanOracle.WanChain.sgs, "iWan ethereum oracle store man group config", ObjectType.StoreMan)
+  } catch (error) {
+    writePrint(` ❌, exception: ${error}`)
+  }
+  
   bChecking = false
   oldErrors = newErrors
   writePrint(`checking At ${new Date(CheckingAt).toLocaleString()}`)
