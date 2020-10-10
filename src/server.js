@@ -222,6 +222,9 @@ async function refreshChains() {
   const tmAddr_eth = await tmEthProxy.implementation();
   const tm = new TokenManager(chainWan, odAddr);
   const tm_eth = new TokenManager(chainEth, odAddr_eth);
+
+  const storeOwner = await sgaWan.getOwner().toLowerCase();
+  const storeOwnerConfig = process.env.SGA_OWNER_ADDR.toLowerCase();
   const result = {
     'WanChain' : {
       blockNumber: await chainWan.core.getBlockNumber(),
@@ -253,7 +256,7 @@ async function refreshChains() {
       tokenManagerDelegatorOwner: await tm_eth.getOwner(),
 
       storeManProxy: "no contract",
-      storeManProxyOwner: process.env.SGA_OWNER_ADDR.toLowerCase(),
+      storeManProxyOwner: storeOwner ===  storeOwnerConfig? "equal" : storeOwnerConfig,
     }
   }
   // chainsResult = result;
