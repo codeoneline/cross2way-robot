@@ -223,7 +223,7 @@ async function refreshChains() {
   const tm = new TokenManager(chainWan, odAddr);
   const tm_eth = new TokenManager(chainEth, odAddr_eth);
 
-  const storeOwner = await sgaWan.getOwner().toLowerCase();
+  const storeOwner = (await sgaWan.getOwner()).toLowerCase();
   const storeOwnerConfig = process.env.SGA_OWNER_ADDR.toLowerCase();
   const result = {
     'WanChain' : {
