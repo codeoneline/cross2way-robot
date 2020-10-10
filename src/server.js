@@ -253,7 +253,7 @@ async function refreshChains() {
       tokenManagerDelegatorOwner: await tm_eth.getOwner(),
 
       storeManProxy: "no contract",
-      storeManProxyOwner: process.env.SGA_OWNER_ADDR,
+      storeManProxyOwner: process.env.SGA_OWNER_ADDR.toLowerCase(),
     }
   }
   // chainsResult = result;
