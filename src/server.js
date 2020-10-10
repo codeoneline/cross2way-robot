@@ -237,7 +237,7 @@ async function refreshChains() {
       tokenManagerDelegatorOwner: await tm.getOwner(),
 
       storeManProxy: process.env.SGA_ADDR,
-      storeManProxyOwner: process.env.SGA_OWNER_ADDR,
+      storeManProxyOwner: await sgaWan.getOwner(),
     },
     'Ethereum' : {
       blockNumber: await chainEth.core.getBlockNumber(),
@@ -253,7 +253,7 @@ async function refreshChains() {
       tokenManagerDelegatorOwner: await tm_eth.getOwner(),
 
       storeManProxy: "no contract",
-      storeManProxyOwner: "no contract",
+      storeManProxyOwner: process.env.SGA_OWNER_ADDR,
     }
   }
   // chainsResult = result;
