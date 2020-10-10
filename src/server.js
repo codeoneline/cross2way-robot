@@ -235,6 +235,9 @@ async function refreshChains() {
       oracleDelegatorOwner: await od.getOwner(),
       tokenManagerProxyOwner: await tmWanProxy.getOwner(),
       tokenManagerDelegatorOwner: await tm.getOwner(),
+
+      storeManProxy: process.env.SGA_ADDR,
+      storeManProxyOwner: process.env.SGA_OWNER_ADDR,
     },
     'Ethereum' : {
       blockNumber: await chainEth.core.getBlockNumber(),
@@ -248,6 +251,9 @@ async function refreshChains() {
       oracleDelegatorOwner: await od_eth.getOwner(),
       tokenManagerProxyOwner: await tmEthProxy.getOwner(),
       tokenManagerDelegatorOwner: await tm_eth.getOwner(),
+
+      storeManProxy: "no contract",
+      storeManProxyOwner: "no contract",
     }
   }
   // chainsResult = result;
