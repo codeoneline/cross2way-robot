@@ -489,7 +489,7 @@ function checkObject(a, b, info, type) {
           if (a[keys_a[i]] !== b[key_b]) {
             // writePrint(`  ${info} ❌, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
             writePrint(`  ${info} ❌, ${a[keys_a[i]]} != ${b[key_b]}`)
-            writePrint(`    , ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
+            writePrint(`    ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
             return false;
           }
         } else {
