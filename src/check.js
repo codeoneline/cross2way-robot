@@ -98,11 +98,15 @@ function writePrint(...message) {
   } else if (message[0].indexOf('✅') != -1) {
     color = 'color: green;font-weight:bold;font-size:16px;'
   }
-  if (message[0][0] === ' ') {
-    g_msg = `${g_msg} <div style="${color}">&nbsp;&nbsp;${message[0]}</div>`
-  } else {
-    g_msg = `${g_msg} <div style="${color}">${message[0]}</div>`
+  let space = ''
+  for (let i = 0; i < message[0].length; i++) {
+    if (message[0][i] === ' ') {
+      space = space + '&nbsp;'
+    } else {
+      break;
+    }
   }
+  g_msg = `${g_msg} <div style="${color}">${space}${message[0]}</div>`
   console.log(...message)
 }
 
@@ -483,7 +487,9 @@ function checkObject(a, b, info, type) {
         const type_a = typeof(a[keys_a[i]])
         if (type_a === type_b) {
           if (a[keys_a[i]] !== b[key_b]) {
-            writePrint(`  ${info} ❌, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
+            // writePrint(`  ${info} ❌, ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
+            writePrint(`  ${info} ❌, ${a[keys_a[i]]} != ${b[key_b]}`)
+            writePrint(`    , ${JSON.stringify(a, null, 2)} != ${JSON.stringify(b, null, 2)}`)
             return false;
           }
         } else {
