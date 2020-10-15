@@ -19,14 +19,13 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "robot development",
+      "name": "robot dev local",
       "skipFiles": [
         "<node_internals>/**"
       ],
-      "runtimeArgs": ["-r", "dotenv/config"],
       "cwd": "${workspaceRoot}",
       "program": "${workspaceFolder}/src/robot.js",
-      "args": ["dotenv_config_path=.env.dev.local"]
+      "envFile": "${workspaceFolder}/.env.dev.local"
     },
     {
       "type": "node",
@@ -122,7 +121,7 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "admin development",
+      "name": "admin dev local",
       "skipFiles": [
         "<node_internals>/**"
       ],

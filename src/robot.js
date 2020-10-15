@@ -24,44 +24,47 @@ const scanInst = createScanEvent(
   parseInt(process.env.SCAN_DELAY),
 );
 
-const robotSchedules = ()=>{
-  // update price
-  schedule.scheduleJob('0 0 */2 * * *', async () => {
-    const pricesMap = await doSchedule(getPrices_cmc, [process.env.SYMBOLS]);
-    
-    log.info(`prices: ${JSON.stringify(pricesMap)}`);
+const updatePriceToChains = async function() {
+  const pricesMap = await doSchedule(getPrices_cmc, [process.env.SYMBOLS]);
 
-    await updatePrice(oracleWan, pricesMap);
-    await updatePrice(oracleEth, pricesMap);
-  });
+  log.info(`prices: ${JSON.stringify(pricesMap)}`);
 
-  // sync sga to sga database
-  schedule.scheduleJob('0 */5 * * * *', () => {
-    scanInst.scanEvent();
-  });
+  await updatePrice(oracleWan, pricesMap);
+  await updatePrice(oracleEth, pricesMap);
+}
 
-  // sync sga config from wan to other chain, sga database
-  schedule.scheduleJob('50 */5 * * * *', async () => {
+const scanNewStoreMan = () => {
+  scanInst.scanEvent();
+}
+
+const updateStoreManToChains = async function() {
+  console.log("updateStoreManToChains")
+  if (!scanInst.bScanning) {
     await syncConfigToOtherChain(sgaWan, [oracleEth]);
-  });
+  } else {
+    console.log("try again 60 s later")
+    setTimeout(updateStoreManToChains, 60000)
+  }
+}
+
+const robotSchedules = function() {
+  // update price
+  schedule.scheduleJob('0 0 */12 * * *', updatePriceToChains);
+
+  // sync sga to sga database, 1 / 5min
+  schedule.scheduleJob('0 */5 * * * *', scanNewStoreMan);
+
+  // sync sga config from wan to other chain, sga database, 1 / 1day
+  schedule.scheduleJob('30 2 1 * * *', updateStoreManToChains);
 };
 
 // helper functions
 
-// setTimeout(async () => {
-//   // const pricesMap = await doSchedule(getPrices_cmc, [process.env.SYMBOLS]);
-  
-//   // log.info(`prices: ${JSON.stringify(pricesMap)}`);
+setTimeout(updatePriceToChains, 0);
 
-//   // await updatePrice(oracleWan, pricesMap);
-//   // await updatePrice(oracleEth, pricesMap);
-  
-//   scanInst.scanEvent();
-// }, 0);
+setTimeout(scanNewStoreMan, 0);
 
-// setTimeout(async() => {
-//   syncConfigToOtherChain(sgaWan, [oracleEth]);
-// }, 15000);
+setTimeout(updateStoreManToChains, 0);
 
 robotSchedules();
 

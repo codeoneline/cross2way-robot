@@ -73,10 +73,10 @@ setTimeout( async () => {
   // const new_owner_sk = "b6a0`3207128827eaae0d31d97a7a6243de31f2baf99eabd764e33389ecf436fc";
 
   // await changeOwner([tmWan, oracleWan], old_owner_addr, old_owner_sk, new_owner_addr, new_owner_sk);
-``
+
   // await wanEth.update('WAN@ethereum', 'WAN', {from: "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8"});
   
-  await mint([fnxWan], "0xc3d4bbb13c471969275076e4ba0badea214d68e1".toLowerCase(), 100000000);
+  // await mint([fnxWan], "0xc3d4bbb13c471969275076e4ba0badea214d68e1".toLowerCase(), 100000000);
   // await mint([fnxWan], "0x67e3b428acbc3aa2fd38813f65dafbd5af97c6d5".toLowerCase(), 100000000);
   // await mint([fnxWan], "0xFB683bDDB0ACBB00Dd162CD5E3798c7Fc6E5CFc0".toLowerCase(), 100000000);
   // await mint([fnxWan, btcWan, eosWan], "0xFB683bDDB0ACBB00Dd162CD5E3798c7Fc6E5CFc0".toLowerCase(), 1000);
@@ -91,6 +91,10 @@ setTimeout( async () => {
   // await mint([linkEth], "0x67e3b428acbc3aa2fd38813f65dafbd5af97c6d5", 10000000);
   // await mint([linkEth], "0x9dA26FC2E1D6Ad9FDD46138906b0104ae68a65D8", 10000000);
 
+  // const tokenPairs = await tmWan.getTokenPairsByChainID(61, 5718351)
+  // console.log(JSON.stringify(tokenPairs, null, 2))
+  // const tokenPairs2 = await tmWan.getTokenPairsByChainID2(61, 5718351)
+  // console.log(JSON.stringify(tokenPairs2, null, 2))
 
   // await upgradeOracle();
   // await upgradeTokenManager();
@@ -105,6 +109,7 @@ setTimeout( async () => {
 
 
   // await mint([linkEth], "0xe2f31d7ba3e0098ea0e64d94c0224365812b986c", 10000000)
+  console.log("hello")
 }, 0);
 
 process.on('unhandledRejection', (err) => {

@@ -32,6 +32,12 @@ class TokenManager extends Contract {
   async getTokenPairsFullFields(id) {
     return await this.core.getScFun("getTokenPairsFullFields", [], this.contract, this.abi);
   }
+  async getTokenPairsByChainID(fromChainId, toChainId) {
+    return await this.core.getScFun("getTokenPairsByChainID", [fromChainId, toChainId], this.contract, this.abi);
+  }
+  async getTokenPairsByChainID2(fromChainId, toChainId) {
+    return await this.core.getScFun("getTokenPairsByChainID2", [fromChainId, toChainId], this.contract, this.abi);
+  }
   async getAncestorInfo(id) {
     return await this.core.getScFun("getAncestorInfo", [id], this.contract, this.abi);
   }
