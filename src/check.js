@@ -16,17 +16,11 @@ const db = require('./lib/sqlite_db');
 const { web3, sleep } = require('./lib/utils');
 const { getTestMessageUrl } = require('nodemailer');
 
-// const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
-// const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
+const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
+const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
 
-// const iWanWan = require(`./chain/${process.env.IWAN_WAN_CHAIN_ENGINE}`);
-// const iWanEth = require(`./chain/${process.env.IWAN_ETH_CHAIN_ENGINE}`);
-
-const chainWan = require(`./chain/${process.env.IWAN_WAN_CHAIN_ENGINE}`);
-const chainEth = require(`./chain/${process.env.IWAN_ETH_CHAIN_ENGINE}`);
-
-const iWanWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
-const iWanEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
+const iWanWan = require(`./chain/${process.env.IWAN_WAN_CHAIN_ENGINE}`);
+const iWanEth = require(`./chain/${process.env.IWAN_ETH_CHAIN_ENGINE}`);
 
 const oracleWanProxy = new OracleProxy(chainWan, process.env.OR_ADDR, process.env.OR_OWNER_SK, process.env.OR_OWNER_ADDR);
 const oracleEthProxy = new OracleProxy(chainEth, process.env.OR_ADDR_ETH, process.env.OR_OWNER_SK_ETH, process.env.OR_OWNER_ADDR_ETH);

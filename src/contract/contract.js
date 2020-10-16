@@ -55,6 +55,7 @@ class Contract {
 
     const gas = gasLimit ? gasLimit : await this.core.estimateGas(pkAddress, this.address, value, data) + 200000;
     const gasPrice = await this.core.getGasPrice();
+    log.debug(`current gas price = ${gasPrice}`)
     const rawTx = await this.signTx(gas, nonce, data, privateKey, value, this.address, gasPrice);
     const txHash = await this.core.sendRawTxByWeb3(rawTx);
 

@@ -37,7 +37,7 @@ class IWan {
   }
 
   async getGasPrice() {
-    return await this.apiClient.getGasPrice(this.chainType);
+    return Number(await this.apiClient.getGasPrice(this.chainType));
   }
 
   web0ToWeb1(name, result, contract, args) {

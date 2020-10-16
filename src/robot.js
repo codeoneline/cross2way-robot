@@ -48,7 +48,7 @@ const updateStoreManToChains = async function() {
 }
 
 const robotSchedules = function() {
-  // update price
+  // update price 1 / 12 hour
   schedule.scheduleJob('0 0 */12 * * *', updatePriceToChains);
 
   // sync sga to sga database, 1 / 5min

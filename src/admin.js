@@ -76,12 +76,20 @@ setTimeout( async () => {
 
   // await wanEth.update('WAN@ethereum', 'WAN', {from: "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8"});
   
+  // await mint([fnxWan, btcWan, eosWan], "0x67e3b428acbc3aa2fd38813f65dafbd5af97c6d5".toLowerCase(), 1000);
+  // await mint([linkEth], "0x67e3b428acbc3aa2fd38813f65dafbd5af97c6d5", 100000000);
+  // await mint([fnxWan, btcWan, eosWan], "0xded23dd19136574fce6b4ab4ea76395c4088a033".toLowerCase(), 1000);
+  // await mint([linkEth], "0xded23dd19136574fce6b4ab4ea76395c4088a033", 100000000);
+  // await mint([fnxWan, btcWan, eosWan], "0x0d5A1204c001693D86E70566Ae57D49F40d04C90".toLowerCase(), 1000);
+  // await mint([linkEth], "0x0d5A1204c001693D86E70566Ae57D49F40d04C90", 100000000);
+  // await mint([fnxWan, btcWan, eosWan], "0xE2A1dc77aAD2BB6b493c491572e822381f2a6E5d".toLowerCase(), 1000);
+  // await mint([linkEth], "0xE2A1dc77aAD2BB6b493c491572e822381f2a6E5d", 100000000);
   // await mint([fnxWan], "0xc3d4bbb13c471969275076e4ba0badea214d68e1".toLowerCase(), 100000000);
   // await mint([fnxWan], "0x67e3b428acbc3aa2fd38813f65dafbd5af97c6d5".toLowerCase(), 100000000);
   // await mint([fnxWan], "0xFB683bDDB0ACBB00Dd162CD5E3798c7Fc6E5CFc0".toLowerCase(), 100000000);
   // await mint([fnxWan, btcWan, eosWan], "0xFB683bDDB0ACBB00Dd162CD5E3798c7Fc6E5CFc0".toLowerCase(), 1000);
-  // await mint([fnxWan], "0x0d5A1204c001693D86E70566Ae57D49F40d04C90".toLowerCase(), 10000000);
   // await mint([linkEth], "0xded23dd19136574fce6b4ab4ea76395c4088a033", 100000000);
+  // await mint([fnxWan], "0x0d5A1204c001693D86E70566Ae57D49F40d04C90".toLowerCase(), 10000000);
   // await mint([linkEth], "0xded23dd19136574fce6b4ab4ea76395c4088a033", 100000000);
   // await mint([wanEth], "0x67e3b428acbc3aa2fd38813f65dafbd5af97c6d5", 100000000);
   // await mint([btcEth], "0xE2A1dc77aAD2BB6b493c491572e822381f2a6E5d", 0.1);
