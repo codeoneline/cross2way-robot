@@ -5,7 +5,7 @@ const getPrices_crypto = require("./lib/crypto_compare");
 const Oracle = require('./contract/oracle');
 const StoremanGroupAdmin = require('./contract/storeman_group_admin');
 
-const { createScanEvent, doSchedule, updatePrice, updateDeposit, syncConfigToOtherChain } = require('./robot_core');
+const { createScanEvent, doSchedule, updatePrice, syncPriceToOtherChain, syncConfigToOtherChain } = require('./robot_core');
 
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
@@ -24,13 +24,22 @@ const scanInst = createScanEvent(
   parseInt(process.env.SCAN_DELAY),
 );
 
+// const updatePriceToChains = async function() {
+//   const pricesMap = await doSchedule(getPrices_cmc, [process.env.SYMBOLS]);
+
+//   log.info(`prices: ${JSON.stringify(pricesMap)}`);
+
+//   await updatePrice(oracleWan, pricesMap);
+//   await syncPriceToOtherChain(oracleWan, oracleEth);
+// }
+
 const updatePriceToChains = async function() {
   const pricesMap = await doSchedule(getPrices_cmc, [process.env.SYMBOLS]);
 
   log.info(`prices: ${JSON.stringify(pricesMap)}`);
 
-  await updatePrice(oracleWan, pricesMap);
-  await updatePrice(oracleEth, pricesMap);
+  await doSchedule(updatePrice, [oracleWan, pricesMap]);
+  await doSchedule(syncPriceToOtherChain, [oracleWan, oracleEth, pricesMap]);
 }
 
 const scanNewStoreMan = () => {
@@ -39,12 +48,11 @@ const scanNewStoreMan = () => {
 
 const updateStoreManToChains = async function() {
   console.log("updateStoreManToChains")
-  if (!scanInst.bScanning) {
-    await syncConfigToOtherChain(sgaWan, [oracleEth]);
-  } else {
-    console.log("try again 60 s later")
-    setTimeout(updateStoreManToChains, 60000)
-  }
+  doSchedule(async () => {
+    if (!scanInst.bScanning) {
+      await syncConfigToOtherChain(sgaWan, [oracleEth]);
+    }
+  },[])
 }
 
 const robotSchedules = function() {

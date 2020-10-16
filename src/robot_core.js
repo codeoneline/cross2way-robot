@@ -70,6 +70,20 @@ async function updatePrice(oracle, pricesMap) {
   log.info(`updatePrice ${oracle.core.chainType} end`);
 }
 
+async function syncPriceToOtherChain(fromOracle, toOracle) {
+  log.info(`syncPriceToOtherChain from:${fromOracle.core.chainType} to:${toOracle.core.chainType} begin`);
+  const fromPricesArray = await fromOracle.getValues(process.env.SYMBOLS);
+  const toPricesArray = await toOracle.getValues(process.env.SYMBOLS);
+  const symbols = process.env.SYMBOLS.replace(/\s+/g,"").split(',');
+  const deltaPricesMap = {}
+  symbols.forEach((symbol, i) => {
+    if (fromPricesArray[i] && (toPricesArray[i] !== fromPricesArray[i])) {
+      return deltaPricesMap[symbol] = fromPricesArray[i];
+    }
+  })
+  await updatePrice(toOracle, deltaPricesMap);
+}
+
 async function updateDeposit(oracle, smgID, amount) {
   log.info(`updateDeposit`);
   const amountHex = "0x" + web3.utils.toBN(amount).toString('hex');
@@ -143,6 +157,6 @@ module.exports = {
   createScanEvent,
   doSchedule,
   updatePrice,
-  updateDeposit,
+  syncPriceToOtherChain,
   syncConfigToOtherChain
 }
