@@ -30,6 +30,10 @@ class Web3Chain {
     return await this.web3.eth.getBalance(addr);
   };
 
+  async getGasPrice() {
+    return await this.web3.eth.getGasPrice();
+  }
+
   async getScVar(name, contract, abi) {
     return await contract.methods[name]().call();
   }

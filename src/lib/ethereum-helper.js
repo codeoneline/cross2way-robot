@@ -7,12 +7,12 @@ const { web3 } = require('./utils');
 
 const maxGas = parseInt(process.env.GASLIMIT_ETH);
 
-function signTx(gasLimit, nonce, data, prvKey, value, to) {
+async function signTx(gasLimit, nonce, data, prvKey, value, to, gasPrice) {
   const gas = gasLimit > maxGas ? maxGas : gasLimit;
 
   const txParams = {
     nonce: web3.utils.toHex(nonce),
-    gasPrice: process.env.GASPRICE_ETH,
+    gasPrice: gasPrice,
     gasLimit: web3.utils.toHex(gas),
     to: to,
     value: value,

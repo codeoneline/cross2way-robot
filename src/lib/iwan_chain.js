@@ -36,6 +36,10 @@ class IWan {
     return await this.apiClient.getBalance(this.chainType, addr);
   }
 
+  async getGasPrice() {
+    return await this.apiClient.getGasPrice(this.chainType);
+  }
+
   web0ToWeb1(name, result, contract, args) {
     if (result instanceof Array) {
       const method = contract.methods[name](...args);
@@ -62,7 +66,7 @@ class IWan {
       
       return rt;
     } else {
-      const method = contract.methods[name]();
+      const method = contract.methods[name](...args);
       const rtType = method._method.outputs[0].type;
       if (rtType === "uint256" || rtType === "uint") {
         return new BigNumber(result).toString(10)
@@ -78,7 +82,7 @@ class IWan {
   }
   async getScMap(name, key, contract, abi) {
     const result = await this.apiClient.getScMap(this.chainType, contract._address.toLowerCase(), name, key, abi);
-    return this.web0ToWeb1(name, result, contract, []);
+    return this.web0ToWeb1(name, result, contract, [key]);
   }
 
   async getScFun(name, args, contract, abi) {

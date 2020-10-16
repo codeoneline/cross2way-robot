@@ -76,13 +76,24 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "check development testnet",
+      "name": "check dev testnet",
       "skipFiles": [
         "<node_internals>/**"
       ],
       "cwd": "${workspaceRoot}",
       "program": "${workspaceFolder}/src/check.js",
       "envFile": "${workspaceFolder}/.env.dev"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "check dev local",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}/src/check.js",
+      "envFile": "${workspaceFolder}/.env.dev.local"
     },
     {
       "type": "node",

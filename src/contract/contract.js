@@ -54,7 +54,8 @@ class Contract {
     const nonce = await this.core.getTxCount(pkAddress);
 
     const gas = gasLimit ? gasLimit : await this.core.estimateGas(pkAddress, this.address, value, data) + 200000;
-    const rawTx = this.signTx(gas, nonce, data, privateKey, value, this.address);
+    const gasPrice = await this.core.getGasPrice();
+    const rawTx = await this.signTx(gas, nonce, data, privateKey, value, this.address, gasPrice);
     const txHash = await this.core.sendRawTxByWeb3(rawTx);
 
     log.info(`${this.core.chainType} ${opName} hash: ${txHash}`);

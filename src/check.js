@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = 9999
+const port = 19999
 
 const Oracle = require('./contract/oracle');
 const TokenManager = require('./contract/token_manager');
@@ -16,11 +16,17 @@ const db = require('./lib/sqlite_db');
 const { web3, sleep } = require('./lib/utils');
 const { getTestMessageUrl } = require('nodemailer');
 
-const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
-const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
+// const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
+// const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
 
-const iWanWan = require(`./chain/${process.env.IWAN_WAN_CHAIN_ENGINE}`);
-const iWanEth = require(`./chain/${process.env.IWAN_ETH_CHAIN_ENGINE}`);
+// const iWanWan = require(`./chain/${process.env.IWAN_WAN_CHAIN_ENGINE}`);
+// const iWanEth = require(`./chain/${process.env.IWAN_ETH_CHAIN_ENGINE}`);
+
+const chainWan = require(`./chain/${process.env.IWAN_WAN_CHAIN_ENGINE}`);
+const chainEth = require(`./chain/${process.env.IWAN_ETH_CHAIN_ENGINE}`);
+
+const iWanWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
+const iWanEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
 
 const oracleWanProxy = new OracleProxy(chainWan, process.env.OR_ADDR, process.env.OR_OWNER_SK, process.env.OR_OWNER_ADDR);
 const oracleEthProxy = new OracleProxy(chainEth, process.env.OR_ADDR_ETH, process.env.OR_OWNER_SK_ETH, process.env.OR_OWNER_ADDR_ETH);
@@ -161,9 +167,9 @@ const getOracle = async () => {
 
   const oracle = {
     'WanChain' : {
-      oracleProxy: process.env.OR_ADDR,
+      oracleProxy: process.env.OR_ADDR.toLowerCase(),
       oracleDelegator: odAddr,
-      tokenManagerProxy: process.env.TM_ADDR,
+      tokenManagerProxy: process.env.TM_ADDR.toLowerCase(),
       tokenManagerDelegator: tmAddr,
 
       oracleProxyOwner: await oracleWanProxy.getOwner(),
@@ -175,9 +181,9 @@ const getOracle = async () => {
       sgs: sgs,
     },
     'Ethereum' : {
-      oracleProxy: process.env.OR_ADDR_ETH,
+      oracleProxy: process.env.OR_ADDR_ETH.toLowerCase(),
       oracleDelegator: odAddr_eth,
-      tokenManagerProxy: process.env.TM_ADDR_ETH,
+      tokenManagerProxy: process.env.TM_ADDR_ETH.toLowerCase(),
       tokenManagerDelegator: tmAddr_eth,
 
       oracleProxyOwner: await oracleEthProxy.getOwner(),
