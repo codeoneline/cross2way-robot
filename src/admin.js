@@ -5,8 +5,7 @@ const TokenManagerProxy = require('./contract/token_manager_proxy');
 const StoremanGroupAdmin = require('./contract/storeman_group_admin');
 const MapToken = require('./contract/map_token');
 
-const {changeOwner, upgradeTo, mint, unlockAccount, getBalance,
-  addToken, addTokenPair, updateTokenPair, deployTokenPairOrUpdate} = require('./admin_core');
+const {changeOwner, upgradeTo, mint, unlockAccount, getBalance, deployTokenPairOrUpdate} = require('./admin_core');
 
 const { web3 } = require('./lib/utils');
 const fs = require('fs');
@@ -113,8 +112,6 @@ setTimeout( async () => {
   // await getBalance([chainWan, chainEth, chainEtc], "0x2d0e7c0813a51d3bd1d08246af2a8a7a57d8922e");
 
   // await unlockAccount([chainWan], "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8", "wanglu", 36000);
-  // await deployTokenPairOrUpdate('../db/tokenPair.js', path.resolve(__dirname, '../db/tokenPair_deployed.json'), tms);
-
 
   // await mint([linkEth], "0xe2f31d7ba3e0098ea0e64d94c0224365812b986c", 10000000)
   console.log("hello")

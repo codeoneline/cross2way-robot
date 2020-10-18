@@ -1,5 +1,8 @@
 const Contract = require('./contract');
 const abiTokenManager = require('../../abi/abi.TokenManagerDelegate.json');
+const { web3 } = require('../../src/lib/utils');
+
+const hexToBytes = web3.utils.hexToBytes;
 
 class TokenManager extends Contract {
   constructor(chain, address, ownerPV, ownerAddress) {
@@ -12,12 +15,24 @@ class TokenManager extends Contract {
   }
 
   async addTokenPair(id, aInfo, fromChainID, fromAccount, toChainID, toAccount) {
-    const data = await this.contract.methods.addTokenPair(id, aInfo, fromChainID, fromAccount, toChainID, toAccount).encodeABI();
+    const aInfoParam = Array.from(aInfo);
+    if (typeof (aInfo[0]) === 'string') {
+      aInfoParam[0] = hexToBytes(aInfo[0])
+    }
+    const fromAccountParam = typeof (fromAccount) === 'string' ? hexToBytes(fromAccount) : fromAccount 
+
+    const data = await this.contract.methods.addTokenPair(id, aInfoParam, fromChainID, fromAccountParam, toChainID, toAccount).encodeABI();
     return await this.doOperator(this.addTokenPair.name, data, null, '0x00', this.retryTimes, this.pv_key, this.pv_address);
   }
 
   async updateTokenPair(id, aInfo, fromChainID, fromAccount, toChainID, toAccount) {
-    const data = await this.contract.methods.updateTokenPair(id, aInfo, fromChainID, fromAccount, toChainID, toAccount).encodeABI();
+    const aInfoParam = Array.from(aInfo);
+    if (typeof (aInfo[0]) === 'string') {
+      aInfoParam[0] = hexToBytes(aInfo[0])
+    }
+    const fromAccountParam = typeof (fromAccount) === 'string' ? hexToBytes(fromAccount) : fromAccount 
+
+    const data = await this.contract.methods.updateTokenPair(id, aInfoParam, fromChainID, fromAccountParam, toChainID, toAccount).encodeABI();
     return await this.doOperator(this.updateTokenPair.name, data, null, '0x00', this.retryTimes, this.pv_key, this.pv_address);
   }
 

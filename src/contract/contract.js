@@ -14,6 +14,7 @@ class Contract {
     this.core = chain.core;
     this.signTx = chain.signTx;
     this.retryTimes = parseInt(process.env.RECEIPT_RETRY_TIMES);
+    this.chain = chain;
   }
 
   async implementation() {

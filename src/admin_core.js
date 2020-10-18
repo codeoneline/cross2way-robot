@@ -50,9 +50,8 @@ async function addToken(tm, token) {
   }
 }
 
-async function addTokenPair(tm, tokenPair) {
-  const toAccount = web3.utils.hexToBytes(tokenPair.tokenAddress);
-  let receipt = await tm.addTokenPair(tokenPair.id, tokenPair.aInfo, tokenPair.fromChainID, tokenPair.fromAccount, tokenPair.toChainID, toAccount);
+async function addTokenPair(tm, config) {
+  let receipt = await tm.addTokenPair(config.id, config.aInfo, config.fromChainID, config.fromAccount, config.toChainID, config.tokenAddress);
 
   if (receipt.status) {
     const event = tm.contract.events[receipt.logs[0].topics[0]]();
@@ -61,74 +60,26 @@ async function addTokenPair(tm, tokenPair) {
   }
 }
 
-async function updateTokenPair(tm, tokenPair, info) {
-  const aInfo = await tm.getAncestorInfo(tokenPair.id);
+async function updateTokenPair(tm, aInfo, pairInfo, config) {
   if (!aInfo
-    || aInfo.account.toLowerCase() !== web3.utils.bytesToHex(tokenPair.aInfo[0])
-    || aInfo.name !== tokenPair.aInfo[1]
-    || aInfo.symbol !== tokenPair.aInfo[2]
-    || parseInt(aInfo.decimals) !== tokenPair.aInfo[3]
-    || parseInt(aInfo.chainId) !== tokenPair.aInfo[4]
-    || parseInt(info.fromChainID) !== tokenPair.fromChainID
-    || parseInt(info.toChainID) !== tokenPair.toChainID
-    || info.fromAccount.toLowerCase() !== web3.utils.bytesToHex(tokenPair.fromAccount)
-    || info.toAccount.toLowerCase() !== tokenPair.tokenAddress.toLowerCase()
+    || aInfo.account !== config.aInfo[0]
+    || aInfo.name !== config.aInfo[1]
+    || aInfo.symbol !== config.aInfo[2]
+    || aInfo.decimals !== config.aInfo[3]
+    || aInfo.chainId !== config.aInfo[4]
+    || pairInfo.fromChainID !== config.fromChainID
+    || pairInfo.toChainID !== config.toChainID
+    || pairInfo.fromAccount !== config.fromAccount
+    || pairInfo.toAccount !== config.tokenAddress
   ) {
-    const toAccount = web3.utils.hexToBytes(tokenPair.tokenAddress);
-    let receipt = await tm.updateTokenPair(tokenPair.id, tokenPair.aInfo, tokenPair.fromChainID, tokenPair.fromAccount, tokenPair.toChainID, toAccount);
-  
+    let receipt = await tm.updateTokenPair(config.id, config.aInfo, config.fromChainID, config.fromAccount, config.toChainID, config.tokenAddress);
+
     if (receipt.status) {
       const event = tm.contract.events[receipt.logs[0].topics[0]]();
       const logObj = event._formatOutput(receipt.logs[0]);
       return logObj.returnValues;
     }
   }
-}
-
-async function deployTokenPairOrUpdate(filePath, deployedFilePath, tms) {
-  const tokenPairs = require(filePath);
-  const tokenPairsKeys = Object.keys(tokenPairs);
-  for (let i = 0; i < tokenPairsKeys.length; i++) {
-    const pairInfo = tokenPairs[tokenPairsKeys[i]];
-    
-    if (pairInfo.pair.tokenAddress === '0x0000000000000000000000000000000000000000') {
-      const addTokenEvent = await addToken(tms[pairInfo.mapChain], pairInfo.mapToken);
-      pairInfo.pair.tokenAddress = addTokenEvent.tokenAddress;
-      console.log(`tokenAddress = ${addTokenEvent.tokenAddress}`)
-    }
-
-    const info = await tms[pairInfo.mapChain].getTokenPairInfo(pairInfo.pair.id);
-    if (info && info.toAccount && web3.utils.bytesToHex(info.toAccount) !== '0x0000000000000000000000000000000000000000') {
-      await updateTokenPair(tms[pairInfo.mapChain], pairInfo.pair, info);
-      const tokenInfo = await tms[pairInfo.mapChain].getTokenInfo(pairInfo.pair.id);
-      if (tokenInfo.addr.toLowerCase() === pairInfo.pair.tokenAddress.toLowerCase()) {
-        if (tokenInfo.name !== pairInfo.mapToken.name ||
-          tokenInfo.symbol !== pairInfo.mapToken.symbol) {
-          await tms[pairInfo.mapChain].updateToken(pairInfo.pair.tokenAddress, pairInfo.mapToken.name, pairInfo.mapToken.symbol);
-        }
-      }
-    } else {
-      await addTokenPair(tms[pairInfo.mapChain], pairInfo.pair);
-    }
-
-    const info2 = await tms[pairInfo.originChain].getTokenPairInfo(pairInfo.pair.id);
-    if (info2 && info2.toAccount && web3.utils.bytesToHex(info2.toAccount) !== '0x0000000000000000000000000000000000000000') {
-      await updateTokenPair(tms[pairInfo.originChain], pairInfo.pair, info2);
-    } else {
-      await addTokenPair(tms[pairInfo.originChain], pairInfo.pair);
-    }
-
-    if(pairInfo.originChain !== 'WAN' && pairInfo.mapChain !== 'WAN') {
-      const info3 = await tms['WAN'].getTokenPairInfo(pairInfo.pair.id);
-      if (info3 && info3.toAccount && web3.utils.bytesToHex(info3.toAccount) !== '0x0000000000000000000000000000000000000000') {
-        await updateTokenPair(tms['WAN'], pairInfo.pair, info3);
-      } else {
-        await addTokenPair(tms['WAN'], pairInfo.pair);
-      }
-    }
-  }
-
-  fs.writeFileSync(deployedFilePath, JSON.stringify(tokenPairs, null, 2), 'utf-8');
 }
 
 module.exports = {
@@ -140,6 +91,5 @@ module.exports = {
   addToken,
   addTokenPair,
   updateTokenPair,
-  deployTokenPairOrUpdate,
   transfer,
 }
