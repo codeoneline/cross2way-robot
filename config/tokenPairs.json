@@ -1,0 +1,68 @@
+{
+  "ETH2WAN": {
+    "id": "1",
+
+    "ancestorChain": "ethereum",
+    "ancestorAddress": "0x0000000000000000000000000000000000000000",
+
+    "originChain": "ethereum",
+    "originAddress": "0x0000000000000000000000000000000000000000",
+
+    "mapChain": "wanchain"
+  },
+  "WAN2ETH": {
+    "id": "2",
+
+    "ancestorChain": "wanchain",
+    "ancestorAddress": "0x0000000000000000000000000000000000000000",
+
+    "originChain": "wanchain",
+    "originAddress": "0x0000000000000000000000000000000000000000",
+
+    "mapChain": "ethereum"
+  },
+  "LINK2WAN": {
+    "id": "3",
+
+    "ancestorChain": "ethereum",
+    "ancestorAddress": "0xEe751bf7d8D6eBEf5B4Db0ddEA744f4Dc42cE754",
+
+    "originChain": "ethereum",
+    "originAddress": "0xEe751bf7d8D6eBEf5B4Db0ddEA744f4Dc42cE754",
+
+    "mapChain": "wanchain"
+  },
+  "FNX2ETH": {
+    "id": "4",
+
+    "ancestorChain": "wanchain",
+    "ancestorAddress": "0x9489d848609a75cD9eF67459c1Fa704e943797A5",
+
+    "originChain": "wanchain",
+    "originAddress": "0x9489d848609a75cD9eF67459c1Fa704e943797A5",
+
+    "mapChain": "ethereum"
+  },
+  "WBTC2ETH": {
+    "id": "5",
+
+    "ancestorChain": "bitcoin",
+    "ancestorAddress": "0x0000000000000000000000000000000000000000",
+
+    "originChain": "wanchain",
+    "originAddress": "0x4FbBd9D1D895272f07DBAA75CC58CB02B78bCcbD",
+
+    "mapChain": "ethereum"
+  },
+  "WEOS2ETH": {
+    "id": "6",
+
+    "ancestorChain": "eos",
+    "ancestorAddress": "0x0000000000000000000000000000000000000000",
+
+    "originChain": "wanchain",
+    "originAddress": "0x269d4828fEDc32a243707Af9dDFB2d047516dA9F",
+
+    "mapChain": "ethereum"
+  }
+}
