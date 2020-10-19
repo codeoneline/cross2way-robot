@@ -42,14 +42,6 @@ const tmEth = new TokenManager(chainEth, process.env.TM_ADDR_ETH, process.env.TM
 
 const sgaWan = new SGA(chainWan, process.env.SGA_ADDR, process.env.SGA_OWNER_SK, process.env.SGA_OWNER_ADDR);
 
-const chainId = {
-  ETH: 0x8000003c,
-  WAN: 0x8057414e,
-  BTC: 0x80000000,
-  ETC: 0x8000003d,
-  EOS: 0x800000c2,
-}
-
 function removeIndexField(obj) {
   const ks = Object.keys(obj)
   for (let j = 0; j < ks.length/2; j++) {

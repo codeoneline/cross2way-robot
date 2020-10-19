@@ -5,10 +5,10 @@ const Token = require('./contract/map_token');
 
 const { addToken, addTokenPair, updateTokenPair } = require('./admin_core');
 
-const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
-const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
-// const chainWan = require(`./chain/${process.env.IWAN_WAN_CHAIN_ENGINE}`);
-// const chainEth = require(`./chain/${process.env.IWAN_ETH_CHAIN_ENGINE}`);
+// const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
+// const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
+const chainWan = require(`./chain/${process.env.IWAN_WAN_CHAIN_ENGINE}`);
+const chainEth = require(`./chain/${process.env.IWAN_ETH_CHAIN_ENGINE}`);
 
 const tmWan = new TokenManager(chainWan, process.env.TM_ADDR, process.env.TM_OWNER_SK, process.env.TM_OWNER_ADDR);
 const tmEth = new TokenManager(chainEth, process.env.TM_ADDR_ETH, process.env.TM_OWNER_SK_ETH, process.env.TM_OWNER_ADDR_ETH);
@@ -122,8 +122,8 @@ const doAddOrUpdate = async (config, tokenPairsConfig, key, chainName) => {
   const aInfo = await tm.getAncestorInfo(config.id);
   log.info(`key = ${key}, id = ${config.id}`)
 
-  if (config.id === "7") {
-    console.log("7");
+  if (config.id === "11") {
+    console.log("11");
   }
   // check token on map chain
   if (chainName === tokenPairsConfig[key].mapChain) {
@@ -159,17 +159,17 @@ const deployAndUpdate = async () => {
     await doAddOrUpdate(config, tokenPairsConfig, key, tokenPairsConfig[key].mapChain)
     await doAddOrUpdate(config, tokenPairsConfig, key, tokenPairsConfig[key].originChain)
     // if mapChain and originChain != 'wanchain', then add to wanchain oracle
-    if (tokenPairsConfig[key].mapChain !== 'wanchain' && tokenPairsConfig[key].originChain!== 'wanchain') {
+    if (tokenPairsConfig[key].mapChain !== 'wanchain' && tokenPairsConfig[key].originChain !== 'wanchain') {
       await doAddOrUpdate(config, tokenPairsConfig, key, 'wanchain')
     }
   }
 }
 
 setTimeout(async () => {
-  // const tokens = await chainEth.core.getRegTokens()
-  // tokens.forEach((token) => {
-  //   log.info(JSON.stringify(token, null, 2));
-  // })
+  const tokens = await chainEth.core.getRegTokens()
+  tokens.forEach((token) => {
+    log.info(JSON.stringify(token, null, 2));
+  })
   // await deployAndUpdate();
-  await tmWan.updateToken("0x001d6bf6855334c0bc785be56f1b7cf5e733a93d", "wanTUSD@wanchain", "wanTUSD")
+  // await tmWan.updateToken("0x001d6bf6855334c0bc785be56f1b7cf5e733a93d", "wanTUSD@wanchain", "wanTUSD")
 }, 0)

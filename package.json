@@ -4,10 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "robot_local": "node -r dotenv/config src/robot.js dotenv_config_path=.env.local",
-    "robot_dev_local": "node -r dotenv/config src/robot.js dotenv_config_path=.env.dev.local",
+    "robot_testnet": "node -r dotenv/config src/robot.js dotenv_config_path=.env.dev",
     "robot_production": "node -r dotenv/config src/robot.js dotenv_config_path=.env.production",
-    "server_development": "node -r dotenv/config src/server.js dotenv_config_path=.env.dev.local"
+    
+    "server_testnet": "node -r dotenv/config src/server.js dotenv_config_path=.env.dev",
+    "server_production": "node -r dotenv/config src/server.js dotenv_config_path=.env.production",
+
+    "check_testnet": "node -r dotenv/config src/check.js dotenv_config_path=.env.dev",
+    "check_production": "node -r dotenv/config src/check.js dotenv_config_path=.env.production"
   },
   "repository": {
     "type": "git",

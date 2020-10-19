@@ -21,41 +21,8 @@
 
     "mapChain": "ethereum"
   },
-  "USDC2WAN": {
-    "id": "3",
-
-    "ancestorChain": "ethereum",
-    "ancestorAddress": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-
-    "originChain": "ethereum",
-    "originAddress": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-
-    "mapChain": "wanchain"
-  },
-  "TUSD2WAN": {
-    "id": "4",
-
-    "ancestorChain": "ethereum",
-    "ancestorAddress": "0x0000000000085d4780b73119b644ae5ecd22b376",
-
-    "originChain": "ethereum",
-    "originAddress": "0x0000000000085d4780b73119b644ae5ecd22b376",
-
-    "mapChain": "wanchain"
-  },
-  "GUSD2WAN": {
-    "id": "5",
-
-    "ancestorChain": "ethereum",
-    "ancestorAddress": "0x056fd409e1d7a124bd7017459dfea2f387b6d5cd",
-
-    "originChain": "ethereum",
-    "originAddress": "0x056fd409e1d7a124bd7017459dfea2f387b6d5cd",
-
-    "mapChain": "wanchain"
-  },
   "LINK2WAN": {
-    "id": "6",
+    "id": "3",
 
     "ancestorChain": "ethereum",
     "ancestorAddress": "0x514910771af9ca656af840dff83e8264ecf986ca",
@@ -64,6 +31,39 @@
     "originAddress": "0x514910771af9ca656af840dff83e8264ecf986ca",
 
     "mapChain": "wanchain"
+  },
+  "FNX2ETH": {
+    "id": "4",
+
+    "ancestorChain": "wanchain",
+    "ancestorAddress": "0xc6f4465a6A521124c8E3096b62575C157999d361",
+
+    "originChain": "wanchain",
+    "originAddress": "0xc6f4465a6A521124c8E3096b62575C157999d361",
+
+    "mapChain": "ethereum"
+  },
+  "WBTC2ETH": {
+    "id": "5",
+
+    "ancestorChain": "bitcoin",
+    "ancestorAddress": "0x0000000000000000000000000000000000000000",
+
+    "originChain": "wanchain",
+    "originAddress": "0xD15E200060Fc17ef90546ad93c1C61BfeFDC89C7",
+
+    "mapChain": "ethereum"
+  },
+  "WEOS2ETH": {
+    "id": "6",
+
+    "ancestorChain": "eos",
+    "ancestorAddress": "0x0000000000000000000000000000000000000000",
+
+    "originChain": "wanchain",
+    "originAddress": "0x81862B7622ceD0deFb652aDDD4E0C110205b0040",
+
+    "mapChain": "ethereum"
   },
   "MKR2WAN": {
     "id": "7",
@@ -109,6 +109,42 @@
 
     "originChain": "ethereum",
     "originAddress": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+
+    "mapChain": "wanchain"
+  },
+  "TUSD2WAN": {
+    "id": "11",
+
+    "ancestorChain": "ethereum",
+    "ancestorAddress": "0x0000000000085d4780b73119b644ae5ecd22b376",
+    "ancestorName": "TrueUSD",
+    "ancestorSymbol": "TUSD",
+    "ancestorDecimal": "18",
+
+    "originChain": "ethereum",
+    "originAddress": "0x0000000000085d4780b73119b644ae5ecd22b376",
+
+    "mapChain": "wanchain"
+  },
+  "GUSD2WAN": {
+    "id": "12",
+
+    "ancestorChain": "ethereum",
+    "ancestorAddress": "0x056fd409e1d7a124bd7017459dfea2f387b6d5cd",
+
+    "originChain": "ethereum",
+    "originAddress": "0x056fd409e1d7a124bd7017459dfea2f387b6d5cd",
+
+    "mapChain": "wanchain"
+  },
+  "USDC2WAN": {
+    "id": "13",
+
+    "ancestorChain": "ethereum",
+    "ancestorAddress": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+
+    "originChain": "ethereum",
+    "originAddress": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
 
     "mapChain": "wanchain"
   }
