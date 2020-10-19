@@ -21,48 +21,95 @@
 
     "mapChain": "ethereum"
   },
-  "LINK2WAN": {
+  "USDC2WAN": {
     "id": "3",
 
     "ancestorChain": "ethereum",
-    "ancestorAddress": "0xEe751bf7d8D6eBEf5B4Db0ddEA744f4Dc42cE754",
+    "ancestorAddress": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
 
     "originChain": "ethereum",
-    "originAddress": "0xEe751bf7d8D6eBEf5B4Db0ddEA744f4Dc42cE754",
+    "originAddress": "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
 
     "mapChain": "wanchain"
   },
-  "FNX2ETH": {
+  "TUSD2WAN": {
     "id": "4",
 
-    "ancestorChain": "wanchain",
-    "ancestorAddress": "0x9489d848609a75cD9eF67459c1Fa704e943797A5",
+    "ancestorChain": "ethereum",
+    "ancestorAddress": "0x0000000000085d4780b73119b644ae5ecd22b376",
 
-    "originChain": "wanchain",
-    "originAddress": "0x9489d848609a75cD9eF67459c1Fa704e943797A5",
+    "originChain": "ethereum",
+    "originAddress": "0x0000000000085d4780b73119b644ae5ecd22b376",
 
-    "mapChain": "ethereum"
+    "mapChain": "wanchain"
   },
-  "WBTC2ETH": {
+  "GUSD2WAN": {
     "id": "5",
 
-    "ancestorChain": "bitcoin",
-    "ancestorAddress": "0x0000000000000000000000000000000000000000",
+    "ancestorChain": "ethereum",
+    "ancestorAddress": "0x056fd409e1d7a124bd7017459dfea2f387b6d5cd",
 
-    "originChain": "wanchain",
-    "originAddress": "0x4FbBd9D1D895272f07DBAA75CC58CB02B78bCcbD",
+    "originChain": "ethereum",
+    "originAddress": "0x056fd409e1d7a124bd7017459dfea2f387b6d5cd",
 
-    "mapChain": "ethereum"
+    "mapChain": "wanchain"
   },
-  "WEOS2ETH": {
+  "LINK2WAN": {
     "id": "6",
 
-    "ancestorChain": "eos",
-    "ancestorAddress": "0x0000000000000000000000000000000000000000",
+    "ancestorChain": "ethereum",
+    "ancestorAddress": "0x514910771af9ca656af840dff83e8264ecf986ca",
 
-    "originChain": "wanchain",
-    "originAddress": "0x269d4828fEDc32a243707Af9dDFB2d047516dA9F",
+    "originChain": "ethereum",
+    "originAddress": "0x514910771af9ca656af840dff83e8264ecf986ca",
 
-    "mapChain": "ethereum"
+    "mapChain": "wanchain"
+  },
+  "MKR2WAN": {
+    "id": "7",
+
+    "ancestorChain": "ethereum",
+    "ancestorAddress": "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2",
+    "ancestorName": "Maker",
+    "ancestorSymbol": "MKR",
+    "ancestorDecimal": "18",
+
+    "originChain": "ethereum",
+    "originAddress": "0x9f8f72aa9304c8b593d555f12ef6589cc3a579a2",
+
+    "mapChain": "wanchain"
+  },
+  "ZXC2WAN": {
+    "id": "8",
+
+    "ancestorChain": "ethereum",
+    "ancestorAddress": "0x83e2be8d114f9661221384b3a50d24b96a5653f5",
+
+    "originChain": "ethereum",
+    "originAddress": "0x83e2be8d114f9661221384b3a50d24b96a5653f5",
+
+    "mapChain": "wanchain"
+  },
+  "EURS2WAN": {
+    "id": "9",
+
+    "ancestorChain": "ethereum",
+    "ancestorAddress": "0xdb25f211ab05b1c97d595516f45794528a807ad8",
+
+    "originChain": "ethereum",
+    "originAddress": "0xdb25f211ab05b1c97d595516f45794528a807ad8",
+
+    "mapChain": "wanchain"
+  },
+  "USDT2WAN": {
+    "id": "10",
+
+    "ancestorChain": "ethereum",
+    "ancestorAddress": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+
+    "originChain": "ethereum",
+    "originAddress": "0xdac17f958d2ee523a2206206994597c13d831ec7",
+
+    "mapChain": "wanchain"
   }
 }

@@ -1,6 +1,14 @@
 const Web3 = require('web3');
 const web3 = new Web3();
 
+const chainIds = {
+    ETH: 0x8000003c,
+    WAN: 0x8057414e,
+    BTC: 0x80000000,
+    ETC: 0x8000003d,
+    EOS: 0x800000c2
+}
+
 function sleep(ms) {
 	return new Promise(function (resolve, reject) {
 		setTimeout(function () {
@@ -62,5 +70,6 @@ module.exports = {
   promisify,
   promiseEvent,
   fractionToDecimalString,
-  web3
+  web3,
+  chainIds
 }

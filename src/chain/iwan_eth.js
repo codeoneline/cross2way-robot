@@ -3,8 +3,7 @@ const IWan = require('../lib/iwan_chain');
 
 class IWanEth extends IWan {
   constructor() {
-    super(process.env.IWAN_CHAINTYPE_ETH);
-    this.chainType = "ETH";
+    super(process.env.IWAN_CHAINTYPE_ETH, "ETH");
   }
 }
 

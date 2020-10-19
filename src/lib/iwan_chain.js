@@ -1,6 +1,6 @@
 const iWanClient = require('iwan-sdk');
 const BigNumber = require("bignumber.js");
-const { promisify, sleep, web3 } = require("./utils");
+const { promisify, sleep, web3, chainIds } = require("./utils");
 
 class IWan {
   static sApiClient = null;
@@ -18,10 +18,11 @@ class IWan {
     return this.sApiClient;
   }
 
-  constructor(chainType) {
+  constructor(chainType, chainType2) {
     this.apiClient = IWan.getApiClient();
     this.web3 = web3;
     this.chainType = chainType;
+    this.chainId = chainIds[chainType2];
   }
 
   async sendRawTxByWeb3(singedData) {
@@ -180,6 +181,10 @@ class IWan {
 
   async getTimeByEpochID(epochId) {
     return await this.apiClient.getTimeByEpochID(this.chainType, epochId);
+  }
+
+  async getRegTokens() {
+    return await this.apiClient.getRegTokens(this.chainType)
   }
 }
 

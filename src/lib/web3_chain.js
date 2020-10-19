@@ -1,9 +1,11 @@
 const Web3 = require("web3");
-const { promisify } = require("./utils");
+const { promisify, chainIds } = require("./utils");
 
 class Web3Chain {
-  constructor(rpc_url) {
+  constructor(rpc_url, chainType) {
     this.web3 = new Web3(new Web3.providers.HttpProvider(rpc_url));
+    this.chainType = chainType;
+    this.chainId = chainIds[chainType];
   }
 
   sendRawTxByWeb3(singedData) {

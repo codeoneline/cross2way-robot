@@ -1,4 +1,4 @@
-const { web3 } = require('./lib/utils');
+const { web3, chainIds } = require('./lib/utils');
 const TokenManager = require('./contract/token_manager');
 const log = require('./lib/log');
 const Token = require('./contract/map_token');
@@ -7,6 +7,8 @@ const { addToken, addTokenPair, updateTokenPair } = require('./admin_core');
 
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
+// const chainWan = require(`./chain/${process.env.IWAN_WAN_CHAIN_ENGINE}`);
+// const chainEth = require(`./chain/${process.env.IWAN_ETH_CHAIN_ENGINE}`);
 
 const tmWan = new TokenManager(chainWan, process.env.TM_ADDR, process.env.TM_OWNER_SK, process.env.TM_OWNER_ADDR);
 const tmEth = new TokenManager(chainEth, process.env.TM_ADDR_ETH, process.env.TM_OWNER_SK_ETH, process.env.TM_OWNER_ADDR_ETH);
@@ -16,34 +18,26 @@ const hexToString = web3.utils.hexToString;
 const zeroAddress = "0x0000000000000000000000000000000000000000"
 const zeroAccount = hexToBytes(zeroAddress);
 
-const chainId = {
-  ETH: 0x8000003c,
-  WAN: 0x8057414e,
-  BTC: 0x80000000,
-  ETC: 0x8000003d,
-  EOS: 0x800000c2,
-}
-
 const chains = {
   "wanchain": {
     symbol: "WAN",
     decimals: "18",
-    chainId: chainId.WAN.toString(),
+    chainId: chainIds.WAN.toString(),
   },
   "ethereum": {
     symbol: "ETH",
     decimals: "18",
-    chainId: chainId.ETH.toString(),
+    chainId: chainIds.ETH.toString(),
   },
   "bitcoin": {
     symbol: "BTC",
     decimals: "8",
-    chainId: chainId.BTC.toString(),
+    chainId: chainIds.BTC.toString(),
   },
   "eos": {
     symbol: "EOS",
     decimals: "4",
-    chainId: chainId.EOS.toString(),
+    chainId: chainIds.EOS.toString(),
   }
 }
 
@@ -81,7 +75,7 @@ const parseAncestorInfo = async (tokenPairConfig) => {
       const token = new Token(blockChain, tokenPairConfig.ancestorAddress);
       const name = await token.getVar("name");
       const symbol = await token.getVar("symbol");
-      const decimals = (await token.getDecimals()).toString();
+      const decimals = await token.getVar("decimals");
       return [
         tokenPairConfig.ancestorAddress.toLowerCase(),
         name,
@@ -114,7 +108,8 @@ const parseConfig = async (tokenPairsConfig, keys) => {
         name: aInfo[2] === 'WAN' ? `WAN@${tokenPair.mapChain}` : `wan${aInfo[2]}@${tokenPair.mapChain}`,
         symbol: aInfo[2] === 'WAN' ? `WAN` : `wan${aInfo[2]}`,
         decimals: aInfo[3],
-      }
+      },
+      tokenAddress: tokenPair.mapAddress ? tokenPair.mapAddress.toLowerCase():null
     }
   }
 
@@ -132,12 +127,14 @@ const doAddOrUpdate = async (config, tokenPairsConfig, key, chainName) => {
   }
   // check token on map chain
   if (chainName === tokenPairsConfig[key].mapChain) {
-    if (pairInfo.toAccount === null) {
+    if (pairInfo.toAccount === null || pairInfo.toAccount === '0x') {
       const addTokenEvent = await addToken(tm, config.mapToken);
       config.tokenAddress = addTokenEvent.tokenAddress;
       log.info(`tokenAddress = ${addTokenEvent.tokenAddress}`)
     } else {
-      config.tokenAddress = pairInfo.toAccount
+      if (!config.tokenAddress) {
+        config.tokenAddress = pairInfo.toAccount
+      }
     }
   }
 
@@ -161,7 +158,18 @@ const deployAndUpdate = async () => {
 
     await doAddOrUpdate(config, tokenPairsConfig, key, tokenPairsConfig[key].mapChain)
     await doAddOrUpdate(config, tokenPairsConfig, key, tokenPairsConfig[key].originChain)
+    // if mapChain and originChain != 'wanchain', then add to wanchain oracle
+    if (tokenPairsConfig[key].mapChain !== 'wanchain' && tokenPairsConfig[key].originChain!== 'wanchain') {
+      await doAddOrUpdate(config, tokenPairsConfig, key, 'wanchain')
+    }
   }
 }
 
-module.exports = deployAndUpdate();
+setTimeout(async () => {
+  // const tokens = await chainEth.core.getRegTokens()
+  // tokens.forEach((token) => {
+  //   log.info(JSON.stringify(token, null, 2));
+  // })
+  // await deployAndUpdate();
+  await tmWan.updateToken("0x001d6bf6855334c0bc785be56f1b7cf5e733a93d", "wanTUSD@wanchain", "wanTUSD")
+}, 0)

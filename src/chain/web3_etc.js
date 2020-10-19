@@ -3,8 +3,7 @@ const { signTx } = require('../lib/etc-helper');
 
 class EtcChain extends BaseChain {
   constructor() {
-    super(process.env.RPC_URL_ETC);
-    this.chainType = "ETC";
+    super(process.env.RPC_URL_ETC, "ETC");
   }
 }
 

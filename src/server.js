@@ -21,9 +21,11 @@ const Quota = require('./contract/quota');
 const Cross = require('./contract/cross');
 const db = require('./lib/sqlite_db');
 const { web3, sleep } = require('./lib/utils');
-``
+
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
+// const chainWan = require(`./chain/${process.env.IWAN_WAN_CHAIN_ENGINE}`);
+// const chainEth = require(`./chain/${process.env.IWAN_ETH_CHAIN_ENGINE}`);
 
 const oracleWanProxy = new OracleProxy(chainWan, process.env.OR_ADDR, process.env.OR_OWNER_SK, process.env.OR_OWNER_ADDR);
 const oracleEthProxy = new OracleProxy(chainEth, process.env.OR_ADDR_ETH, process.env.OR_OWNER_SK_ETH, process.env.OR_OWNER_ADDR_ETH);
@@ -40,6 +42,14 @@ const tmEth = new TokenManager(chainEth, process.env.TM_ADDR_ETH, process.env.TM
 
 const sgaWan = new SGA(chainWan, process.env.SGA_ADDR, process.env.SGA_OWNER_SK, process.env.SGA_OWNER_ADDR);
 
+const chainId = {
+  ETH: 0x8000003c,
+  WAN: 0x8057414e,
+  BTC: 0x80000000,
+  ETC: 0x8000003d,
+  EOS: 0x800000c2,
+}
+
 function removeIndexField(obj) {
   const ks = Object.keys(obj)
   for (let j = 0; j < ks.length/2; j++) {
@@ -48,15 +58,28 @@ function removeIndexField(obj) {
   }
   return obj
 }
-async function getTokenPairs(tm, total) {
+
+function getMapTm(toChainId) {
+  if (tmWan.core.chainId === toChainId) {
+    return tmWan
+  } else if (tmEth.core.chainId === toChainId) {
+    return tmEth
+  } else {
+    return null;
+  }
+}
+async function getTokenPairs(tm, _total) {
   const tokenPairs = {}
+  const total = parseInt(_total)
   for(let i=0; i<total; i++) {
     const id = parseInt(await tm.mapTokenPairIndex(i));
     const tokenPairInfo = removeIndexField(await tm.getTokenPairInfo(id));
     const ancestorInfo = removeIndexField(await tm.getAncestorInfo(id));
+    let tokenInfo = removeIndexField(await getMapTm(parseInt(tokenPairInfo.toChainID)).getTokenInfo(id))
     const tokenPair = {id: id}
     
-    Object.assign(tokenPair, ancestorInfo, tokenPairInfo);
+    Object.assign(tokenPair, ancestorInfo, tokenPairInfo, 
+      {mapName: tokenInfo.name, mapSymbol: tokenInfo.symbol, mapDecimals: tokenInfo.decimals});
     tokenPairs[id] = tokenPair;
   }
   return tokenPairs;

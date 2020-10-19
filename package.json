@@ -5,11 +5,8 @@
   "main": "index.js",
   "scripts": {
     "robot_local": "node -r dotenv/config src/robot.js dotenv_config_path=.env.local",
-    "robot_development": "node -r dotenv/config src/robot.js dotenv_config_path=.env.dev.local",
+    "robot_dev_local": "node -r dotenv/config src/robot.js dotenv_config_path=.env.dev.local",
     "robot_production": "node -r dotenv/config src/robot.js dotenv_config_path=.env.production",
-    "scan_development": "node -r dotenv/config src/scan_register.js dotenv_config_path=.env.dev.local",
-    "test": "nyc mocha --recursive",
-    "test_cmc_crypto": "node -r dotenv/config node_modules/.bin/_mocha ./test/cmc_crypto_test.js dotenv_config_path=.env.local",
     "server_development": "node -r dotenv/config src/server.js dotenv_config_path=.env.dev.local"
   },
   "repository": {
