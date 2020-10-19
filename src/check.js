@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = 19999
+const port = parseInt(process.env.CHECK_PORT)
 
 const Oracle = require('./contract/oracle');
 const TokenManager = require('./contract/token_manager');
