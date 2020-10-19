@@ -166,10 +166,10 @@ const deployAndUpdate = async () => {
 }
 
 setTimeout(async () => {
-  const tokens = await chainEth.core.getRegTokens()
-  tokens.forEach((token) => {
-    log.info(JSON.stringify(token, null, 2));
-  })
-  // await deployAndUpdate();
+  // const tokens = await chainEth.core.getRegTokens()
+  // tokens.forEach((token) => {
+  //   log.info(JSON.stringify(token, null, 2));
+  // })
+  await deployAndUpdate();
   // await tmWan.updateToken("0x001d6bf6855334c0bc785be56f1b7cf5e733a93d", "wanTUSD@wanchain", "wanTUSD")
 }, 0)
