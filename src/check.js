@@ -2,19 +2,14 @@ const express = require('express')
 const app = express()
 const port = parseInt(process.env.CHECK_PORT)
 
-const Oracle = require('./contract/oracle');
-const TokenManager = require('./contract/token_manager');
-const OracleProxy = require('./contract/oracle_proxy');
-const TokenManagerProxy = require('./contract/token_manager_proxy');
-const SGA = require('./contract/storeman_group_admin');
-const Quota = require('./contract/quota');
-const Cross = require('./contract/cross');
 const axios = require('axios')
+const { getTestMessageUrl } = require('nodemailer');
 
 const log = require('./lib/log');
 const db = require('./lib/sqlite_db');
+
 const { web3, sleep } = require('./lib/utils');
-const { getTestMessageUrl } = require('nodemailer');
+const { loadContract, loadContractAt } = require('./lib/abi_address');
 
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
@@ -22,29 +17,28 @@ const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
 const iWanWan = require(`./chain/${process.env.IWAN_WAN_CHAIN_ENGINE}`);
 const iWanEth = require(`./chain/${process.env.IWAN_ETH_CHAIN_ENGINE}`);
 
-const oracleWanProxy = new OracleProxy(chainWan, process.env.OR_ADDR, process.env.OR_OWNER_SK, process.env.OR_OWNER_ADDR);
-const oracleEthProxy = new OracleProxy(chainEth, process.env.OR_ADDR_ETH, process.env.OR_OWNER_SK_ETH, process.env.OR_OWNER_ADDR_ETH);
+const oracleWanProxy = loadContract(chainWan, 'OracleProxy')
+const oracleEthProxy = loadContract(chainEth, 'OracleProxy')
 
-const tmWanProxy = new TokenManagerProxy(chainWan, process.env.TM_ADDR, process.env.TM_OWNER_SK, process.env.TM_OWNER_ADDR);
-const tmEthProxy = new TokenManagerProxy(chainEth, process.env.TM_ADDR_ETH, process.env.TM_OWNER_SK_ETH, process.env.TM_OWNER_ADDR_ETH);
+const tmWanProxy = loadContract(chainWan, 'TokenManagerProxy')
+const tmEthProxy = loadContract(chainEth, 'TokenManagerProxy')
 
+const oracleWan = loadContract(chainWan, 'OracleDelegate')
+const oracleEth = loadContract(chainEth, 'OracleDelegate')
+const iWanOracleWan = loadContract(iWanWan, 'OracleDelegate')
+const iWanOracleEth = loadContract(iWanEth, 'OracleDelegate')
 
-const oracleWan = new Oracle(chainWan, process.env.OR_ADDR, process.env.OR_OWNER_SK, process.env.OR_OWNER_ADDR);
-const iWanOracleWan = new Oracle(iWanWan, process.env.OR_ADDR, process.env.OR_OWNER_SK, process.env.OR_OWNER_ADDR);
-const oracleEth = new Oracle(chainEth, process.env.OR_ADDR_ETH, process.env.OR_OWNER_SK_ETH, process.env.OR_OWNER_ADDR_ETH);
-const iWanOracleEth = new Oracle(iWanEth, process.env.OR_ADDR_ETH, process.env.OR_OWNER_SK_ETH, process.env.OR_OWNER_ADDR_ETH);
+const tmWan = loadContract(chainWan, 'TokenManagerDelegate')
+const tmEth = loadContract(chainEth, 'TokenManagerDelegate')
 
-const tmWan = new TokenManager(chainWan, process.env.TM_ADDR, process.env.TM_OWNER_SK, process.env.TM_OWNER_ADDR);
-const tmEth = new TokenManager(chainEth, process.env.TM_ADDR_ETH, process.env.TM_OWNER_SK_ETH, process.env.TM_OWNER_ADDR_ETH);
+const sgaWan = loadContract(chainWan, 'StoremanGroupDelegate')
+const iWanSgaWan = loadContract(iWanWan, 'StoremanGroupDelegate')
 
-const sgaWan = new SGA(chainWan, process.env.SGA_ADDR, process.env.SGA_OWNER_SK, process.env.SGA_OWNER_ADDR);
-const iWanSgaWan = new SGA(iWanWan, process.env.SGA_ADDR, process.env.SGA_OWNER_SK, process.env.SGA_OWNER_ADDR);
+const quotaWan = loadContract(chainWan, 'QuotaDelegate')
+const quotaEth = loadContract(chainEth, 'QuotaDelegate')
 
-const quotaWan = new Quota(chainWan, process.env.QUOTA_ADDR)
-const quotaEth = new Quota(chainEth, process.env.QUOTA_ADDR_ETH)
-
-const crossWan = new Cross(chainWan, process.env.CROSS_ADDR)
-const crossEth = new Cross(chainEth, process.env.CROSS_ADDR_ETH)
+const crossWan = loadContract(chainWan, 'CrossDelegate')
+const crossEth = loadContract(chainEth, 'CrossDelegate')
 
 const reportUrl = "https://oapi.dingtalk.com/robot/send?access_token=1dc5dac099ef42e0ba17927593b24d0f7b79460d5d7c3887cd4a81b1b6d70d83"
 const dingSend = async (msg) => {
@@ -118,10 +112,10 @@ const getOracle = async () => {
   const tmAddr = await tmWanProxy.implementation();
   const tmAddr_eth = await tmEthProxy.implementation();
 
-  const od = new Oracle(chainWan, odAddr);
-  const od_eth = new Oracle(chainEth, odAddr_eth);
-  const tm = new TokenManager(chainWan, odAddr);
-  const tm_eth = new TokenManager(chainEth, odAddr_eth);
+  const od = loadContractAt(chainWan, 'OracleDelegate', odAddr);
+  const od_eth = loadContractAt(chainEth, 'OracleDelegate', odAddr_eth);
+  const tm = loadContractAt(chainWan,'TokenManagerDelegate', odAddr);
+  const tm_eth = loadContractAt(chainEth, 'TokenManagerDelegate', odAddr_eth);
 
   const prePricesArray = await oracleWan.getValues(process.env.SYMBOLS);
   const symbolsStringArray = process.env.SYMBOLS.replace(/\s+/g,"").split(',');
@@ -161,9 +155,9 @@ const getOracle = async () => {
 
   const oracle = {
     'WanChain' : {
-      oracleProxy: process.env.OR_ADDR.toLowerCase(),
+      oracleProxy: oracleWanProxy.address,
       oracleDelegator: odAddr,
-      tokenManagerProxy: process.env.TM_ADDR.toLowerCase(),
+      tokenManagerProxy: tmWanProxy.address,
       tokenManagerDelegator: tmAddr,
 
       oracleProxyOwner: await oracleWanProxy.getOwner(),
@@ -175,9 +169,9 @@ const getOracle = async () => {
       sgs: sgs,
     },
     'Ethereum' : {
-      oracleProxy: process.env.OR_ADDR_ETH.toLowerCase(),
+      oracleProxy: oracleEthProxy.address,
       oracleDelegator: odAddr_eth,
-      tokenManagerProxy: process.env.TM_ADDR_ETH.toLowerCase(),
+      tokenManagerProxy: tmEthProxy.address,
       tokenManagerDelegator: tmAddr_eth,
 
       oracleProxyOwner: await oracleEthProxy.getOwner(),
@@ -326,9 +320,9 @@ async function getQuotaFee(quotaContract, status) {
 async function getQuotaStatus(quotaContract) {
   const status = {}
 
-  status.priceOracleAddress = await quotaContract.priceOracleAddress()
-  status.depositOracleAddress = await quotaContract.depositOracleAddress()
-  status.tokenManagerAddress = await quotaContract.tokenManagerAddress()
+  status.priceOracleAddress = (await quotaContract.priceOracleAddress()).toLowerCase()
+  status.depositOracleAddress = (await quotaContract.depositOracleAddress()).toLowerCase()
+  status.tokenManagerAddress = (await quotaContract.tokenManagerAddress()).toLowerCase()
   status.depositTokenSymbol = await quotaContract.depositTokenSymbol()
 
   // await getQuotaFee(quotaContract, status)
@@ -368,9 +362,9 @@ const getCross = async () => {
 
   const cross = {
     'WanChain' : {
-      tokenManager: partner.tokenManager,
-      smgAdminProxy: partner.smgAdminProxy,
-      smgFeeProxy: partner.smgFeeProxy,
+      tokenManager: partner.tokenManager.toLowerCase(),
+      smgAdminProxy: partner.smgAdminProxy.toLowerCase(),
+      smgFeeProxy: partner.smgFeeProxy.toLowerCase(),
       quota: partner.quota,
       sigVerifier: partner.sigVerifier,
       'fee: wan -> eth': removeIndexField(await crossWan.getFees(chainId.WAN, chainId.ETH)),
@@ -379,9 +373,9 @@ const getCross = async () => {
       smgFeeReceiverTimeout: await crossWan.smgFeeReceiverTimeout(),
     },
     'Ethereum' : {
-      tokenManager: partner_eth.tokenManager,
-      smgAdminProxy: partner_eth.smgAdminProxy,
-      smgFeeProxy: partner_eth.smgFeeProxy,
+      tokenManager: partner_eth.tokenManager.toLowerCase(),
+      smgAdminProxy: partner_eth.smgAdminProxy.toLowerCase(),
+      smgFeeProxy: partner_eth.smgFeeProxy.toLowerCase(),
       quota: partner_eth.quota,
       sigVerifier: partner_eth.sigVerifier,
       'fee: wan -> eth': removeIndexField(await crossEth.getFees(chainId.WAN, chainId.ETH)),
@@ -674,3 +668,7 @@ app.get('/force', async (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 })
+
+process.on('unhandledRejection', (err) => {
+  console.log(`deploy unhandledRejection ${err}`);
+});

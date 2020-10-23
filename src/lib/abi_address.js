@@ -48,17 +48,17 @@ const getAddressAndABI = (config, contractName) => {
 
   if (ragD.test(contractName)) {
     // contractName is Delegate? We must use proxy address
-    const proxyContractName = contractName.replace('Delegate$','Proxy')
+    const proxyContractName = contractName.replace(/Delegate$/,'Proxy')
 
     assert.ok(config[proxyContractName], `${contractName} has no proxy config`)
 
     console.log(`getAddressAndABI ${JSON.stringify(proxyContractName)}`)
-    const fileName = config[contractName] ? config[proxyContractName].abi : config[contractName].abi
+    const fileName = (config[contractName] && config[contractName].abi) ? config[contractName].abi : config[proxyContractName].abi
 
     assert.equal(fileName, `abi.${contractName}.json`, `delegate file name is not abi.${contractName}.json`)
 
     address = config[proxyContractName].address
-    abiPath = path.resolve(process.env.DEPLOYED_FOLD, config[contractName].abi)
+    abiPath = path.resolve(process.env.DEPLOYED_FOLD, fileName)
   } else if (ragP.test(contractName)) {
     // contractName is Proxy? use proxy abi
     const ragProxyJson = /Proxy\.json$/
@@ -95,6 +95,20 @@ function loadContract(chain, contractName) {
   }
 }
 
+function loadContractAt(chain, contractName, address) {
+  const { config } = configs[chain.core.chainType]
+
+  const {abiPath} = getAddressAndABI(config, contractName)
+  const abi = require(abiPath)
+  assert.ok(abi, `${contractName}, no valid abi file at ${abiPath}`)
+  if (contracts[contractName]) {
+    return new contracts[contractName](chain, address, null, null, abi)
+  } else {
+    return new Contract(chain, address, null, null, abi)
+  }
+}
+
 module.exports = {
-  loadContract
+  loadContract,
+  loadContractAt,
 };

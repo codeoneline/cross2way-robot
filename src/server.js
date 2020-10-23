@@ -27,20 +27,21 @@ const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
 // const chainWan = require(`./chain/${process.env.IWAN_WAN_CHAIN_ENGINE}`);
 // const chainEth = require(`./chain/${process.env.IWAN_ETH_CHAIN_ENGINE}`);
 
-const oracleWanProxy = new OracleProxy(chainWan, process.env.OR_ADDR, process.env.OR_OWNER_SK, process.env.OR_OWNER_ADDR);
-const oracleEthProxy = new OracleProxy(chainEth, process.env.OR_ADDR_ETH, process.env.OR_OWNER_SK_ETH, process.env.OR_OWNER_ADDR_ETH);
+const { loadContract } = require('./lib/abi_address');
 
-const tmWanProxy = new TokenManagerProxy(chainWan, process.env.TM_ADDR, process.env.TM_OWNER_SK, process.env.TM_OWNER_ADDR);
-const tmEthProxy = new TokenManagerProxy(chainEth, process.env.TM_ADDR_ETH, process.env.TM_OWNER_SK_ETH, process.env.TM_OWNER_ADDR_ETH);
+const oracleWanProxy = loadContract(chainWan, 'OracleProxy')
+const oracleEthProxy = loadContract(chainEth, 'OracleProxy')
 
+const tmWanProxy = loadContract(chainWan, 'TokenManagerProxy')
+const tmEthProxy = loadContract(chainEth, 'TokenManagerProxy')
 
-const oracleWan = new Oracle(chainWan, process.env.OR_ADDR, process.env.OR_OWNER_SK, process.env.OR_OWNER_ADDR);
-const oracleEth = new Oracle(chainEth, process.env.OR_ADDR_ETH, process.env.OR_OWNER_SK_ETH, process.env.OR_OWNER_ADDR_ETH);
+const oracleWan = loadContract(chainWan, 'OracleDelegate')
+const oracleEth = loadContract(chainEth, 'OracleDelegate')
 
-const tmWan = new TokenManager(chainWan, process.env.TM_ADDR, process.env.TM_OWNER_SK, process.env.TM_OWNER_ADDR);
-const tmEth = new TokenManager(chainEth, process.env.TM_ADDR_ETH, process.env.TM_OWNER_SK_ETH, process.env.TM_OWNER_ADDR_ETH);
+const tmWan = loadContract(chainWan, 'TokenManagerDelegate')
+const tmEth = loadContract(chainEth, 'TokenManagerDelegate')
 
-const sgaWan = new SGA(chainWan, process.env.SGA_ADDR, process.env.SGA_OWNER_SK, process.env.SGA_OWNER_ADDR);
+const sgaWan = loadContract(chainWan, 'StoremanGroupDelegate')
 
 function removeIndexField(obj) {
   const ks = Object.keys(obj)
@@ -239,14 +240,14 @@ async function refreshChains() {
   const tm_eth = new TokenManager(chainEth, odAddr_eth);
 
   const storeOwner = (await sgaWan.getOwner()).toLowerCase();
-  const storeOwnerConfig = process.env.SGA_OWNER_ADDR.toLowerCase();
+  const storeOwnerConfig = sgaWan.pv_address;
   const result = {
     'WanChain' : {
       blockNumber: await chainWan.core.getBlockNumber(),
 
-      oracleProxy: process.env.OR_ADDR,
+      oracleProxy: oracleWanProxy.address,
       oracleDelegator: odAddr,
-      tokenManagerProxy: process.env.TM_ADDR,
+      tokenManagerProxy: tmWanProxy.address,
       tokenManagerDelegator: tmAddr,
 
       oracleProxyOwner: await oracleWanProxy.getOwner(),
@@ -254,15 +255,15 @@ async function refreshChains() {
       tokenManagerProxyOwner: await tmWanProxy.getOwner(),
       tokenManagerDelegatorOwner: await tm.getOwner(),
 
-      storeManProxy: process.env.SGA_ADDR,
+      storeManProxy: sgaWan.address,
       storeManProxyOwner: await sgaWan.getOwner(),
     },
     'Ethereum' : {
       blockNumber: await chainEth.core.getBlockNumber(),
 
-      oracleProxy: process.env.OR_ADDR_ETH,
+      oracleProxy: oracleEthProxy.address,
       oracleDelegator: odAddr_eth,
-      tokenManagerProxy: process.env.TM_ADDR_ETH,
+      tokenManagerProxy: tmEthProxy.address,
       tokenManagerDelegator: tmAddr_eth,
 
       oracleProxyOwner: await oracleEthProxy.getOwner(),

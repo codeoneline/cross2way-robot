@@ -2,18 +2,18 @@ const schedule = require('node-schedule');
 const log = require('./lib/log');
 const getPrices_cmc = require("./lib/cmc");
 const getPrices_crypto = require("./lib/crypto_compare");
-const Oracle = require('./contract/oracle');
-const StoremanGroupAdmin = require('./contract/storeman_group_admin');
 
 const { createScanEvent, doSchedule, updatePrice, syncPriceToOtherChain, syncConfigToOtherChain } = require('./robot_core');
+
+const { loadContract } = require('./lib/abi_address');
 
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
 
-const oracleWan = new Oracle(chainWan, process.env.OR_ADDR, process.env.OR_OWNER_SK, process.env.OR_OWNER_ADDR);
-const oracleEth = new Oracle(chainEth, process.env.OR_ADDR_ETH, process.env.OR_OWNER_SK_ETH, process.env.OR_OWNER_ADDR_ETH);
+const oracleWan = loadContract(chainWan, 'OracleDelegate')
+const oracleEth = loadContract(chainEth, 'OracleDelegate')
 
-const sgaWan = new StoremanGroupAdmin(chainWan, process.env.SGA_ADDR, process.env.SGA_OWNER_SK, process.env.SGA_OWNER_ADDR);
+const sgaWan = loadContract(chainWan, 'StoremanGroupDelegate')
 
 const scanInst = createScanEvent(
   sgaWan,
@@ -48,9 +48,22 @@ const scanNewStoreMan = () => {
 
 const updateStoreManToChains = async function() {
   console.log("updateStoreManToChains")
-  doSchedule(async () => {
+  await doSchedule(async () => {
     if (!scanInst.bScanning) {
       await syncConfigToOtherChain(sgaWan, [oracleEth]);
+    } else {
+      setTimeout(async() => {
+        await updateStoreManToChains()
+      }, 10000)
+    }
+  },[])
+}
+
+const updateStoreManToChainsPart = async function() {
+  console.log("updateStoreManToChainsPart")
+  await doSchedule(async () => {
+    if (!scanInst.bScanning) {
+      await syncConfigToOtherChain(sgaWan, [oracleEth], true);
     }
   },[])
 }
@@ -64,6 +77,8 @@ const robotSchedules = function() {
 
   // sync sga config from wan to other chain, sga database, 1 / 1day
   schedule.scheduleJob('30 2 1 * * *', updateStoreManToChains);
+
+  schedule.scheduleJob('0 */8 * * * *', updateStoreManToChainsPart);
 };
 
 // helper functions
@@ -76,3 +91,7 @@ setTimeout(updateStoreManToChains, 0);
 
 robotSchedules();
 
+
+process.on('unhandledRejection', (err) => {
+  log.error(`unhandledRejection ${err}`);
+});

@@ -1,5 +1,5 @@
 const log = require('../lib/log');
-const { sleep } = require('../lib/utils');
+const { sleep, privateToAddress } = require('../lib/utils');
 
 class Contract {
   constructor(chain, abi, contractAddress, ownerPrivateKey, ownerPrivateAddress) {

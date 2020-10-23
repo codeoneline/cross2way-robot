@@ -4,14 +4,15 @@ const log = require('./lib/log');
 const Token = require('./contract/map_token');
 
 const { addToken, addTokenPair, updateTokenPair } = require('./admin_core');
+const { loadContract } = require('./lib/abi_address')
 
 // const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 // const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
 const chainWan = require(`./chain/${process.env.IWAN_WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.IWAN_ETH_CHAIN_ENGINE}`);
 
-const tmWan = new TokenManager(chainWan, process.env.TM_ADDR, process.env.TM_OWNER_SK, process.env.TM_OWNER_ADDR);
-const tmEth = new TokenManager(chainEth, process.env.TM_ADDR_ETH, process.env.TM_OWNER_SK_ETH, process.env.TM_OWNER_ADDR_ETH);
+const tmWan = loadContract(chainWan, 'TokenManagerDelegate')
+const tmEth = loadContract(chainEth, 'TokenManagerDelegate')
 
 const hexToBytes = web3.utils.hexToBytes;
 const hexToString = web3.utils.hexToString;
@@ -122,9 +123,6 @@ const doAddOrUpdate = async (config, tokenPairsConfig, key, chainName) => {
   const aInfo = await tm.getAncestorInfo(config.id);
   log.info(`key = ${key}, id = ${config.id}`)
 
-  if (config.id === "11") {
-    console.log("11");
-  }
   // check token on map chain
   if (chainName === tokenPairsConfig[key].mapChain) {
     if (pairInfo.toAccount === null || pairInfo.toAccount === '0x') {

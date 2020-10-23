@@ -7,231 +7,68 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "robot local",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "runtimeArgs": ["-r", "dotenv/config"],
-      "cwd": "${workspaceRoot}",
-      "program": "${workspaceFolder}/src/robot.js",
-      "args": ["dotenv_config_path=.env.local"]
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "robot dev local",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "cwd": "${workspaceRoot}",
-      "program": "${workspaceFolder}/src/robot.js",
-      "envFile": "${workspaceFolder}/.env.dev.local"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "robot my production",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "runtimeArgs": ["-r", "dotenv/config"],
-      "cwd": "${workspaceRoot}",
-      "program": "${workspaceFolder}/src/robot_my.js",
-      "args": ["dotenv_config_path=.env.production"]
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "robot production",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "runtimeArgs": ["-r", "dotenv/config"],
-      "cwd": "${workspaceRoot}",
-      "program": "${workspaceFolder}/src/robot.js",
-      "args": ["dotenv_config_path=.env.production"]
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "server dev local",
+      "name": "server testnet",
       "skipFiles": [
         "<node_internals>/**"
       ],
       "cwd": "${workspaceRoot}",
       "program": "${workspaceFolder}/src/server.js",
-      "envFile": "${workspaceFolder}/.env.dev.local"
+      "envFile": "${workspaceFolder}/.env.dev"
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "server dev testnet",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "cwd": "${workspaceRoot}",
-      "program": "${workspaceFolder}/src/server.js",
-      "envFile": "${workspaceFolder}/.env.dev.testnet"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "check dev testnet",
+      "name": "check testnet",
       "skipFiles": [
         "<node_internals>/**"
       ],
       "cwd": "${workspaceRoot}",
       "program": "${workspaceFolder}/src/check.js",
-      "envFile": "${workspaceFolder}/.env.dev.testnet"
+      "envFile": "${workspaceFolder}/.env.dev"
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "deploy check dev testnet",
+      "name": "deploy check testnet",
       "skipFiles": [
         "<node_internals>/**"
       ],
       "cwd": "${workspaceRoot}",
       "program": "${workspaceFolder}/src/deploy_check.js",
-      "envFile": "${workspaceFolder}/.env.deploy.testnet"
+      "envFile": "${workspaceFolder}/.env.dev"
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "check dev local",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "cwd": "${workspaceRoot}",
-      "program": "${workspaceFolder}/src/check.js",
-      "envFile": "${workspaceFolder}/.env.dev.local"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "token pair dev local",
+      "name": "token pair testnet",
       "skipFiles": [
         "<node_internals>/**"
       ],
       "cwd": "${workspaceRoot}",
       "program": "${workspaceFolder}/src/token_pair.js",
-      "envFile": "${workspaceFolder}/.env.dev.local"
+      "envFile": "${workspaceFolder}/.env.dev"
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "token pair production",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "cwd": "${workspaceRoot}",
-      "program": "${workspaceFolder}/src/token_pair.js",
-      "envFile": "${workspaceFolder}/.env.production"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "token pair dev test",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "cwd": "${workspaceRoot}",
-      "program": "${workspaceFolder}/src/token_pair.js",
-      "envFile": "${workspaceFolder}/.env.dev.testnet"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "admin development testnet",
+      "name": "admin testnet",
       "skipFiles": [
         "<node_internals>/**"
       ],
       "cwd": "${workspaceRoot}",
       "program": "${workspaceFolder}/src/admin.js",
-      "envFile": "${workspaceFolder}/.env.dev.testnet"
+      "envFile": "${workspaceFolder}/.env.dev"
     },
     {
       "type": "node",
       "request": "launch",
-      "name": "robot development testnet",
+      "name": "robot testnet",
       "skipFiles": [
         "<node_internals>/**"
       ],
       "cwd": "${workspaceRoot}",
       "program": "${workspaceFolder}/src/robot.js",
-      "envFile": "${workspaceFolder}/.env.dev.testnet"
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "admin local",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "runtimeArgs": ["-r", "dotenv/config"],
-      "cwd": "${workspaceRoot}",
-      "program": "${workspaceFolder}/src/admin.js",
-      "args": ["dotenv_config_path=.env.local"]
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "admin dev local",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "runtimeArgs": ["-r", "dotenv/config"],
-      "cwd": "${workspaceRoot}",
-      "program": "${workspaceFolder}/src/admin.js",
-      "args": ["dotenv_config_path=.env.dev.local"]
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "admin development my",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "runtimeArgs": ["-r", "dotenv/config"],
-      "cwd": "${workspaceRoot}",
-      "program": "${workspaceFolder}/src/admin_my.js",
-      "args": ["dotenv_config_path=.env.dev.local"]
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "admin production",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "runtimeArgs": ["-r", "dotenv/config"],
-      "cwd": "${workspaceRoot}",
-      "program": "${workspaceFolder}/src/admin.js",
-      "args": ["dotenv_config_path=.env.production"]
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "admin my production",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "runtimeArgs": ["-r", "dotenv/config"],
-      "cwd": "${workspaceRoot}",
-      "program": "${workspaceFolder}/src/admin_my.js",
-      "args": ["dotenv_config_path=.env.production"]
-    },
-    {
-      "type": "node",
-      "request": "launch",
-      "name": "scan register development",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "runtimeArgs": ["-r", "dotenv/config"],
-      "cwd": "${workspaceRoot}",
-      "program": "${workspaceFolder}/src/scan.js",
-      "args": ["dotenv_config_path=.env.dev.local"]
+      "envFile": "${workspaceFolder}/.env.dev"
     },
     {
       "type": "node",
@@ -251,18 +88,6 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "scan event 2",
-      "skipFiles": [
-        "<node_internals>/**"
-      ],
-      "cwd": "${workspaceRoot}",
-			"stopOnEntry": false,
-			"runtimeExecutable": null,
-      "program": "${workspaceFolder}/src/scan_event2.js",
-    },
-    {
-      "type": "node",
-      "request": "launch",
       "name": "test contract local",
       "skipFiles": [
         "<node_internals>/**"
@@ -278,7 +103,7 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "iwan_web3_test",
+      "name": "test iwan_web3",
       "skipFiles": [
         "<node_internals>/**"
       ],
@@ -295,7 +120,7 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "db_test_local",
+      "name": "test db",
       "skipFiles": [
         "<node_internals>/**"
       ],

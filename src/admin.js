@@ -6,6 +6,7 @@ const StoremanGroupAdmin = require('./contract/storeman_group_admin');
 const MapToken = require('./contract/map_token');
 
 const {changeOwner, upgradeTo, mint, unlockAccount, getBalance, deployTokenPairOrUpdate} = require('./admin_core');
+const { loadContract } = require('./lib/abi_address');
 
 const { web3 } = require('./lib/utils');
 const fs = require('fs');
@@ -14,12 +15,12 @@ const path = require('path');
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
 
-const sgaWan = new StoremanGroupAdmin(chainWan, process.env.SGA_ADDR, process.env.SGA_OWNER_SK, process.env.SGA_OWNER_ADDR);
+const sgaWan = loadContract(chainWan, 'StoremanGroupDelegate')
 
-const tmWan = new TokenManager(chainWan, process.env.TM_ADDR, process.env.TM_OWNER_SK, process.env.TM_OWNER_ADDR);
-const tmEth = new TokenManager(chainEth, process.env.TM_ADDR_ETH, process.env.TM_OWNER_SK_ETH, process.env.TM_OWNER_ADDR_ETH);
+const tmWan = loadContract(chainWan, 'TokenManagerDelegate')
+const tmEth = loadContract(chainEth, 'TokenManagerDelegate')
 
-const oracleWan = new Oracle(chainWan, process.env.OR_ADDR, process.env.OR_OWNER_SK, process.env.OR_OWNER_ADDR);
+const oracleWan = loadContract(chainWan, 'OracleDelegate')
 
 const fnxWan = new MapToken(chainWan, process.env.FNX_ADDR, process.env.FNX_OWNER_SK, process.env.FNX_OWNER_ADDR);
 const linkEth = new MapToken(chainEth, process.env.LINK_ADDR_ETH, process.env.LINK_OWNER_SK_ETH, process.env.LINK_OWNER_ADDR_ETH);
@@ -31,14 +32,14 @@ const tms = {
   "ETH": tmEth,
 }
 
-async function upgradeOracle() {
-  const oracleProxyWan = new OracleProxy(chainWan, process.env.OR_ADDR, process.env.OR_OWNER_SK, process.env.OR_OWNER_ADDR);
-  await upgradeTo(oracleProxyWan, process.env.ORACLE_ADDRESS_UP);
+async function upgradeOracle(newAddress) {
+  const oracleProxyWan = loadContract(chainWan, 'OracleProxy')
+  await upgradeTo(oracleProxyWan, newAddress);
 }
 
-async function upgradeTokenManager() {
-  const tmProxyWan = new TokenManagerProxy(chainWan, process.env.TM_ADDR, process.env.TM_OWNER_SK, process.env.TM_OWNER_ADDR);
-  await upgradeTo(tmProxyWan, process.env.TM_ADDR_UP);
+async function upgradeTokenManager(newAddress) {
+  const tmProxyWan = loadContract(chainWan, 'TokenManagerProxy')
+  await upgradeTo(tmProxyWan, newAddress);
 }
 
 // wan2eth: {

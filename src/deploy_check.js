@@ -6,7 +6,7 @@ const axios = require('axios')
 const { getTestMessageUrl } = require('nodemailer');
 
 const { web3, sleep } = require('./lib/utils');
-const { loadContract } = require('./lib/abi_address');
+const { loadContract, loadContractAt } = require('./lib/abi_address');
 
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
@@ -109,10 +109,10 @@ const getOracle = async () => {
   const tmAddr = await tmWanProxy.implementation();
   const tmAddr_eth = await tmEthProxy.implementation();
 
-  const od = new Oracle(chainWan, odAddr);
-  const od_eth = new Oracle(chainEth, odAddr_eth);
-  const tm = new TokenManager(chainWan, odAddr);
-  const tm_eth = new TokenManager(chainEth, odAddr_eth);
+  const od = loadContractAt(chainWan, 'OracleDelegate', odAddr);
+  const od_eth = loadContractAt(chainEth, 'OracleDelegate', odAddr_eth);
+  const tm = loadContractAt(chainWan,'TokenManagerDelegate', odAddr);
+  const tm_eth = loadContractAt(chainEth, 'TokenManagerDelegate', odAddr_eth);
 
   const prePricesArray = await oracleWan.getValues(process.env.SYMBOLS);
   const symbolsStringArray = process.env.SYMBOLS.replace(/\s+/g,"").split(',');
@@ -129,32 +129,13 @@ const getOracle = async () => {
     prePricesMap_Eth[v] = padPrice.substr(0, padPrice.length - 18)+ '.'+ padPrice.substr(padPrice.length - 18, 18);
   })
 
-  // const sgs = {}
-  // const sgs_eth = {}
-  // const sgAll = db.getAllSga();
-  // for (let i = 0; i<sgAll.length; i++) {
-  //   const sg = sgAll[i];
-  //   const groupId = sg.groupId;
-  //   const config = await sgaWan.getStoremanGroupConfig(groupId);
-  //   const configEth = await oracleEth.getStoremanGroupConfig(groupId);
-  //   const ks = Object.keys(config);
-
-  //   // if (config.gpk1 !== null || configEth.gpk1 !== null) {
-  //     for (let j = 0; j < ks.length/2; j++) {
-  //       const str = j.toString();
-  //       delete config[str];
-  //       delete configEth[str];
-  //     }
-  //     sgs_eth[groupId] = configEth;
-  //     sgs[groupId] = config;
-  //   // }
-  // }
-
+  const tpOwner = await tmWanProxy.getOwner();
+  const tdOwner = await tm.getOwner();
   const oracle = {
     'WanChain' : {
-      oracleProxy: process.env.OR_ADDR.toLowerCase(),
+      oracleProxy: oracleWanProxy.address,
       oracleDelegator: odAddr,
-      tokenManagerProxy: process.env.TM_ADDR.toLowerCase(),
+      tokenManagerProxy: tmWanProxy.address,
       tokenManagerDelegator: tmAddr,
 
       oracleProxyOwner: await oracleWanProxy.getOwner(),
@@ -163,12 +144,11 @@ const getOracle = async () => {
       tokenManagerDelegatorOwner: await tm.getOwner(),
 
       prices: prePricesMap,
-      sgs: sgs,
     },
     'Ethereum' : {
-      oracleProxy: process.env.OR_ADDR_ETH.toLowerCase(),
+      oracleProxy: oracleEthProxy.address,
       oracleDelegator: odAddr_eth,
-      tokenManagerProxy: process.env.TM_ADDR_ETH.toLowerCase(),
+      tokenManagerProxy: tmEthProxy.address,
       tokenManagerDelegator: tmAddr_eth,
 
       oracleProxyOwner: await oracleEthProxy.getOwner(),
@@ -177,61 +157,11 @@ const getOracle = async () => {
       tokenManagerDelegatorOwner: await tm_eth.getOwner(),
 
       prices: prePricesMap_Eth,
-      sgs: sgs_eth,
     }
   }
 
   g_oracle = oracle;
   return oracle;
-}
-
-const getIWanOracle = async () => {
-  const prePricesArray = await iWanOracleWan.getValues(process.env.SYMBOLS);
-  const symbolsStringArray = process.env.SYMBOLS.replace(/\s+/g,"").split(',');
-  const prePricesMap = {}
-  symbolsStringArray.forEach((v,i) => {
-    const padPrice = web3.utils.padLeft(prePricesArray[i], 19, '0');
-    prePricesMap[v] = padPrice.substr(0, padPrice.length - 18)+ '.'+ padPrice.substr(padPrice.length - 18, 18);
-  })
-
-  const prePricesMap_Eth = {}
-  const prePricesArray_Eth = await iWanOracleEth.getValues(process.env.SYMBOLS);
-  symbolsStringArray.forEach((v,i) => {
-    const padPrice = web3.utils.padLeft(prePricesArray_Eth[i], 19, '0');
-    prePricesMap_Eth[v] = padPrice.substr(0, padPrice.length - 18)+ '.'+ padPrice.substr(padPrice.length - 18, 18);
-  })
-
-  const sgs = {}
-  const sgs_eth = {}
-  const sgAll = db.getAllSga();
-  for (let i = 0; i<sgAll.length; i++) {
-    const sg = sgAll[i];
-    const groupId = sg.groupId;
-    const config = await iWanSgaWan.getStoremanGroupConfig(groupId);
-    const configEth = await iWanOracleEth.getStoremanGroupConfig(groupId);
-    const ks = Object.keys(config);
-
-    // if (config.gpk1 !== null || configEth.gpk1 !== null) {
-      for (let j = 0; j < ks.length/2; j++) {
-        const str = j.toString();
-        delete config[str];
-        delete configEth[str];
-      }
-      sgs_eth[groupId] = configEth;
-      sgs[groupId] = config;
-    // }
-  }
-
-  return {
-    'WanChain' : {
-      prices: prePricesMap,
-      sgs: sgs,
-    },
-    'Ethereum' : {
-      prices: prePricesMap_Eth,
-      sgs: sgs_eth,
-    }
-  }
 }
 
 /////////////////////////////////////////////
@@ -328,24 +258,24 @@ async function getQuotaStatus(quotaContract) {
 }
 
 const getQuota = async (oracle, tokenManager) => {
-  const tps = Object.keys(tokenManager.WanChain.tokenPairs)
-  const tps_Eth = Object.keys(tokenManager.Ethereum.tokenPairs)
-  const sgsIds = Object.keys(oracle.WanChain.sgs)
-  const sgsIds_Eth = Object.keys(oracle.Ethereum.sgs)
+  // const tps = Object.keys(tokenManager.WanChain.tokenPairs)
+  // const tps_Eth = Object.keys(tokenManager.Ethereum.tokenPairs)
+  // const sgsIds = Object.keys(oracle.WanChain.sgs)
+  // const sgsIds_Eth = Object.keys(oracle.Ethereum.sgs)
 
-  const quotaTokens = await getQuotaTokenAmounts(quotaWan, tps, sgsIds)
-  const quotaTokens_Eth = await getQuotaTokenAmounts(quotaEth, tps_Eth, sgsIds_Eth)
+  // const quotaTokens = await getQuotaTokenAmounts(quotaWan, tps, sgsIds)
+  // const quotaTokens_Eth = await getQuotaTokenAmounts(quotaEth, tps_Eth, sgsIds_Eth)
 
   const status = await getQuotaStatus(quotaWan)
   const status_Eth = await getQuotaStatus(quotaEth)
 
   const quota = {
     'WanChain' : {
-      quotaTokens: quotaTokens,
+      // quotaTokens: quotaTokens,
       status: status,
     },
     'Ethereum' : {
-      quotaTokens: quotaTokens_Eth,
+      // quotaTokens: quotaTokens_Eth,
       status: status_Eth,
     }
   }
@@ -577,8 +507,8 @@ const check = async () => {
     checkValue(oracle.WanChain.tokenManagerProxyOwner, oracle.WanChain.tokenManagerDelegatorOwner, "token manager proxy and delegator owner on WanChain")
     checkValue(oracle.Ethereum.tokenManagerProxyOwner, oracle.Ethereum.tokenManagerDelegatorOwner, "token manager proxy and delegator owner on Ethereum")
 
-    checkObject(oracle.WanChain.prices, oracle.Ethereum.prices, "oracle price")
-    checkObjectObject(oracle.WanChain.sgs, oracle.Ethereum.sgs, "oracle store man group config", ObjectType.StoreMan)
+    // checkObject(oracle.WanChain.prices, oracle.Ethereum.prices, "oracle price")
+    // checkObjectObject(oracle.WanChain.sgs, oracle.Ethereum.sgs, "oracle store man group config", ObjectType.StoreMan)
 
     const tm = await getTokenManager();
 
@@ -588,39 +518,39 @@ const check = async () => {
 
     writePrint(`quota check`)
     const quota = await getQuota(oracle, tm);
-    checkValue(quota.WanChain.status.priceOracleAddress, oracle.WanChain.oracleProxy, "quota priceOracleAddress on WanChain")
-    checkValue(quota.WanChain.status.depositOracleAddress.toLowerCase(), sgaWan.address, "quota depositOracleAddress on WanChain")
-    checkValue(quota.WanChain.status.tokenManagerAddress, oracle.WanChain.tokenManagerProxy, "quota tokenManagerAddress on WanChain")
-    checkValue(quota.Ethereum.status.priceOracleAddress, oracle.Ethereum.oracleProxy, "quota priceOracleAddress on Ethereum")
-    checkValue(quota.Ethereum.status.depositOracleAddress, oracle.Ethereum.oracleProxy, "quota depositOracleAddress on Ethereum")
-    checkValue(quota.Ethereum.status.tokenManagerAddress, oracle.Ethereum.tokenManagerProxy, "quota tokenManagerAddress on Ethereum")
+    checkValue(quota.WanChain.status.priceOracleAddress.toLowerCase(), oracle.WanChain.oracleProxy.toLowerCase(), "quota priceOracleAddress on WanChain")
+    checkValue(quota.WanChain.status.depositOracleAddress.toLowerCase(), sgaWan.address.toLowerCase(), "quota depositOracleAddress on WanChain")
+    checkValue(quota.WanChain.status.tokenManagerAddress.toLowerCase(), oracle.WanChain.tokenManagerProxy.toLowerCase(), "quota tokenManagerAddress on WanChain")
+    checkValue(quota.Ethereum.status.priceOracleAddress.toLowerCase(), oracle.Ethereum.oracleProxy.toLowerCase(), "quota priceOracleAddress on Ethereum")
+    checkValue(quota.Ethereum.status.depositOracleAddress.toLowerCase(), oracle.Ethereum.oracleProxy.toLowerCase(), "quota depositOracleAddress on Ethereum")
+    checkValue(quota.Ethereum.status.tokenManagerAddress.toLowerCase(), oracle.Ethereum.tokenManagerProxy.toLowerCase(), "quota tokenManagerAddress on Ethereum")
     checkThreeValue(quota.WanChain.status.depositTokenSymbol, quota.Ethereum.status.depositTokenSymbol, "WAN", "quota depositTokenSymbol")
 
-    checkObjectObjectObject(quota.WanChain.quotaTokens, quota.Ethereum.quotaTokens, "quota token", ObjectType.QuotaToken | ObjectType.StoreMan)
+    // checkObjectObjectObject(quota.WanChain.quotaTokens, quota.Ethereum.quotaTokens, "quota token", ObjectType.QuotaToken | ObjectType.StoreMan)
 
 
     writePrint(`cross check`)
     const cross = await getCross();
-    checkValue(cross.WanChain.tokenManager, oracle.WanChain.tokenManagerProxy, "  cross tokenManager check on WanChain")
-    checkValue(cross.WanChain.smgAdminProxy.toLowerCase(), sgaWan.address, "  cross smgAdminProxy check on WanChain")
-    checkValue(cross.WanChain.smgFeeProxy.toLowerCase(), sgaWan.address, "  cross smgFeeProxy check on WanChain")
-    checkValue(cross.WanChain.quota.toLowerCase(), quotaWan.address, "  cross quota check on WanChain")
-    checkValue(cross.Ethereum.tokenManager, oracle.Ethereum.tokenManagerProxy, "  cross tokenManager check on Ethereum")
-    checkValue(cross.Ethereum.smgAdminProxy, oracle.Ethereum.oracleProxy, "  cross smgAdminProxy check on Ethereum")
+    checkValue(cross.WanChain.tokenManager.toLowerCase(), oracle.WanChain.tokenManagerProxy.toLowerCase(), "  cross tokenManager check on WanChain")
+    checkValue(cross.WanChain.smgAdminProxy.toLowerCase(), sgaWan.address.toLowerCase(), "  cross smgAdminProxy check on WanChain")
+    checkValue(cross.WanChain.smgFeeProxy.toLowerCase(), sgaWan.address.toLowerCase(), "  cross smgFeeProxy check on WanChain")
+    checkValue(cross.WanChain.quota.toLowerCase(), quotaWan.address.toLowerCase(), "  cross quota check on WanChain")
+    checkValue(cross.Ethereum.tokenManager.toLowerCase(), oracle.Ethereum.tokenManagerProxy.toLowerCase(), "  cross tokenManager check on Ethereum")
+    checkValue(cross.Ethereum.smgAdminProxy.toLowerCase(), oracle.Ethereum.oracleProxy.toLowerCase(), "  cross smgAdminProxy check on Ethereum")
     checkValue(cross.Ethereum.smgFeeProxy, "0x0000000000000000000000000000000000000000", "  cross smgFeeProxy check on Ethereum")
-    checkValue(cross.Ethereum.quota.toLowerCase(), quotaEth.address, "  cross quota check on Ethereum")
+    checkValue(cross.Ethereum.quota.toLowerCase(), quotaEth.address.toLowerCase(), "  cross quota check on Ethereum")
     writePrint(`-cross sigVerifier on WanChain is ${cross.WanChain.sigVerifier}, on Ethereum is ${cross.Ethereum.sigVerifier}`)
     writePrint(`-fee: wan -> eth on WanChain is ${JSON.stringify(cross.WanChain['fee: wan -> eth'])}, on Ethereum is ${JSON.stringify(cross.Ethereum['fee: wan -> eth'])}`)
     writePrint(`-fee: eth -> wan on WanChain is ${JSON.stringify(cross.WanChain['fee: eth -> wan'])}, on Ethereum is ${JSON.stringify(cross.Ethereum['fee: eth -> wan'])}`)
     writePrint(`-lockedTime on WanChain is ${cross.WanChain['lockedTime']}, on Ethereum is ${cross.Ethereum['lockedTime']}`)
     writePrint(`-smgFeeReceiverTimeout on WanChain is ${cross.WanChain['smgFeeReceiverTimeout']}, on Ethereum is ${cross.Ethereum['smgFeeReceiverTimeout']}`)
 
-    writePrint(`iWan sdk check`)
-    const iWanOracle = await getIWanOracle()
-    checkObject(oracle.WanChain.prices, iWanOracle.Ethereum.prices, "iWan wan chain oracle price")
-    checkObject(oracle.Ethereum.prices, iWanOracle.WanChain.prices, "iWan wan chain oracle price")
-    checkObjectObject(oracle.WanChain.sgs, iWanOracle.Ethereum.sgs, "iWan ethereum oracle store man group config", ObjectType.StoreMan)
-    checkObjectObject(oracle.Ethereum.sgs, iWanOracle.WanChain.sgs, "iWan ethereum oracle store man group config", ObjectType.StoreMan)
+    // writePrint(`iWan sdk check`)
+    // const iWanOracle = await getIWanOracle()
+    // checkObject(oracle.WanChain.prices, iWanOracle.Ethereum.prices, "iWan wan chain oracle price")
+    // checkObject(oracle.Ethereum.prices, iWanOracle.WanChain.prices, "iWan wan chain oracle price")
+    // checkObjectObject(oracle.WanChain.sgs, iWanOracle.Ethereum.sgs, "iWan ethereum oracle store man group config", ObjectType.StoreMan)
+    // checkObjectObject(oracle.Ethereum.sgs, iWanOracle.WanChain.sgs, "iWan ethereum oracle store man group config", ObjectType.StoreMan)
   } catch (error) {
     writePrint(` ❌, exception: ${error}`)
   }
@@ -665,3 +595,8 @@ app.get('/force', async (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 })
+
+
+process.on('unhandledRejection', (err) => {
+  console.log(`deploy unhandledRejection ${err}`);
+});
