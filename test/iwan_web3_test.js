@@ -1,6 +1,6 @@
 const assert = require("assert");
 
-require("dotenv").config({path: `${__dirname}/../.env.dev`});
+require("dotenv").config({path: `${__dirname}/../.env.dev.testnet`});
 
 const web3Wan = require(`../src/chain/web3_wan`).core;
 const iWanWan = require(`../src/chain/iwan_wan`).core;

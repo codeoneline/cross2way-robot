@@ -3,7 +3,7 @@ const { signTx } = require('../lib/ethereum-helper');
 
 class EthChain extends BaseChain {
   constructor() {
-    super(process.env.RPC_URL_ETH, "ETH");
+    super(process.env.RPC_URL_ETH, process.env.CHAINTYPE_ETH);
   }
 }
 

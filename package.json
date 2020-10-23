@@ -4,17 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "robot_testnet": "node -r dotenv/config src/robot.js dotenv_config_path=.env.dev",
+    "robot_testnet": "node -r dotenv/config src/robot.js dotenv_config_path=.env.dev.testnet",
     "robot_production": "node -r dotenv/config src/robot.js dotenv_config_path=.env.production",
-
-    "server_testnet": "node -r dotenv/config src/server.js dotenv_config_path=.env.dev",
+    "server_testnet": "node -r dotenv/config src/server.js dotenv_config_path=.env.dev.testnet",
     "server_production": "node -r dotenv/config src/server.js dotenv_config_path=.env.production",
-
-    "check_testnet": "node -r dotenv/config src/check.js dotenv_config_path=.env.dev",
+    "check_testnet": "node -r dotenv/config src/check.js dotenv_config_path=.env.dev.testnet",
     "check_production": "node -r dotenv/config src/check.js dotenv_config_path=.env.production",
-
-    "tokenPair_testnet": "node -r dotenv/config src/token_pair.js dotenv_config_path=.env.dev",
-    "tokenPair_production": "node -r dotenv/config src/token_pair.js dotenv_config_path=.env.production"
+    "tokenPair_testnet": "node -r dotenv/config src/token_pair.js dotenv_config_path=.env.dev.testnet",
+    "tokenPair_production": "node -r dotenv/config src/token_pair.js dotenv_config_path=.env.production",
+    "deploy_check": "node -r dotenv/config src/deploy_check.js dotenv_config_path=.env.deploy.testnet"
   },
   "repository": {
     "type": "git",
@@ -33,6 +31,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "better-sqlite3": "^7.1.0",
+    "better-sqlite3-helper": "^3.1.1",
     "bignumber.js": "^9.0.0",
     "crypto": "^1.0.1",
     "dotenv": "^8.2.0",

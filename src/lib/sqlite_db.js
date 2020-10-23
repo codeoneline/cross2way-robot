@@ -29,8 +29,8 @@ class DB {
 
     let db = null;
     if (!fs.existsSync(filePath)) {
-      // db = new Sqlite3(filePath, {verbose: console.log});
-      db = new Sqlite3(filePath);
+      db = new Sqlite3(filePath, {verbose: console.log});
+      // db = new Sqlite3(filePath);
       db.exec(`
         create table scan (
           chainType char(20) PRIMARY KEY NOT NULL,
@@ -53,8 +53,7 @@ class DB {
           updateTime integer
         );
       `);
-      db.prepare(`insert into scan values (?, ?)`).run(process.env.IWAN_CHAINTYPE_WAN, parseInt(process.env.SCAN_WAN_FROM) - 1);
-      db.prepare(`insert into scan values (?, ?)`).run(process.env.CHAINTYPE_WAN_MY, parseInt(process.env.SCAN_WAN_FROM_MY) - 1);
+      db.prepare(`insert into scan values (?, ?)`).run(process.env.CHAINTYPE_WAN, parseInt(process.env.SCAN_WAN_FROM) - 1);
     } else {
       db = new Sqlite3(filePath);
     }

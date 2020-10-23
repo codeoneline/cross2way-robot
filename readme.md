@@ -10,11 +10,11 @@ node v12.18.3
 npm i
 ```
 
-## Add or update Token
+## Add or Update TokenPair
 
 Change config in config/*.json
 
-for testnet
+For testnet
 
 ```
 npm run tokenPair_testnet
@@ -28,13 +28,13 @@ npm run tokenPair_production
 
 ## Start robot
 
-for testnet
+For testnet
 
 ```
 npm run robot_testnet
 ```
 
-for mainnet
+For mainnet
 
 ```
 npm run robot_production

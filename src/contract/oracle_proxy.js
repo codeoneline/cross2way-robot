@@ -3,8 +3,8 @@ const abiOracle = require('../../abi/oracle-proxy.json');
 const { web3 } = require('../lib/utils');
 
 class Oracle extends Contract {
-  constructor(chain, address, ownerPV, ownerAddress) {
-    super(chain, abiOracle, address, ownerPV, ownerAddress);
+  constructor(chain, address, ownerPV, ownerAddress, abi) {
+    super(chain, abi ? abi : abiOracle, address, ownerPV, ownerAddress);
   }
 }
 

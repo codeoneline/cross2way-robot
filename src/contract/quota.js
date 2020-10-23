@@ -1,9 +1,9 @@
 const Contract = require('./contract');
 const abi = require('../../abi/abi.QuotaDelegate.json');
 
-class Quota extends Contract {
-  constructor(chain, address, ownerPV, ownerAddress) {
-    super(chain, abi, address, ownerPV, ownerAddress);
+class QuotaDelegate extends Contract {
+  constructor(chain, address, ownerPV, ownerAddress, _abi) {
+    super(chain, _abi ? _abi : abi, address, ownerPV, ownerAddress);
   }
 
   // returns(address tokenManager, address smgAdminProxy, address smgFeeProxy, address quota, address sigVerifier)
@@ -75,4 +75,4 @@ class Quota extends Contract {
   }
 }
 
-module.exports = Quota
+module.exports = QuotaDelegate

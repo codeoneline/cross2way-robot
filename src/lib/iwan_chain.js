@@ -18,11 +18,12 @@ class IWan {
     return this.sApiClient;
   }
 
-  constructor(chainType, chainType2) {
+  constructor(chainType) {
     this.apiClient = IWan.getApiClient();
     this.web3 = web3;
     this.chainType = chainType;
-    this.chainId = chainIds[chainType2];
+    this.chainId = chainIds[chainType];
+    this.rpcType = process.env.RPC_IWAN;
   }
 
   async sendRawTxByWeb3(singedData) {

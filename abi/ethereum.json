@@ -1,0 +1,14 @@
+{
+  "TokenManagerProxy": {
+    "address": "0xC3Bc59237c61Da0101fceC565232fE347586FA84",
+    "abi": "abi.TokenManagerDelegate.json"
+  },
+  "TokenManagerDelegate": {
+    "address": "0x16825B0A385e2fD5917550a47B15F4c70Ebc9543",
+    "abi": "abi.TokenManagerDelegate.json"
+  },
+  "SignatureVerifier": {
+    "address": "0xD9f3190C4399e044A8E0d830a464eBBDE49f4884",
+    "abi": "abi.SignatureVerifier.json"
+  }
+}

@@ -3,9 +3,14 @@ const { promisify, chainIds } = require("./utils");
 
 class Web3Chain {
   constructor(rpc_url, chainType) {
-    this.web3 = new Web3(new Web3.providers.HttpProvider(rpc_url));
+    if (rpc_url.indexOf('http') == 0) {
+      this.web3 = new Web3(new Web3.providers.HttpProvider(rpc_url));
+    } else if (rpc_url.indexOf('wss') == 0) {
+      this.web3 = new Web3(new Web3.providers.WebsocketProvider(rpc_url));
+    }
     this.chainType = chainType;
     this.chainId = chainIds[chainType];
+    this.rpcType = process.env.RPC_WEB3;
   }
 
   sendRawTxByWeb3(singedData) {
@@ -39,6 +44,7 @@ class Web3Chain {
   async getScVar(name, contract, abi) {
     return await contract.methods[name]().call();
   }
+
   async getScMap(name, key, contract, abi) {
     return await contract.methods[name](key).call();
   }

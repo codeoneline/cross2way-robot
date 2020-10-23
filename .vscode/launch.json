@@ -71,7 +71,7 @@
       ],
       "cwd": "${workspaceRoot}",
       "program": "${workspaceFolder}/src/server.js",
-      "envFile": "${workspaceFolder}/.env.dev"
+      "envFile": "${workspaceFolder}/.env.dev.testnet"
     },
     {
       "type": "node",
@@ -82,7 +82,18 @@
       ],
       "cwd": "${workspaceRoot}",
       "program": "${workspaceFolder}/src/check.js",
-      "envFile": "${workspaceFolder}/.env.dev"
+      "envFile": "${workspaceFolder}/.env.dev.testnet"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "deploy check dev testnet",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}/src/deploy_check.js",
+      "envFile": "${workspaceFolder}/.env.deploy.testnet"
     },
     {
       "type": "node",
@@ -126,7 +137,7 @@
       ],
       "cwd": "${workspaceRoot}",
       "program": "${workspaceFolder}/src/token_pair.js",
-      "envFile": "${workspaceFolder}/.env.dev"
+      "envFile": "${workspaceFolder}/.env.dev.testnet"
     },
     {
       "type": "node",
@@ -137,7 +148,7 @@
       ],
       "cwd": "${workspaceRoot}",
       "program": "${workspaceFolder}/src/admin.js",
-      "envFile": "${workspaceFolder}/.env.dev"
+      "envFile": "${workspaceFolder}/.env.dev.testnet"
     },
     {
       "type": "node",
@@ -148,7 +159,7 @@
       ],
       "cwd": "${workspaceRoot}",
       "program": "${workspaceFolder}/src/robot.js",
-      "envFile": "${workspaceFolder}/.env.dev"
+      "envFile": "${workspaceFolder}/.env.dev.testnet"
     },
     {
       "type": "node",

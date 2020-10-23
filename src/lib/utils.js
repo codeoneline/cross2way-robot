@@ -1,5 +1,6 @@
 const Web3 = require('web3');
 const web3 = new Web3();
+const wanUtil = require('wanchainjs-util');
 
 const chainIds = {
     ETH: 0x8000003c,
@@ -7,6 +8,10 @@ const chainIds = {
     BTC: 0x80000000,
     ETC: 0x8000003d,
     EOS: 0x800000c2
+}
+
+function privateToAddress(sk) {
+    return '0x' + wanUtil.privateToAddress(Buffer.from(sk, 'hex')).toString('hex');
 }
 
 function sleep(ms) {
@@ -71,5 +76,6 @@ module.exports = {
   promiseEvent,
   fractionToDecimalString,
   web3,
-  chainIds
+  chainIds,
+  privateToAddress
 }

@@ -1,0 +1,26 @@
+{
+  "TokenManagerProxy": {
+    "address": "0x9f35da7049FD6CF80c5fe77e2E94bFD969FaE16A",
+    "abi": "abi.TokenManagerDelegate.json"
+  },
+  "TokenManagerDelegate": {
+    "address": "0x220BE1d091cCC609f43EE11F62F7585108be100A",
+    "abi": "abi.TokenManagerDelegate.json"
+  },
+  "OracleProxy": {
+    "address": "0xF728FB2e26Be1f12496d9F68BDDFe1Eac0eBFD26",
+    "abi": "abi.OracleDelegate.json"
+  },
+  "OracleDelegate": {
+    "address": "0x753A5e8546bbE2fcA75342782c31162C1b12e434",
+    "abi": "abi.OracleDelegate.json"
+  },
+  "CrossProxy": {
+    "address": "0x7B985C9379A13D2AdF685AEe9cb6d2E3F1809ffB",
+    "abi": "abi.CrossDelegate.json"
+  },
+  "QuotaProxy": {
+    "address": "0xCFA99170C6e897BF78eE8809f0Bde3cd9D9c6652",
+    "abi": "abi.QuotaDelegate.json"
+  }
+}

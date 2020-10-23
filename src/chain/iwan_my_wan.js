@@ -3,7 +3,7 @@ const IWan = require('../lib/iwan_chain');
 
 class IWanWan extends IWan {
   constructor() {
-    super(process.env.IWAN_CHAINTYPE_WAN, "WAN");
+    super(process.env.CHAINTYPE_WAN);
   }
 }
 

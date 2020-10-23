@@ -78,12 +78,25 @@ class Contract {
     return  { status: receipt.status, logs: receipt.logs};
   }
 
+  // normal quick test function
+  async sendTx(opName, ...params) {
+    const data = this.contract.methods[opName](...params).encodeABI();
+    this.doOperator(this.upgradeTo.name, data, null, '0x00', this.retryTimes, this.pv_key, this.pv_address);
+  }
+
+  // normal quick test function
   async getFun(funcName, ...rest) {
     return await this.core.getScFun(funcName, rest, this.contract, this.abi);
   }
 
+  // normal quick test function
   async getVar(varName) {
     return await this.core.getScVar(varName, this.contract, this.abi);
+  }
+
+  // normal quick test function
+  async getMap(varName, key) {
+    return await this.core.getScMap(varName, key, this.contract, this.abi);
   }
 }
 

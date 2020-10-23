@@ -18,7 +18,7 @@ const sgaWan = new StoremanGroupAdmin(chainWan, process.env.SGA_ADDR, process.en
 const scanInst = createScanEvent(
   sgaWan,
   process.env.REGISTER_START_EVENT,
-  process.env.IWAN_CHAINTYPE_WAN,
+  process.env.CHAINTYPE_WAN,
   parseInt(process.env.SCAN_STEP),
   parseInt(process.env.SCAN_UNCERTAIN_BLOCK),
   parseInt(process.env.SCAN_DELAY),

@@ -2,8 +2,8 @@ const Contract = require('./contract');
 const abiMapToken = require('../../abi/abi.MappingToken.json');
 
 class MapToken extends Contract {
-  constructor(chain, address, ownerPV, ownerAddress) {
-    super(chain, abiMapToken, address, ownerPV, ownerAddress);
+  constructor(chain, address, ownerPV, ownerAddress, abi) {
+    super(chain, abi ? abi : abiMapToken, address, ownerPV, ownerAddress);
   }
 
   async mint(addr, amount) {

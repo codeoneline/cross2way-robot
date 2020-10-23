@@ -1,9 +1,9 @@
 const Contract = require('./contract');
 const abi = require('../../abi/abi.CrossDelegate.json');
 
-class Cross extends Contract {
-  constructor(chain, address, ownerPV, ownerAddress) {
-    super(chain, abi, address, ownerPV, ownerAddress);
+class CrossDelegate extends Contract {
+  constructor(chain, address, ownerPV, ownerAddress, _abi) {
+    super(chain, _abi ? _abi : abi, address, ownerPV, ownerAddress);
   }
 
   // returns(address tokenManager, address smgAdminProxy, address smgFeeProxy, address quota, address sigVerifier)
@@ -27,4 +27,4 @@ class Cross extends Contract {
   }
 }
 
-module.exports = Cross
+module.exports = CrossDelegate

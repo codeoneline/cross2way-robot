@@ -3,7 +3,7 @@ const { signTx } = require('../lib/wanchain-helper');
 
 class WanChain extends Web3Chain {
   constructor(url) {
-    super(url, "WAN");
+    super(url, process.env.CHAINTYPE_WAN);
     this.web3.pos = new (require('../lib/wanchain-pos'))(this.web3);
   }
   // pos

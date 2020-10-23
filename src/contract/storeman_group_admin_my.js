@@ -3,8 +3,8 @@ const abiStoremanGroupAdmin = require('../../abi/smg_my.json');
 const { web3 } = require('../lib/utils');
 
 class StoremanGroupAdmin extends Contract {
-  constructor(chain, address, ownerPV, ownerAddress) {
-    super(chain, abiStoremanGroupAdmin, address, ownerPV, ownerAddress);
+  constructor(chain, address, ownerPV, ownerAddress, abi) {
+    super(chain, abi ? abi : abiStoremanGroupAdmin, address, ownerPV, ownerAddress);
   }
 
   async setStoremanGroupConfig(id, status, deposit, chain, curve, gpk1, gpk2, startTime, endTime) {

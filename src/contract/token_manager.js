@@ -5,8 +5,8 @@ const { web3 } = require('../../src/lib/utils');
 const hexToBytes = web3.utils.hexToBytes;
 
 class TokenManager extends Contract {
-  constructor(chain, address, ownerPV, ownerAddress) {
-    super(chain, abiTokenManager, address, ownerPV, ownerAddress);
+  constructor(chain, address, ownerPV, ownerAddress, abi) {
+    super(chain, abi ? abi : abiTokenManager, address, ownerPV, ownerAddress);
   }
 
   async addToken(name, symbol, decimals) {

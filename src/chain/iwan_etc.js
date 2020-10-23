@@ -3,7 +3,7 @@ const { signTx } = require('../lib/etc-helper');
 
 class IWanEtc extends IWan {
   constructor() {
-    super(process.env.IWAN_CHAINTYPE_ETC, "ETC");
+    super(process.env.CHAINTYPE_ETC);
   }
 }
 
