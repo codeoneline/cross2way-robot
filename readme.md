@@ -10,6 +10,22 @@ node v12.18.3
 npm i
 ```
 
+## Check Deployed Contract
+
+set your deployed fold and privateKey, then
+
+For testnet
+
+```
+npm run deploy_check_testnet
+```
+
+for mainnet
+
+```
+npm run deploy_check_production
+```
+
 ## Add or Update TokenPair
 
 Change config in config/*.json

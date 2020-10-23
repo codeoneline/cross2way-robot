@@ -12,7 +12,8 @@
     "check_production": "node -r dotenv/config src/check.js dotenv_config_path=.env.production",
     "tokenPair_testnet": "node -r dotenv/config src/token_pair.js dotenv_config_path=.env.dev",
     "tokenPair_production": "node -r dotenv/config src/token_pair.js dotenv_config_path=.env.production",
-    "deploy_check": "node -r dotenv/config src/deploy_check.js dotenv_config_path=.env.deploy.testnet"
+    "deploy_check_testnet": "node -r dotenv/config src/deploy_check.js dotenv_config_path=.env.dev",
+    "deploy_check_production": "node -r dotenv/config src/deploy_check.js dotenv_config_path=.env.production"
   },
   "repository": {
     "type": "git",
