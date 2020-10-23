@@ -96,7 +96,7 @@ async function setStoremanGroupStatus(oracle, smgID, status) {
   await oracle.setStoremanGroupStatus(smgID, statusHex);
 }
 
-async function syncConfigToOtherChain(sgaContract, oracles) {
+async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
   log.info(`syncConfigToOtherChain begin`);
   const sgs = db.getAllSga();
   const updateTime = new Date().getTime();
@@ -143,7 +143,9 @@ async function syncConfigToOtherChain(sgaContract, oracles) {
             config.endTime,
           );
         } else if (config.deposit !== config_eth.deposit) {
-          await updateDeposit(oracle, groupId, config.deposit);
+          if (!isPart) {
+            await updateDeposit(oracle, groupId, config.deposit);
+          }
         } else if (config.status !== config_eth.status) {
           await setStoremanGroupStatus(oracle, groupId, config.status);
         }

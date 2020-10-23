@@ -59,6 +59,15 @@ const updateStoreManToChains = async function() {
   },[])
 }
 
+const updateStoreManToChainsPart = async function() {
+  console.log("updateStoreManToChainsPart")
+  await doSchedule(async () => {
+    if (!scanInst.bScanning) {
+      await syncConfigToOtherChain(sgaWan, [oracleEth, true]);
+    }
+  },[])
+}
+
 const robotSchedules = function() {
   // update price 1 / 12 hour
   schedule.scheduleJob('0 0 */12 * * *', updatePriceToChains);
@@ -68,6 +77,8 @@ const robotSchedules = function() {
 
   // sync sga config from wan to other chain, sga database, 1 / 1day
   schedule.scheduleJob('30 2 1 * * *', updateStoreManToChains);
+
+  schedule.scheduleJob('0 */8 * * * *', updateStoreManToChains2);
 };
 
 // helper functions
