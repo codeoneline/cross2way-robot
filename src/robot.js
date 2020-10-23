@@ -78,7 +78,7 @@ const robotSchedules = function() {
   // sync sga config from wan to other chain, sga database, 1 / 1day
   schedule.scheduleJob('30 2 1 * * *', updateStoreManToChains);
 
-  schedule.scheduleJob('0 */8 * * * *', updateStoreManToChains2);
+  schedule.scheduleJob('0 */8 * * * *', updateStoreManToChainsPart);
 };
 
 // helper functions
