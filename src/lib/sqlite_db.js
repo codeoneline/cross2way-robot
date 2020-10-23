@@ -54,7 +54,6 @@ class DB {
         );
       `);
       db.prepare(`insert into scan values (?, ?)`).run(process.env.IWAN_CHAINTYPE_WAN, parseInt(process.env.SCAN_WAN_FROM) - 1);
-      db.prepare(`insert into scan values (?, ?)`).run(process.env.CHAINTYPE_WAN_MY, parseInt(process.env.SCAN_WAN_FROM_MY) - 1);
     } else {
       db = new Sqlite3(filePath);
     }

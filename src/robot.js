@@ -48,9 +48,13 @@ const scanNewStoreMan = () => {
 
 const updateStoreManToChains = async function() {
   console.log("updateStoreManToChains")
-  doSchedule(async () => {
+  await doSchedule(async () => {
     if (!scanInst.bScanning) {
       await syncConfigToOtherChain(sgaWan, [oracleEth]);
+    } else {
+      setTimeout(async() => {
+        await updateStoreManToChains()
+      }, 10000)
     }
   },[])
 }

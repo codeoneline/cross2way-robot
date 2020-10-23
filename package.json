@@ -6,13 +6,10 @@
   "scripts": {
     "robot_testnet": "node -r dotenv/config src/robot.js dotenv_config_path=.env.dev",
     "robot_production": "node -r dotenv/config src/robot.js dotenv_config_path=.env.production",
-
     "server_testnet": "node -r dotenv/config src/server.js dotenv_config_path=.env.dev",
     "server_production": "node -r dotenv/config src/server.js dotenv_config_path=.env.production",
-
     "check_testnet": "node -r dotenv/config src/check.js dotenv_config_path=.env.dev",
     "check_production": "node -r dotenv/config src/check.js dotenv_config_path=.env.production",
-
     "tokenPair_testnet": "node -r dotenv/config src/token_pair.js dotenv_config_path=.env.dev",
     "tokenPair_production": "node -r dotenv/config src/token_pair.js dotenv_config_path=.env.production"
   },
