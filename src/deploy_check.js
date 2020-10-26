@@ -1,7 +1,3 @@
-const express = require('express')
-const app = express()
-const port = parseInt(process.env.CHECK_PORT)
-
 const axios = require('axios')
 const { getTestMessageUrl } = require('nodemailer');
 
@@ -561,13 +557,6 @@ const check = async () => {
   g_msg = g_msg + '</body></html>'
 };
 
-const forceCheck = async () => {
-  if (!bChecking) {
-    CheckingAt = 0;
-  }
-  await check();
-}
-
 setInterval(async () => {
   await check();
 }, checkInterval)
@@ -582,20 +571,6 @@ setTimeout(async () => {
   // await dingSend("Hello DingTalk")
   await check();
 }, 0);
-
-app.get('/', async (req, res) => {
-  await check();
-  res.send(g_msg)
-})
-app.get('/force', async (req, res) => {
-  await forceCheck();
-  res.send(g_msg)
-})
-
-app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
-})
-
 
 process.on('unhandledRejection', (err) => {
   console.log(`deploy unhandledRejection ${err}`);
