@@ -6,10 +6,10 @@ const Token = require('./contract/map_token');
 const { addToken, addTokenPair, updateTokenPair } = require('./admin_core');
 const { loadContract } = require('./lib/abi_address')
 
-// const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
-// const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
-const chainWan = require(`./chain/${process.env.IWAN_WAN_CHAIN_ENGINE}`);
-const chainEth = require(`./chain/${process.env.IWAN_ETH_CHAIN_ENGINE}`);
+const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
+const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
+// const chainWan = require(`./chain/${process.env.IWAN_WAN_CHAIN_ENGINE}`);
+// const chainEth = require(`./chain/${process.env.IWAN_ETH_CHAIN_ENGINE}`);
 
 const tmWan = loadContract(chainWan, 'TokenManagerDelegate')
 const tmEth = loadContract(chainEth, 'TokenManagerDelegate')

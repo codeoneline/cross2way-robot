@@ -7,8 +7,8 @@ const { loadContract, loadContractAt } = require('./lib/abi_address');
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
 
-const iWanWan = require(`./chain/${process.env.IWAN_WAN_CHAIN_ENGINE}`);
-const iWanEth = require(`./chain/${process.env.IWAN_ETH_CHAIN_ENGINE}`);
+// const iWanWan = require(`./chain/${process.env.IWAN_WAN_CHAIN_ENGINE}`);
+// const iWanEth = require(`./chain/${process.env.IWAN_ETH_CHAIN_ENGINE}`);
 
 const oracleWanProxy = loadContract(chainWan, 'OracleProxy')
 const oracleEthProxy = loadContract(chainEth, 'OracleProxy')
@@ -18,14 +18,14 @@ const tmEthProxy = loadContract(chainEth, 'TokenManagerProxy')
 
 const oracleWan = loadContract(chainWan, 'OracleDelegate')
 const oracleEth = loadContract(chainEth, 'OracleDelegate')
-const iWanOracleWan = loadContract(iWanWan, 'OracleDelegate')
-const iWanOracleEth = loadContract(iWanEth, 'OracleDelegate')
+// const iWanOracleWan = loadContract(iWanWan, 'OracleDelegate')
+// const iWanOracleEth = loadContract(iWanEth, 'OracleDelegate')
 
 const tmWan = loadContract(chainWan, 'TokenManagerDelegate')
 const tmEth = loadContract(chainEth, 'TokenManagerDelegate')
 
 const sgaWan = loadContract(chainWan, 'StoremanGroupDelegate')
-const iWanSgaWan = loadContract(iWanWan, 'StoremanGroupDelegate')
+// const iWanSgaWan = loadContract(iWanWan, 'StoremanGroupDelegate')
 
 const quotaWan = loadContract(chainWan, 'QuotaDelegate')
 const quotaEth = loadContract(chainEth, 'QuotaDelegate')
