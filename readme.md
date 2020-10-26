@@ -8,6 +8,8 @@ node v12.18.3
 
 .env.production is our mainnet environment file
 
+rm -rf db
+
 ## Install
 
 
