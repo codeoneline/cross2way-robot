@@ -4,7 +4,11 @@
 
 node v12.18.3
 
+.env.dev is owner testnet environment file
+.env.production is our mainnet environment file
+
 ## Install
+
 
 ```
 npm i
@@ -22,7 +26,7 @@ OWNER_SK_WANCHAIN=YOUR_OWNER_PRIVATE_KEY
 OWNER_SK_ETHEREUM=YOUR_OWNER_PRIVATE_KEY
 ```
 
-then
+Then
 
 For testnet
 
