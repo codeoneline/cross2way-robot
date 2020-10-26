@@ -2,6 +2,20 @@ const schedule = require('node-schedule');
 const log = require('./lib/log');
 const getPrices_cmc = require("./lib/cmc");
 const getPrices_crypto = require("./lib/crypto_compare");
+const readlineSync = require('readline-sync');
+const keythereum = require("keythereum");
+
+function readSyncByfs(tips) {
+  tips = tips || '> ';
+  process.stdout.write(tips);
+  process.stdin.pause();
+
+  const buf = Buffer.allocUnsafe(10000);
+  fs.readSync(process.stdin.fd, buf, 0, 10000, 0);
+  process.stdin.end();
+
+  return buf.toString('utf8', 0, response).trim();
+}
 
 const { createScanEvent, doSchedule, updatePrice, syncPriceToOtherChain, syncConfigToOtherChain } = require('./robot_core');
 
@@ -14,6 +28,33 @@ const oracleWan = loadContract(chainWan, 'OracleDelegate')
 const oracleEth = loadContract(chainEth, 'OracleDelegate')
 
 const sgaWan = loadContract(chainWan, 'StoremanGroupDelegate')
+
+
+function getSk(address, tip) {
+  let sk = null
+  while (!sk) {
+    const password = readlineSync.question(tip)
+    try {
+      const keyObject = keythereum.importFromFile(address.slice(2), process.env.KEYSTORE_PARENT_FOLD);
+      sk = keythereum.recover(password, keyObject);
+      console.log(sk.toString('hex'))
+    } catch(e) {
+      console.log('wrong password')
+    }
+  }
+  return sk.toString('hex')
+}
+
+if (process.env.USE_KEYSTORE === 'true') {
+  let address = process.env.ADMIN_ADDRESS_WANCHAIN.toLowerCase()
+  let sk = getSk(address, `请输入wanchain上oracle合约的admin(${address})的  私钥：`)
+  oracleWan.setAdminSk(sk)
+  
+  address = process.env.ADMIN_ADDRESS_ETHEREUM.toLowerCase()
+  sk = null
+  sk = getSk(address, `请输入ethereum上oracle合约的admin(${address})的  私钥：`)
+  oracleEth.setAdminSk(sk)
+}
 
 const scanInst = createScanEvent(
   sgaWan,

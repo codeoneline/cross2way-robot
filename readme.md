@@ -66,12 +66,19 @@ npm run tokenPair_production
 
 ## Start robot
 
-Change set Admin private key for oracle (you can also use your owner private key)
+Change Admin keystore and address 
 
 ```
-OWNER_SK_WANCHAIN=YOUR_ADMIN_PRIVATE_KEY or YOUR_OWNER_PRIVATE_KEY
-OWNER_SK_ETHEREUM=YOUR_ADMIN_PRIVATE_KEY or YOUR_OWNER_PRIVATE_KEY
+USE_KEYSTORE=true
+KEYSTORE_PARENT_FOLD=./
+ADMIN_ADDRESS_WANCHAIN=YOUR_ADMIN_PRIVATE_KEY or YOUR_OWNER_PRIVATE_KEY
+ADMIN_ADDRESS_WANCHAIN=YOUR_ADMIN_PRIVATE_KEY or YOUR_OWNER_PRIVATE_KEY
 ```
+Or you can use your owner private key
+```
+USE_KEYSTORE=false
+```
+
 
 For testnet
 
