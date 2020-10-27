@@ -1,0 +1,118 @@
+{
+     "TokenManagerProxy": {
+          "address": "0x9Fdf94Dff979dbECc2C1a16904bDFb41D305053A",
+          "abi": "abi.TokenManagerDelegate.json"
+     },
+     "TokenManagerDelegate": {
+          "address": "0xB6e73ebc54AE3e8A373E1B378a38F7c5B9f53e2B",
+          "abi": "abi.TokenManagerDelegate.json"
+     },
+     "QuotaProxy": {
+          "address": "0xD076B7fe116da6CcBDA8494771AFeADA7E56e4EE",
+          "abi": "abi.QuotaDelegate.json"
+     },
+     "QuotaDelegate": {
+          "address": "0x3feD7D5371841307369F7adbCb2aBF5617cd8611",
+          "abi": "abi.QuotaDelegate.json"
+     },
+     "OracleProxy": {
+          "address": "0xa2b6CFAE041371A30bED5f2092393f03D6dCDEEc",
+          "abi": "abi.OracleDelegate.json"
+     },
+     "OracleDelegate": {
+          "address": "0xdF73A33731a751007F9e12093cDA541a487a9097",
+          "abi": "abi.OracleDelegate.json"
+     },
+     "HTLCTxLib": {
+          "address": "0x394884E4BD18b9d5D66Ea1446962cce99096B009"
+     },
+     "HTLCDebtLib": {
+          "address": "0xa257B5378d0665Dc77959086f04A27A16795Bc40"
+     },
+     "RapidityLib": {
+          "address": "0x4edbF29ABAD056472F9D238bb094eeeF57eF31f4"
+     },
+     "CrossProxy": {
+          "address": "0xe85b0D89CbC670733D6a40A9450D8788bE13da47",
+          "abi": "abi.CrossDelegate.json"
+     },
+     "CrossDelegate": {
+          "address": "0xd34C736f92c06226231832aCc204e9D685DEc419",
+          "abi": "abi.CrossDelegate.json"
+     },
+     "SignatureVerifier": {
+          "address": "0x58C0116caC5e6448A8E04De50f75CB8Ea9664055",
+          "abi": "abi.SignatureVerifier.json"
+     },
+     "Bn128SchnorrVerifier": {
+          "address": "0x40befdA861987B297b5f6F3dC5e45fCf766bAB08"
+     },
+     "Secp256k1SchnorrVerifier": {
+          "address": "0x39C6284B97Be10a36215604FA046E2c7340e11de"
+     },
+     "PosLib": {
+          "address": "0x0B275849F4CB2ca695D5BbF7294e7B424f8139E8"
+     },
+     "CommonTool": {
+          "address": "0x6bDA1AFf55C727AE2E9C01C461697296eEec3Cda"
+     },
+     "StoremanUtil": {
+          "address": "0x55eD946C600C1201Bf8062D5A7456Eff899d51fd"
+     },
+     "StoremanLib": {
+          "address": "0xf77460be6762C75f069FFa51f15795db6867Dcab"
+     },
+     "IncentiveLib": {
+          "address": "0x085E0C72cfaddF10e701d91Ae4f2E623fC9F81e7"
+     },
+     "Deposit": {
+          "address": "0x96e43887c81Fb0d8434D016e3521FF62b47a4d0D"
+     },
+     "StoremanGroupProxy": {
+          "address": "0x32b433E68FAee71f3b2ADc23a3DA952489C06788",
+          "abi": "abi.StoremanGroupDelegate.json"
+     },
+     "StoremanGroupDelegate": {
+          "address": "0xEd99D2358500A9f307E48d021b9bb35eb0D8049a",
+          "abi": "abi.StoremanGroupDelegate.json"
+     },
+     "ListGroup": {
+          "address": "0x74F6cE5F982d467A0c652ab26936086E600574F7"
+     },
+     "MetricLib": {
+          "address": "0xa05a7D828C51D36A29f15ee8bBe6b1e9cA8bF075"
+     },
+     "MetricProxy": {
+          "address": "0xc4c8F176541a713b7712691F5AC5232b63B7Cd3D",
+          "abi": "abi.MetricDelegate.json"
+     },
+     "MetricDelegate": {
+          "address": "0xc4d67C5466CE72421F4E7BBC2C8a549889508fcd",
+          "abi": "abi.MetricDelegate.json"
+     },
+     "GpkLib": {
+          "address": "0xCaB9331db20EE55C41d3d6966532abac6011c67F"
+     },
+     "GpkProxy": {
+          "address": "0xB913F3abB6E90f43C880c42a63E77125A7CA65CF",
+          "abi": "abi.GpkDelegate.json"
+     },
+     "GpkDelegate": {
+          "address": "0xFD5c6D5Df0b635eac7Bac300E5F4968d183f17Ba",
+          "abi": "abi.GpkDelegate.json"
+     },
+     "ConfigProxy": {
+          "address": "0xf160Eb8a5C99F538071C1750bd6a59133BFb7a31",
+          "abi": "abi.ConfigDelegate.json"
+     },
+     "ConfigDelegate": {
+          "address": "0x2B6C3dc2e4FA43A328CC4BFFf3d63E5E130DD0d4",
+          "abi": "abi.ConfigDelegate.json"
+     },
+     "Secp256k1Curve": {
+          "address": "0x724aF3c4099d865F6c6dd9bBB6F3E7d0b50147D5"
+     },
+     "Bn256Curve": {
+          "address": "0x69AA8dd4660588440f5D364915deE5c68DE3B9b6"
+     }
+}

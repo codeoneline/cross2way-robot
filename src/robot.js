@@ -45,16 +45,6 @@ function getSk(address, tip) {
   return sk.toString('hex')
 }
 
-if (process.env.USE_KEYSTORE === 'true') {
-  let address = process.env.ADMIN_ADDRESS_WANCHAIN.toLowerCase()
-  let sk = getSk(address, `请输入wanchain上oracle合约的admin(${address})的  私钥：`)
-  oracleWan.setAdminSk(sk)
-  
-  address = process.env.ADMIN_ADDRESS_ETHEREUM.toLowerCase()
-  sk = null
-  sk = getSk(address, `请输入ethereum上oracle合约的admin(${address})的  私钥：`)
-  oracleEth.setAdminSk(sk)
-}
 
 const scanInst = createScanEvent(
   sgaWan,
@@ -123,14 +113,30 @@ const robotSchedules = function() {
 };
 
 // helper functions
+setTimeout(async () => {
+  // set admin
+  const wanAdminAddress = await oracleWan.admin()
+  const ethAdminAddress = await oracleEth.admin()
 
-setTimeout(updatePriceToChains, 0);
+  if (process.env.USE_KEYSTORE === 'true') {
+    let address = wanAdminAddress.toLowerCase() 
+    let sk = getSk(address, `请输入wanchain上oracle合约的admin(${address})的  私钥：`)
+    oracleWan.setAdminSk(sk)
 
-setTimeout(scanNewStoreMan, 0);
+    address = ethAdminAddress.toLowerCase()
+    sk = null
+    sk = getSk(address, `请输入ethereum上oracle合约的admin(${address})的  私钥：`)
+    oracleEth.setAdminSk(sk)
+  }
 
-setTimeout(updateStoreManToChains, 0);
+  setTimeout(updatePriceToChains, 0);
 
-robotSchedules();
+  setTimeout(scanNewStoreMan, 0);
+
+  setTimeout(updateStoreManToChains, 0);
+
+  robotSchedules();
+}, 0)
 
 
 process.on('unhandledRejection', (err) => {
