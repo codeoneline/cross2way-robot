@@ -43,6 +43,28 @@ const tmEth = loadContract(chainEth, 'TokenManagerDelegate')
 
 const sgaWan = loadContract(chainWan, 'StoremanGroupDelegate')
 
+const schedule = require('node-schedule');
+const { createScanEvent} = require('./robot_core');
+const scanInst = createScanEvent(
+  sgaWan,
+  process.env.REGISTER_START_EVENT,
+  process.env.CHAINTYPE_WAN,
+  parseInt(process.env.SCAN_STEP),
+  parseInt(process.env.SCAN_UNCERTAIN_BLOCK),
+  parseInt(process.env.SCAN_DELAY),
+);
+
+const scanNewStoreMan = () => {
+  scanInst.scanEvent();
+}
+
+const robotSchedules = function() {
+  // sync sga to sga database, 1 / 5min
+  schedule.scheduleJob('0 */5 * * * *', scanNewStoreMan);
+};
+scanNewStoreMan()
+robotSchedules()
+
 function removeIndexField(obj) {
   const ks = Object.keys(obj)
   for (let j = 0; j < ks.length/2; j++) {

@@ -18,6 +18,17 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "server mainnet",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}/src/server.js",
+      "envFile": "${workspaceFolder}/.env.production"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "check testnet",
       "skipFiles": [
         "<node_internals>/**"
@@ -69,6 +80,17 @@
       "cwd": "${workspaceRoot}",
       "program": "${workspaceFolder}/src/robot.js",
       "envFile": "${workspaceFolder}/.env.dev"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "robot mainnet",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}/src/robot.js",
+      "envFile": "${workspaceFolder}/.env.production"
     },
     {
       "type": "node",

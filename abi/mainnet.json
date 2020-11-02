@@ -1,4 +1,70 @@
 {
+     "PosLib": {
+          "address": "0xe5D05F0C52DAe635B8bd2e5AFAF5c72369920B39"
+     },
+     "CommonTool": {
+          "address": "0x813A7b85090aA563a46b040135014470E60DC19F"
+     },
+     "StoremanUtil": {
+          "address": "0x9AC6492c22AF58f81f04C23aaA700E73856a9Be6"
+     },
+     "StoremanLib": {
+          "address": "0x6d7cdcbAa90f9C5ffEB8C22F1a58cAE2b476095A"
+     },
+     "IncentiveLib": {
+          "address": "0xb7B54A4b2Be8265F993E7842449494Ec2c3d1301"
+     },
+     "Deposit": {
+          "address": "0x0146263b16Ef54D599993E2DA4f0EC732C579920"
+     },
+     "StoremanGroupProxy": {
+          "address": "0x1E7450D5d17338a348C5438546f0b4D0A5fbeaB6",
+          "abi": "abi.StoremanGroupDelegate.json"
+     },
+     "StoremanGroupDelegate": {
+          "address": "0x72F2BD7769F4D5F149121758e0457D7a2c94f3A6",
+          "abi": "abi.StoremanGroupDelegate.json"
+     },
+     "ListGroup": {
+          "address": "0x8113a9373BD319A05b607747f396CA8e78e8F5B9",
+          "abi": "abi.ListGroup.json"
+     },
+     "MetricLib": {
+          "address": "0x3f036434070E7bdD01ca706cf096467409F8d0DD"
+     },
+     "MetricProxy": {
+          "address": "0xd5e61e4069c013a444e962dbd489d845b9Ae2727",
+          "abi": "abi.MetricDelegate.json"
+     },
+     "MetricDelegate": {
+          "address": "0xBfF6A03dEA98ACEC913DA4daf80953fd49060305",
+          "abi": "abi.MetricDelegate.json"
+     },
+     "GpkLib": {
+          "address": "0x3eBad852678b07AE81389E6807826954427BF65B"
+     },
+     "GpkProxy": {
+          "address": "0xFC86Ad558163C4933eBCfA217945aF6e9a3bcE06",
+          "abi": "abi.GpkDelegate.json"
+     },
+     "GpkDelegate": {
+          "address": "0xDF32031800977B25780cF613571356C609DCad36",
+          "abi": "abi.GpkDelegate.json"
+     },
+     "ConfigProxy": {
+          "address": "0x2C0134788652A8C5fC6EC5c6a9B157E8481F5118",
+          "abi": "abi.ConfigDelegate.json"
+     },
+     "ConfigDelegate": {
+          "address": "0xc1c651083B5F4f47f57702deBe2a98030e7BaDd7",
+          "abi": "abi.ConfigDelegate.json"
+     },
+     "Secp256k1Curve": {
+          "address": "0x0044C722F89B05087D15Eb7Df27c4Aff72265755"
+     },
+     "Bn256Curve": {
+          "address": "0xCe601Ee7F759E5090aa6Dcb53a627Fe4132b65D7"
+     },
      "TokenManagerProxy": {
           "address": "0x9Fdf94Dff979dbECc2C1a16904bDFb41D305053A",
           "abi": "abi.TokenManagerDelegate.json"
@@ -49,70 +115,5 @@
      },
      "Secp256k1SchnorrVerifier": {
           "address": "0x39C6284B97Be10a36215604FA046E2c7340e11de"
-     },
-     "PosLib": {
-          "address": "0x0B275849F4CB2ca695D5BbF7294e7B424f8139E8"
-     },
-     "CommonTool": {
-          "address": "0x6bDA1AFf55C727AE2E9C01C461697296eEec3Cda"
-     },
-     "StoremanUtil": {
-          "address": "0x55eD946C600C1201Bf8062D5A7456Eff899d51fd"
-     },
-     "StoremanLib": {
-          "address": "0xf77460be6762C75f069FFa51f15795db6867Dcab"
-     },
-     "IncentiveLib": {
-          "address": "0x085E0C72cfaddF10e701d91Ae4f2E623fC9F81e7"
-     },
-     "Deposit": {
-          "address": "0x96e43887c81Fb0d8434D016e3521FF62b47a4d0D"
-     },
-     "StoremanGroupProxy": {
-          "address": "0x32b433E68FAee71f3b2ADc23a3DA952489C06788",
-          "abi": "abi.StoremanGroupDelegate.json"
-     },
-     "StoremanGroupDelegate": {
-          "address": "0xEd99D2358500A9f307E48d021b9bb35eb0D8049a",
-          "abi": "abi.StoremanGroupDelegate.json"
-     },
-     "ListGroup": {
-          "address": "0x74F6cE5F982d467A0c652ab26936086E600574F7"
-     },
-     "MetricLib": {
-          "address": "0xa05a7D828C51D36A29f15ee8bBe6b1e9cA8bF075"
-     },
-     "MetricProxy": {
-          "address": "0xc4c8F176541a713b7712691F5AC5232b63B7Cd3D",
-          "abi": "abi.MetricDelegate.json"
-     },
-     "MetricDelegate": {
-          "address": "0xc4d67C5466CE72421F4E7BBC2C8a549889508fcd",
-          "abi": "abi.MetricDelegate.json"
-     },
-     "GpkLib": {
-          "address": "0xCaB9331db20EE55C41d3d6966532abac6011c67F"
-     },
-     "GpkProxy": {
-          "address": "0xB913F3abB6E90f43C880c42a63E77125A7CA65CF",
-          "abi": "abi.GpkDelegate.json"
-     },
-     "GpkDelegate": {
-          "address": "0xFD5c6D5Df0b635eac7Bac300E5F4968d183f17Ba",
-          "abi": "abi.GpkDelegate.json"
-     },
-     "ConfigProxy": {
-          "address": "0xf160Eb8a5C99F538071C1750bd6a59133BFb7a31",
-          "abi": "abi.ConfigDelegate.json"
-     },
-     "ConfigDelegate": {
-          "address": "0x2B6C3dc2e4FA43A328CC4BFFf3d63E5E130DD0d4",
-          "abi": "abi.ConfigDelegate.json"
-     },
-     "Secp256k1Curve": {
-          "address": "0x724aF3c4099d865F6c6dd9bBB6F3E7d0b50147D5"
-     },
-     "Bn256Curve": {
-          "address": "0x69AA8dd4660588440f5D364915deE5c68DE3B9b6"
      }
 }
