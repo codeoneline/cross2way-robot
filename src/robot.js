@@ -33,13 +33,12 @@ const sgaWan = loadContract(chainWan, 'StoremanGroupDelegate')
 function getSk(address, tip) {
   let sk = null
   while (!sk) {
-    const password = readlineSync.question(tip)
+    const password = readlineSync.question(tip, {hideEchoBack: true, mask: '*'})
     try {
       const keyObject = keythereum.importFromFile(address.slice(2), process.env.KEYSTORE_PARENT_FOLD);
       sk = keythereum.recover(password, keyObject);
-      console.log(sk.toString('hex'))
     } catch(e) {
-      console.log('wrong password')
+      console.log(`error ${e}`)
     }
   }
   return sk.toString('hex')

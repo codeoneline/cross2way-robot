@@ -76,8 +76,6 @@ Change Admin keystore and address
 ```
 USE_KEYSTORE=true
 KEYSTORE_PARENT_FOLD=./
-ADMIN_ADDRESS_WANCHAIN=YOUR_ADMIN_ADDRESS
-ADMIN_ADDRESS_WANCHAIN=YOUR_ADMIN_ADDRESS
 ```
 Or you can use your owner or admin private key
 
