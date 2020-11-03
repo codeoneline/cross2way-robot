@@ -51,20 +51,26 @@ async function updatePrice(oracle, pricesMap) {
       symbolsStringArray.forEach((v,i) => {prePricesMap[v] = prePricesArray[i];})
 
       const needUpdateMap = {};
+      const oldMap = {};
+      const deltaMap = {}
       symbols.forEach(i => {
         const newPrice = web3.utils.toBN(pricesMap[i]);
         const oldPrice = web3.utils.toBN(prePricesMap[i]);
 
         if (oldPrice.cmp(zero) === 0) {
           needUpdateMap[i] = '0x' + newPrice.toString(16);
+          oldMap[i] = '0';
+          deltaMap[i] = '无穷大'
         } else {
           const deltaTimes = newPrice.sub(oldPrice).mul(times).div(oldPrice).abs();
           if (deltaTimes.cmp(threshold) > 0) {
             needUpdateMap[i] = '0x' + newPrice.toString(16);
+            oldMap[i] = oldPrice.toString(10);
+            deltaMap[i] = deltaTimes.toString(10);
           }
         }
       })
-      await oracle.updatePrice(needUpdateMap);
+      await oracle.updatePrice(needUpdateMap, oldMap, deltaMap);
     }
   }
   log.info(`updatePrice ${oracle.core.chainType} end`);
