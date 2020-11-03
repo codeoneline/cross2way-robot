@@ -70,6 +70,11 @@ function fractionToDecimalString(priceRaw, price_decimal) {
     return '0x' + price.mul(web3.utils.toBN(Math.pow(10, price_decimal - decimal))).toString('hex');
 }
 
+function formatToFraction(oldDecimalString) {
+    const padPrice = web3.utils.padLeft(oldDecimalString, 19, '0');
+    return padPrice.substr(0, padPrice.length - 18)+ '.'+ padPrice.substr(padPrice.length - 18, 18);
+}
+
 module.exports = {
   sleep,
   promisify,
@@ -77,5 +82,6 @@ module.exports = {
   fractionToDecimalString,
   web3,
   chainIds,
-  privateToAddress
+  privateToAddress,
+  formatToFraction
 }

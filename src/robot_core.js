@@ -60,7 +60,7 @@ async function updatePrice(oracle, pricesMap) {
         if (oldPrice.cmp(zero) === 0) {
           needUpdateMap[i] = '0x' + newPrice.toString(16);
           oldMap[i] = '0';
-          deltaMap[i] = '无穷大'
+          deltaMap[i] = 'infinity'
         } else {
           const deltaTimes = newPrice.sub(oldPrice).mul(times).div(oldPrice).abs();
           if (deltaTimes.cmp(threshold) > 0) {

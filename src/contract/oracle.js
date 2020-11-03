@@ -1,6 +1,6 @@
 const Contract = require('./contract');
 const abiOracle = require('../../abi/abi.OracleDelegate.json');
-const { web3, privateToAddress } = require('../lib/utils');
+const { web3, privateToAddress, formatToFraction } = require('../lib/utils');
 const log = require('../lib/log');
 
 const ether = web3.utils.toBN(Math.pow(10,18))
@@ -23,7 +23,7 @@ class Oracle extends Contract {
       const priceUnit = symbolPriceMap[it];
       symbolByteArray.push(web3.utils.toHex(it));
       priceUintArray.push(priceUnit);
-      log.debug(`${it} will update from ${oldMap[it]} to ${web3.utils.toBN(priceUnit).toString(10)}, delta = ${deltaMap[it]}/${process.env.THRESHOLD_TIMES}`)
+      log.debug(`${it} will update from ${formatToFraction(oldMap[it])} to ${formatToFraction(web3.utils.toBN(priceUnit).toString(10))}, delta = ${deltaMap[it]}/${process.env.THRESHOLD_TIMES}`)
     })
 
     const data = this.contract.methods.updatePrice(symbolByteArray, priceUintArray).encodeABI();
