@@ -72,6 +72,10 @@ setTimeout( async () => {
   // const new_owner_addr = "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8";
   // const new_owner_sk = "b6a0`3207128827eaae0d31d97a7a6243de31f2baf99eabd764e33389ecf436fc";
 
+  console.log(await chainEth.core.getBlockNumber())
+
+  // await unlockAccount([chainWan], "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8", "wanglu", 36000);
+
   // await changeOwner([tmWan, oracleWan], old_owner_addr, old_owner_sk, new_owner_addr, new_owner_sk);
 
   // await wanEth.update('WAN@ethereum', 'WAN', {from: "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8"});
@@ -84,6 +88,7 @@ setTimeout( async () => {
   // await mint([linkEth], "0x0d5A1204c001693D86E70566Ae57D49F40d04C90", 100000000);
   // await mint([fnxWan, btcWan, eosWan], "0xE2A1dc77aAD2BB6b493c491572e822381f2a6E5d".toLowerCase(), 1000);
   // await mint([linkEth], "0xE2A1dc77aAD2BB6b493c491572e822381f2a6E5d", 100000000);
+  // await mint([fnxWan], "0xE8DcC92a1eB5C42B63E32C448a53bD4FbE313820".toLowerCase(), 100000);
   // await mint([fnxWan], "0xc3d4bbb13c471969275076e4ba0badea214d68e1".toLowerCase(), 100000000);
   // await mint([fnxWan], "0x67e3b428acbc3aa2fd38813f65dafbd5af97c6d5".toLowerCase(), 100000000);
   // await mint([fnxWan], "0xFB683bDDB0ACBB00Dd162CD5E3798c7Fc6E5CFc0".toLowerCase(), 100000000);
@@ -111,8 +116,6 @@ setTimeout( async () => {
   // await chainEth.core.closeEngine();
 
   // await getBalance([chainWan, chainEth, chainEtc], "0x2d0e7c0813a51d3bd1d08246af2a8a7a57d8922e");
-
-  // await unlockAccount([chainWan], "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8", "wanglu", 36000);
 
   // await mint([linkEth], "0xe2f31d7ba3e0098ea0e64d94c0224365812b986c", 10000000)
   console.log("hello")
