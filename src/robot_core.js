@@ -39,11 +39,14 @@ async function doSchedule(func, args, tryTimes = process.env.SCHEDULE_RETRY_TIME
 }
 
 
-async function preUpdateMapTokenPrice(wanOracle, needUpdateMap, oldMap, deltaMap) {
+async function preUpdateMapTokenPrice(oracle, needUpdateMap, oldMap, deltaMap) {
+  if (oracle.core.chainType !== 'WAN') {
+    return
+  }
   const symbols = process.env.SYMBOLS.replace(/\s+/g,"").split(',').filter(i=> i!=='WAN');
   const wanSymbols = symbols.map(i => `wan${i}`);
-  const oldPricesArray = await wanOracle.getValuesByArray(symbols)
-  const mapPricesArray = await wanOracle.getValuesByArray(wanSymbols)
+  const oldPricesArray = await oracle.getValuesByArray(symbols)
+  const mapPricesArray = await oracle.getValuesByArray(wanSymbols)
   wanSymbols.forEach((wanSymbol, i) => {
     const newPriceStr = needUpdateMap[symbols[i]];
     let newPrice = web3.utils.toBN(oldPricesArray[i]);
