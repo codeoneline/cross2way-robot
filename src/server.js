@@ -155,8 +155,9 @@ async function refreshTMS() {
 }
 
 async function refreshOracles() {
-  const prePricesArray = await oracleWan.getValues(process.env.SYMBOLS);
-  const symbolsStringArray = process.env.SYMBOLS.replace(/\s+/g,"").split(',');
+  const WAN_SYMBOLS = process.env.SYMBOLS + ',wan'+ process.env.SYMBOLS.replace(/,WAN,/g,",").replace(/,/g,",wan")
+  const prePricesArray = await oracleWan.getValues(WAN_SYMBOLS);
+  const symbolsStringArray = WAN_SYMBOLS.replace(/\s+/g,"").split(',');
   const prePricesMap = {}
   symbolsStringArray.forEach((v,i) => {
     const padPrice = web3.utils.padLeft(prePricesArray[i], 19, '0');
@@ -167,12 +168,12 @@ async function refreshOracles() {
   })
 
   const prePricesMap_Eth = {}
-  const prePricesArray_Eth = await oracleEth.getValues(process.env.SYMBOLS);
+  const prePricesArray_Eth = await oracleEth.getValues(WAN_SYMBOLS);
   symbolsStringArray.forEach((v,i) => {
     const padPrice = web3.utils.padLeft(prePricesArray_Eth[i], 19, '0');
     prePricesMap_Eth[v] = padPrice.substr(0, padPrice.length - 18)+ '.'+ padPrice.substr(padPrice.length - 18, 18);
     if (v!== 'WAN') {
-      prePricesMap[`wan${v}`] = '-'
+      prePricesMap_Eth[`wan${v}`] = '-'
     }
   })
 
@@ -355,24 +356,24 @@ async function refreshCross() {
 }
 
 setTimeout(async function() {
-  await refreshTMS();
+  // await refreshTMS();
   await refreshOracles();
-  await refreshChains();
-  await refreshQuota();
-  await refreshCross();
+  // await refreshChains();
+  // await refreshQuota();
+  // await refreshCross();
 }, 0);
 
-setInterval(async function() {
-  try {
-    await refreshTMS();
-    await refreshOracles();
-    await refreshChains();
-    await refreshQuota();
-    await refreshCross();
-  } catch(e) {
-    console.log(e);
-  }
-}, 60000);
+// setInterval(async function() {
+//   try {
+//     await refreshTMS();
+//     await refreshOracles();
+//     await refreshChains();
+//     await refreshQuota();
+//     await refreshCross();
+//   } catch(e) {
+//     console.log(e);
+//   }
+// }, 60000);
 
 app.get('/tms', (req, res) => {
   res.send(tmsResult);

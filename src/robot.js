@@ -147,8 +147,6 @@ setTimeout(async () => {
   setTimeout(updateStoreManToChains, 0);
 
   robotSchedules();
-
-  await updateMapTokenPrice()
 }, 0)
 
 
