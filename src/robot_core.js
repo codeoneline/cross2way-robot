@@ -32,7 +32,7 @@ async function doSchedule(func, args, tryTimes = process.env.SCHEDULE_RETRY_TIME
         await logAndSendMail(`${func.name} exception`, `args=${args}, tried ${tryTimes} still failed, ${e instanceof Error ? e.stack : e}`);
         return;
       }
-      log.error(`${func.name} exception : ${e}`);
+      log.warn(`${func.name} exception : ${e}`);
       await sleep(parseInt(process.env.SCHEDULE_RETRY_INTERVAL));
     }
   }
