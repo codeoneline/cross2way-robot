@@ -39,7 +39,7 @@ function getSk(address, tip) {
       const keyObject = keythereum.importFromFile(address.slice(2), process.env.KEYSTORE_PARENT_FOLD);
       sk = keythereum.recover(password, keyObject);
     } catch(e) {
-      console.log(`error ${e}`)
+      log.error(e)
     }
   }
   return sk.toString('hex')
@@ -87,7 +87,7 @@ const scanNewStoreMan = () => {
 }
 
 const updateStoreManToChains = async function() {
-  console.log("updateStoreManToChains")
+  log.info("updateStoreManToChains")
   await doSchedule(async () => {
     if (!scanInst.bScanning) {
       await syncConfigToOtherChain(sgaWan, [oracleEth]);
@@ -100,7 +100,7 @@ const updateStoreManToChains = async function() {
 }
 
 const updateStoreManToChainsPart = async function() {
-  console.log("updateStoreManToChainsPart")
+  log.info("updateStoreManToChainsPart")
   await doSchedule(async () => {
     if (!scanInst.bScanning) {
       await syncConfigToOtherChain(sgaWan, [oracleEth], true);
