@@ -48,6 +48,9 @@
     "request-promise": "^4.2.5",
     "secp256k1": "^4.0.1",
     "wanchainjs-tx": "^1.5.0",
-    "web3": "^1.2.9"
+    "web3": "^1.2.9",
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.5.0",
+    "winston-syslog": "^2.4.4"
   }
 }

@@ -161,6 +161,9 @@ async function refreshOracles() {
   symbolsStringArray.forEach((v,i) => {
     const padPrice = web3.utils.padLeft(prePricesArray[i], 19, '0');
     prePricesMap[v] = padPrice.substr(0, padPrice.length - 18)+ '.'+ padPrice.substr(padPrice.length - 18, 18);
+    if (v!== 'WAN') {
+      prePricesMap[`wan${v}`] = prePricesMap[v]
+    }
   })
 
   const prePricesMap_Eth = {}
@@ -168,6 +171,9 @@ async function refreshOracles() {
   symbolsStringArray.forEach((v,i) => {
     const padPrice = web3.utils.padLeft(prePricesArray_Eth[i], 19, '0');
     prePricesMap_Eth[v] = padPrice.substr(0, padPrice.length - 18)+ '.'+ padPrice.substr(padPrice.length - 18, 18);
+    if (v!== 'WAN') {
+      prePricesMap[`wan${v}`] = '-'
+    }
   })
 
   const sgs = {}

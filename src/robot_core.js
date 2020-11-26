@@ -38,6 +38,38 @@ async function doSchedule(func, args, tryTimes = process.env.SCHEDULE_RETRY_TIME
   }
 }
 
+
+async function preUpdateMapTokenPrice(wanOracle, needUpdateMap, oldMap, deltaMap) {
+  const symbols = process.env.SYMBOLS.replace(/\s+/g,"").split(',').filter(i=> i!=='WAN');
+  const wanSymbols = symbols.map(i => `wan${i}`);
+  const oldPricesArray = await wanOracle.getValuesByArray(symbols)
+  const mapPricesArray = await wanOracle.getValuesByArray(wanSymbols)
+  wanSymbols.forEach((wanSymbol, i) => {
+    const newPriceStr = needUpdateMap[symbols[i]];
+    let newPrice = web3.utils.toBN(oldPricesArray[i]);
+    if (newPriceStr) {
+      newPrice = web3.utils.toBN(newPriceStr);
+    }
+    const oldPrice = web3.utils.toBN(mapPricesArray[i]);
+    
+    if (oldPrice.cmp(newPrice) !== 0) {
+      if (oldPrice.cmp(zero) === 0) {
+        needUpdateMap[wanSymbol] = '0x' + newPrice.toString(16);
+        oldMap[wanSymbol] = '0';
+        deltaMap[wanSymbol] = 'infinity'
+      } else {
+        const deltaTimes = newPrice.sub(oldPrice).mul(times).div(oldPrice).abs();
+        if (deltaTimes.cmp(threshold) > 0) {
+          needUpdateMap[wanSymbol] = '0x' + newPrice.toString(16);
+          oldMap[wanSymbol] = oldPrice.toString(10);
+          deltaMap[wanSymbol] = deltaTimes.toString(10);
+        }
+      }
+    }
+  })
+  return
+}
+
 async function updatePrice(oracle, pricesMap) {
   log.info(`updatePrice ${oracle.core.chainType} begin`);
   if (pricesMap) {
@@ -70,6 +102,7 @@ async function updatePrice(oracle, pricesMap) {
           }
         }
       })
+      await preUpdateMapTokenPrice(oracle, needUpdateMap, oldMap, deltaMap)
       await oracle.updatePrice(needUpdateMap, oldMap, deltaMap);
     }
   }
@@ -84,7 +117,7 @@ async function syncPriceToOtherChain(fromOracle, toOracle) {
   const deltaPricesMap = {}
   symbols.forEach((symbol, i) => {
     if (fromPricesArray[i] && (toPricesArray[i] !== fromPricesArray[i])) {
-      return deltaPricesMap[symbol] = fromPricesArray[i];
+      deltaPricesMap[symbol] = fromPricesArray[i];
     }
   })
   await updatePrice(toOracle, deltaPricesMap);
@@ -166,5 +199,5 @@ module.exports = {
   doSchedule,
   updatePrice,
   syncPriceToOtherChain,
-  syncConfigToOtherChain
+  syncConfigToOtherChain,
 }

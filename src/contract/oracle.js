@@ -60,6 +60,11 @@ class Oracle extends Contract {
     return await this.core.getScFun("getValues", [symbolsArray], this.contract, this.abi);
   }
 
+  async getValuesByArray(keysArray) {
+    const symbolsArray = keysArray.map(i => {return web3.utils.toHex(i);})
+    return await this.core.getScFun("getValues", [symbolsArray], this.contract, this.abi);
+  }
+
   async getDeposit(smgID) {
     return await this.core.getScFun("getDeposit", [smgID], this.contract, this.abi);
   }
