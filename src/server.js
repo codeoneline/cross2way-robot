@@ -155,7 +155,12 @@ async function refreshTMS() {
 }
 
 async function refreshOracles() {
-  const WAN_SYMBOLS = process.env.SYMBOLS + ',wan'+ process.env.SYMBOLS.replace(/,WAN,/g,",").replace(/,/g,",wan")
+  const wanSymbols = [];
+  process.env.SYMBOLS_MAP.replace(/\s+/g,"").split(',').forEach(i => { 
+    const kv = i.split(':');
+    wanSymbols.push(kv[0]);
+  })
+  const WAN_SYMBOLS = process.env.SYMBOLS + ','+ wanSymbols.toString();
   const prePricesArray = await oracleWan.getValues(WAN_SYMBOLS);
   const symbolsStringArray = WAN_SYMBOLS.replace(/\s+/g,"").split(',');
   const prePricesMap = {}
@@ -352,24 +357,24 @@ async function refreshCross() {
 }
 
 setTimeout(async function() {
-  await refreshTMS();
+  // await refreshTMS();
   await refreshOracles();
-  await refreshChains();
-  await refreshQuota();
-  await refreshCross();
+  // await refreshChains();
+  // await refreshQuota();
+  // await refreshCross();
 }, 0);
 
-setInterval(async function() {
-  try {
-    await refreshTMS();
-    await refreshOracles();
-    await refreshChains();
-    await refreshQuota();
-    await refreshCross();
-  } catch(e) {
-    console.log(e);
-  }
-}, 60000);
+// setInterval(async function() {
+//   try {
+//     await refreshTMS();
+//     await refreshOracles();
+//     await refreshChains();
+//     await refreshQuota();
+//     await refreshCross();
+//   } catch(e) {
+//     console.log(e);
+//   }
+// }, 60000);
 
 app.get('/tms', (req, res) => {
   res.send(tmsResult);
