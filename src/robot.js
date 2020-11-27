@@ -18,7 +18,7 @@ function readSyncByfs(tips) {
   return buf.toString('utf8', 0, response).trim();
 }
 
-const { createScanEvent, doSchedule, updatePrice, syncPriceToOtherChain, syncConfigToOtherChain } = require('./robot_core');
+const { createScanEvent, doSchedule, updateWanPrice, syncPriceToOtherChain, syncConfigToOtherChain } = require('./robot_core');
 
 const { loadContract } = require('./lib/abi_address');
 
@@ -60,7 +60,7 @@ const scanInst = createScanEvent(
 
 //   log.info(`prices: ${JSON.stringify(pricesMap)}`);
 
-//   await updatePrice(oracleWan, pricesMap);
+//   await updateWanPrice(oracleWan, pricesMap);
 //   await syncPriceToOtherChain(oracleWan, oracleEth);
 // }
 
@@ -68,7 +68,7 @@ const updatePriceToChains = async function() {
   const pricesMap = await doSchedule(getPrices_cmc, [process.env.SYMBOLS]);
   log.info(`updatePriceToChains begin: ${JSON.stringify(pricesMap)}`);
 
-  await doSchedule(updatePrice, [oracleWan, pricesMap]);
+  await doSchedule(updateWanPrice, [oracleWan, pricesMap]);
   log.info(`updatePriceToChains end`);
 
   setTimeout(async() => {

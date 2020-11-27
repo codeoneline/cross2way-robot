@@ -23,7 +23,9 @@ class Oracle extends Contract {
       const priceUnit = symbolPriceMap[it];
       symbolByteArray.push(web3.utils.toHex(it));
       priceUintArray.push(priceUnit);
-      log.debug(`${it} will update from ${formatToFraction(oldMap[it])} to ${formatToFraction(web3.utils.toBN(priceUnit).toString(10))}, delta = ${deltaMap[it]}/${process.env.THRESHOLD_TIMES}`)
+      if (oldMap && deltaMap) {
+        log.debug(`${it} will update from ${formatToFraction(oldMap[it])} to ${formatToFraction(web3.utils.toBN(priceUnit).toString(10))}, delta = ${deltaMap[it]}/${process.env.THRESHOLD_TIMES}`)
+      }
     })
 
     const data = this.contract.methods.updatePrice(symbolByteArray, priceUintArray).encodeABI();
