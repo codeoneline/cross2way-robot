@@ -62,6 +62,17 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "token pair local",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}/src/token_pair.js",
+      "envFile": "${workspaceFolder}/.env.dev.local"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "admin testnet",
       "skipFiles": [
         "<node_internals>/**"

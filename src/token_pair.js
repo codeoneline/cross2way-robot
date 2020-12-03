@@ -118,19 +118,22 @@ const parseConfig = async (tokenPairsConfig, keys) => {
 }
 
 const doAddOrUpdate = async (config, tokenPairsConfig, key, chainName) => {
+  if (!contracts[chainName]) {
+    return
+  }
   const tm = contracts[chainName].tm
   const pairInfo = await tm.getTokenPairInfo(config.id)
   const aInfo = await tm.getAncestorInfo(config.id);
   log.info(`key = ${key}, id = ${config.id}`)
 
   // check token on map chain
-  if (chainName === tokenPairsConfig[key].mapChain) {
-    if (pairInfo.toAccount === null || pairInfo.toAccount === '0x') {
-      const addTokenEvent = await addToken(tm, config.mapToken);
-      config.tokenAddress = addTokenEvent.tokenAddress;
-      log.info(`tokenAddress = ${addTokenEvent.tokenAddress}`)
-    } else {
-      if (!config.tokenAddress) {
+  if (!config.tokenAddress) {
+    if (chainName === tokenPairsConfig[key].mapChain) {
+      if (pairInfo.toAccount === null || pairInfo.toAccount === '0x') {
+        const addTokenEvent = await addToken(tm, config.mapToken);
+        config.tokenAddress = addTokenEvent.tokenAddress;
+        log.info(`tokenAddress = ${addTokenEvent.tokenAddress}`)
+      } else {
         config.tokenAddress = pairInfo.toAccount
       }
     }
