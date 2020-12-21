@@ -177,6 +177,12 @@ async function setStoremanGroupStatus(oracle, smgID, status) {
   await oracle.setStoremanGroupStatus(smgID, statusHex);
 }
 
+// 0 sep 256, 1: bn128
+const chainCurveTypeConfig = {
+  'WAN': '1',
+  'ETH': '1',
+  'BTC': '0',
+}
 async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
   log.info(`syncConfigToOtherChain begin`);
   const sgs = db.getAllSga();
@@ -199,36 +205,74 @@ async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
       for(let j = 0; j<oracles.length; j++) {
         const oracle = oracles[j];
         const config_eth = await oracle.getStoremanGroupConfig(groupId);
-        if (!config_eth ||
-          (config.groupId !== config_eth.groupId) ||
-          (config.chain1 !== config_eth.chain2) ||
-          (config.chain2 !== config_eth.chain1) ||
-          (config.curve1 !== config_eth.curve2) ||
-          (config.curve2 !== config_eth.curve1) ||
-          (config.gpk1 !== config_eth.gpk2) ||
-          (config.gpk2 !== config_eth.gpk1) ||
-          (config.startTime !== config_eth.startTime) ||
-          (config.endTime !== config_eth.endTime) ||
-          ((config.deposit !== config_eth.deposit) && (config.status !== config_eth.status))
-        ) {
-          // chain1 -> chain2
-          await oracle.setStoremanGroupConfig(
-            groupId,
-            config.status,
-            config.deposit,
-            [config.chain2, config.chain1],
-            [config.curve2, config.curve1],
-            config.gpk2,
-            config.gpk1,
-            config.startTime,
-            config.endTime,
-          );
-        } else if (config.deposit !== config_eth.deposit) {
-          if (!isPart) {
-            await updateDeposit(oracle, groupId, config.deposit);
+        if (config.curve1 !== '1' && config.curve2 !== '1') {
+          if (!config_eth ||
+            (config.groupId !== config_eth.groupId) ||
+            (config.chain1 !== config_eth.chain2) ||
+            (config.chain2 !== config_eth.chain1) ||
+            (config.curve1 !== config_eth.curve2) ||
+            (config.curve2 !== config_eth.curve1) ||
+            (config.gpk1 !== config_eth.gpk2) ||
+            (config.gpk2 !== config_eth.gpk1) ||
+            (config.startTime !== config_eth.startTime) ||
+            (config.endTime !== config_eth.endTime) ||
+            ((config.deposit !== config_eth.deposit) && (config.status !== config_eth.status))
+          ) {
+            // chain1 -> chain2
+            await oracle.setStoremanGroupConfig(
+              groupId,
+              config.status,
+              config.deposit,
+              [config.chain2, config.chain1],
+              [config.curve2, config.curve1],
+              config.gpk2,
+              config.gpk1,
+              config.startTime,
+              config.endTime,
+            );
+          } else if (config.deposit !== config_eth.deposit) {
+            if (!isPart) {
+              await updateDeposit(oracle, groupId, config.deposit);
+            }
+          } else if (config.status !== config_eth.status) {
+            await setStoremanGroupStatus(oracle, groupId, config.status);
           }
-        } else if (config.status !== config_eth.status) {
-          await setStoremanGroupStatus(oracle, groupId, config.status);
+        } else {
+          const curve1 = chainCurveTypeConfig[oracle.chain.core.chainType]
+          const curve2 = curve1 === config.curve1 ? config.curve2 : config.curve1
+          const gpk1 = config.curve1 === curve1 ? config.gpk1 : config.gpk2
+          const gpk2 = gpk1 === config.gpk1 ? config.gpk2 : config.gpk1
+          if (!config_eth ||
+            (config.groupId !== config_eth.groupId) ||
+            (config.chain1 !== config_eth.chain2) ||
+            (config.chain2 !== config_eth.chain1) ||
+            (curve1 != config_eth.curve1) ||
+            (curve2 != config_eth.curve2) ||
+            (gpk1 != config_eth.gpk1) ||
+            (gpk2 != config_eth.gpk2) ||
+            (config.startTime !== config_eth.startTime) ||
+            (config.endTime !== config_eth.endTime) ||
+            ((config.deposit !== config_eth.deposit) && (config.status !== config_eth.status))
+          ) {
+            // chain1 -> chain2
+            await oracle.setStoremanGroupConfig(
+              groupId,
+              config.status,
+              config.deposit,
+              [config.chain2, config.chain1],
+              [curve1, curve2],
+              gpk1,
+              gpk2,
+              config.startTime,
+              config.endTime,
+            );
+          } else if (config.deposit !== config_eth.deposit) {
+            if (!isPart) {
+              await updateDeposit(oracle, groupId, config.deposit);
+            }
+          } else if (config.status !== config_eth.status) {
+            await setStoremanGroupStatus(oracle, groupId, config.status);
+          }
         }
       }
     }
