@@ -1,5 +1,5 @@
 const schedule = require('node-schedule');
-process.env.LOG_ENGINE = process.env.LOG_ENGINE_WINSTON
+process.env.LOG_ENGINE = process.env.LOG_ENGINE_4js
 const log = require('./lib/log');
 const getPrices_cmc = require("./lib/cmc");
 const getPrices_crypto = require("./lib/crypto_compare");
@@ -76,6 +76,22 @@ const updatePriceToChains = async function() {
   }, 30000)
 }
 
+const updatePriceToWAN = async function() {
+  const pricesMap = await doSchedule(getPrices_cmc, [process.env.SYMBOLS]);
+  log.info(`updatePriceToChains begin: ${JSON.stringify(pricesMap)}`);
+
+  await doSchedule(updateWanPrice, [oracleWan, pricesMap]);
+  log.info(`updatePriceToChains end`);
+}
+
+const updatePriceToETH = async function() {
+  const pricesMap = await doSchedule(getPrices_cmc, [process.env.SYMBOLS]);
+  log.info(`updatePriceToChains begin: ${JSON.stringify(pricesMap)}`);
+
+  await doSchedule(updateEthPrice, [oracleWan, pricesMap]);
+  log.info(`updatePriceToChains end`);
+}
+
 const syncPriceToChains = async function() {
   log.info(`syncPriceToChains begin`);
   await doSchedule(syncPriceToOtherChain, [oracleWan, oracleEth]);
@@ -112,6 +128,10 @@ const robotSchedules = function() {
   // update price 1 / 12 hour
   schedule.scheduleJob('0 0 */12 * * *', updatePriceToChains);
 
+  // schedule.scheduleJob('0 1 * * * *', updatePriceToWAN);
+
+  // schedule.scheduleJob('0 0 */2 * * *', updatePriceToETH);
+
   // schedule.scheduleJob('0 */5 * * * *', syncPriceToChains);
 
   // sync sga to sga database, 1 / 5min
@@ -146,7 +166,7 @@ setTimeout(async () => {
 
   setTimeout(updateStoreManToChains, 0);
 
-  robotSchedules();
+  // robotSchedules();
 }, 0)
 
 

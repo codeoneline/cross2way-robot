@@ -29,13 +29,13 @@ class Logger {
       levels: winston.config.syslog.levels,
       level: level,
       format: winston.format(function(info, opts) {
-        // let prefix = util.format('%s %s %s %s', "check", moment().format('YYYY-MM-DD HH:mm:ss,SSS').trim(), name, info.level.toUpperCase());
-        // if (info[SPLAT]) {
-        //   info[MESSAGE] = util.format('%s %s', prefix, util.format(info.message, ...info[SPLAT]));
-        // } else {
-        //   info[MESSAGE] = util.format('%s %s', prefix, util.format(info.message));
-        // }
-        info[MESSAGE] = `${name} ${info.level.toUpperCase()} ${info.message}`
+        let prefix = util.format('%s %s %s %s', "check", moment().format('YYYY-MM-DD HH:mm:ss,SSS').trim(), name, info.level.toUpperCase());
+        if (info[SPLAT]) {
+          info[MESSAGE] = util.format('%s %s', prefix, util.format(info.message, ...info[SPLAT]));
+        } else {
+          info[MESSAGE] = util.format('%s %s', prefix, util.format(info.message));
+        }
+        // info[MESSAGE] = `${name} ${info.level.toUpperCase()} ${info.message}`
         return info;
       })(),
       transports: [
@@ -76,19 +76,35 @@ class Logger {
   }
 
   debug(...params) {
-    this.logger.debug(...params);
+    try {
+      this.logger.debug(...params);
+    } catch ( e ) {
+      console.debug("debug", ...params)
+    }
   }
 
   info(...params) {
-    this.logger.info(...params);
+    try {
+      this.logger.info(...params);
+    } catch ( e ) {
+      console.info("info", ...params)
+    }
   }
 
   warn(...params) {
-    this.logger.warning(...params);
+    try {
+      this.logger.warning(...params);
+    } catch (e) {
+      console.warn("warn", ...params)
+    }
   }
 
   error(...params) {
-    this.logger.error(...params);
+    try {
+      this.logger.error(...params);
+    } catch (e) {
+      console.error("error", ...params)
+    }
   }
 }
 
