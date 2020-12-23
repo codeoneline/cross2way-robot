@@ -239,15 +239,13 @@ async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
           }
         } else {
           const curve1 = chainCurveTypeConfig[oracle.chain.core.chainType]
-          const curve2 = curve1 === config.curve1 ? config.curve2 : config.curve1
-          const gpk1 = config.curve1 === curve1 ? config.gpk1 : config.gpk2
+          // const curve2 = curve1 === config.curve1 ? config.curve2 : config.curve1
+          const gpk1 = '1' === curve1 ? config.gpk1 : config.gpk2
           const gpk2 = gpk1 === config.gpk1 ? config.gpk2 : config.gpk1
           if (!config_eth ||
             (config.groupId !== config_eth.groupId) ||
             (config.chain1 !== config_eth.chain2) ||
             (config.chain2 !== config_eth.chain1) ||
-            (curve1 != config_eth.curve1) ||
-            (curve2 != config_eth.curve2) ||
             (gpk1 != config_eth.gpk1) ||
             (gpk2 != config_eth.gpk2) ||
             (config.startTime !== config_eth.startTime) ||

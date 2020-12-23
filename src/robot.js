@@ -166,7 +166,7 @@ setTimeout(async () => {
 
   setTimeout(updateStoreManToChains, 0);
 
-  // robotSchedules();
+  robotSchedules();
 }, 0)
 
 
