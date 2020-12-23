@@ -17,6 +17,7 @@ const getData = async url => {
   return null;
 }
 
+
 async function getPrices(symbolsStr) {
   const symbols = symbolsStr.replace(/\s+/g,"").split(',');
   const priceMap = {};
@@ -34,3 +35,15 @@ async function getPrices(symbolsStr) {
 }
 
 module.exports = getPrices;
+
+// {
+// 	"BTC": {
+// 		"USD": 23515.66
+// 	},
+// 	"USDC": {
+// 		"USD": 0.9999
+// 	},
+// 	"TUSD": {
+// 		"USD": 1.001
+// 	}
+// }

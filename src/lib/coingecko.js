@@ -1,55 +1,103 @@
 const axios = require('axios');
+const { fractionToDecimalString } = require('./utils');
 
-
-
-updateCoinsList_from_CoinGeckoAPI() {
-  axios({
-    method: 'GET',
-    url: 'https://api.coingecko.com/api/v3/coins/list'
-  })
-    .then(res => {
-      if (res.status === 200) {
-        runInAction(() => {
-          for (let obj of res.data) {
-            this.tokenIds_from_CoinGeckoAPI[obj.symbol] = obj.id
-          }
-          this.updateCoinPrice();
-        })
-      } else {
-        console.log('Get coin list failed!');
-        setTimeout(() => {
-          this.updateCoinsList_from_CoinGeckoAPI();
-        }, 5000);
-      }
-    })
-    .catch((error) => {
-      console.log('Get coin list from coingecko failed!', error);
-      setTimeout(() => {
-        this.updateCoinsList_from_CoinGeckoAPI();
-      }, 5000);
-    });
+const getData = async url => {
+  try {
+    const response = await axios.get(url);
+    return response.data;
+  } catch (error) {
+    if (typeof(error) === "string") {
+      log.error(error);
+    } else {
+      log.error(JSON.stringify(error));
+    }
+  }
+  return null;
 }
 
-axios({
-  method: 'GET',
-  url: 'https://api.coingecko.com/api/v3/simple/price',
-  params: {
-    ids: convertedParam.join(),
-    vs_currencies: 'usd',
-  }
-})
-  .then((res) => {
-    if (res.status === 200) {
-      runInAction(() => {
-        self.coinPriceObj = {};
-        for (let i in res.data) {
-          self.coinPriceObj[reconvertIds[i]] = res.data[i].usd;
+// list
+// {
+//   "id": "yearn-finance-bit2",
+//   "symbol": "yfb2",
+//   "name": "Yearn Finance Bit2"
+// },
+// {
+//   "id": "yearn-finance-center",
+//   "symbol": "yfc",
+//   "name": "Yearn Finance Center"
+// },
+
+const getIDs = async (url, symbolsStr) => {
+  try {
+    const symbols = symbolsStr.toLowerCase().replace(/\s+/g,"").split(',')
+    const symbolsMap = {}
+    symbols.forEach(symbol => {
+      if (symbol === "fnx") {
+        symbolsMap[symbol] = "finnexus"
+      } else {
+        symbolsMap[symbol] = ""
+      }
+    })
+
+    const response = (await axios.get(url))
+    const data = response.data
+    data.forEach(item => {
+      if (symbolsMap.hasOwnProperty(item.symbol)) {
+        if (symbolsMap[item.symbol] === "") {
+          symbolsMap[item.symbol] = item.id
+        } else {
+          if (item.symbol !== "fnx") {
+            throw new Error(`duplicated new ${JSON.stringify(item, null, 2)}, old ${JSON.stringify(symbolsMap[item.symbol], null, 2)}}`)
+          }
         }
-      })
+      }
+    })
+
+    return symbolsMap
+  } catch (error) {
+    if (typeof(error) === "string") {
+      console.error(error)
     } else {
-      console.log('Get prices failed.', res);
+      console.error(JSON.stringify(error))
     }
+  }
+  return null
+}
+
+// price
+// {
+//   "finnexus": {
+//     "usd": 0.120816
+//   },
+//   "wanchain": {
+//     "usd": 0.370103
+//   }
+// }
+async function getPrices(symbolsStr) {
+  const symbolIds = await getIDs("https://api.coingecko.com/api/v3/coins/list", symbolsStr)
+  const symbols = symbolsStr.toLowerCase().replace(/\s+/g,"").split(',')
+  const idsArr = []
+  symbols.forEach(it => {
+    idsArr.push(symbolIds[it])
   })
-  .catch((error) => {
-    console.log('Get prices from coingecko failed', error);
+  const ids = idsArr.join(',')
+  console.log(ids)
+  const priceIdMap = await getData(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd`)
+
+  const priceMap = {};
+  symbols.forEach(it => {
+    priceMap[it.toUpperCase()] = fractionToDecimalString(priceIdMap[symbolIds[it]].usd, process.env.PRICE_DECIMAL);
   });
+  return priceMap
+}
+
+// https://api.coingecko.com/api/v3/coins/list
+// https://api.coingecko.com/api/v3/simple/price?ids=<coin>&vs_currencies=usd
+// https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=3
+// setTimeout(async () => {
+//   // const data = await getIDs("https://api.coingecko.com/api/v3/coins/list", process.env.SYMBOLS);
+//   const data = await getPrices(process.env.SYMBOLS)
+//   console.log(JSON.stringify(data, null, 2))
+// }, 0)
+
+module.exports = getPrices

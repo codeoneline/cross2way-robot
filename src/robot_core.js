@@ -108,15 +108,14 @@ async function preUpdateMapTokenPrice(oracle, needUpdateMap, oldMap, deltaMap) {
   })
   return
 }
-
-async function updateWanPrice(oracle, pricesMap) {
+async function updatePrice(oracle, pricesMap, symbolsStr) {
   log.info(`updatePrice ${oracle.core.chainType} begin`);
   if (pricesMap) {
     const symbols = Object.keys(pricesMap);
 
     if (symbols.length > 0) {
-      const prePricesArray = await oracle.getValues(process.env.SYMBOLS);
-      const symbolsStringArray = process.env.SYMBOLS.replace(/\s+/g,"").split(',');
+      const prePricesArray = await oracle.getValues(symbolsStr);
+      const symbolsStringArray = symbolsStr.replace(/\s+/g,"").split(',');
 
       const prePricesMap = {}
       symbolsStringArray.forEach((v,i) => {prePricesMap[v] = prePricesArray[i];})
@@ -148,6 +147,20 @@ async function updateWanPrice(oracle, pricesMap) {
     }
   }
   log.info(`updatePrice ${oracle.core.chainType} end`);
+}
+
+async function updateWanPrice(oracle, pricesMap) {
+  await updatePrice(oracle, pricesMap)
+}
+
+async function updatePrice_WAN(oracle, pricesMap) {
+  await updateWanPrice(oracle, pricesMap)
+}
+
+async function updatePrice_ETH(oracle, pricesMap) {
+  const prePricesArray = await oracle.getValues(process.env.SYMBOLS);
+  const symbols = process.env.SYMBOLS_SYNC_2_ETH.replace(/\s+/g,"").split(',');
+  await updateWanPrice(oracle, pricesMap)
 }
 
 async function syncPriceToOtherChain(fromOracle, toOracle) {
@@ -286,4 +299,6 @@ module.exports = {
   updateWanPrice,
   syncPriceToOtherChain,
   syncConfigToOtherChain,
+  updatePrice_WAN,
+  updatePrice_ETH
 }

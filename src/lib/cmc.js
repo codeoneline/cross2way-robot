@@ -2,7 +2,6 @@ const rp = require('request-promise');
 const log = require('./log');
 const { fractionToDecimalString } = require('./utils');
 
-
 async function getPrices(symbolsStr) {
   const symbols = symbolsStr.replace(/\s+/g,"").split(',');
 
@@ -40,6 +39,12 @@ async function getPrices(symbolsStr) {
   }
   return priceMap;
 }
+
+// setTimeout(async () => {
+//   // const data = await getIDs("https://api.coingecko.com/api/v3/coins/list", process.env.SYMBOLS);
+//   const data = await getPrices(process.env.SYMBOLS)
+//   console.log(JSON.stringify(data, null, 2))
+// }, 0)
 
 module.exports = getPrices;
 

@@ -7,6 +7,28 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "coingecko",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}/src/lib/coingecko.js",
+      "envFile": "${workspaceFolder}/.env.dev"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "cmc",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}/src/lib/cmc.js",
+      "envFile": "${workspaceFolder}/.env.dev"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "server testnet",
       "skipFiles": [
         "<node_internals>/**"
