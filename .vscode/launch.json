@@ -29,6 +29,17 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "server local",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}/src/server.js",
+      "envFile": "${workspaceFolder}/.env.dev.local"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "server testnet",
       "skipFiles": [
         "<node_internals>/**"

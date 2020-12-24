@@ -18,7 +18,7 @@
           "address": "0x0146263b16Ef54D599993E2DA4f0EC732C579920"
      },
      "StoremanGroupProxy": {
-          "address": "0x10Fb5966517CfDe08a35D4d470d27Bd6D2575Ec4",
+          "address": "0x4E20cb6E4628d984b6b45F9966CDcB782CB63F31",
           "abi": "abi.StoremanGroupDelegate.json"
      },
      "ListGroup": {
@@ -103,9 +103,9 @@
           "abi": "abi.SignatureVerifier.json"
      },
      "Bn128SchnorrVerifier": {
-          "address": "0x40befdA861987B297b5f6F3dC5e45fCf766bAB08"
+          "address": "0x7cE09c14d795F4D2786f7EFacd3e59F9f7F4eC6f"
      },
      "Secp256k1SchnorrVerifier": {
-          "address": "0x39C6284B97Be10a36215604FA046E2c7340e11de"
+          "address": "0x743D33dDd8dBbAc303587c2e367Fa17F40eC62ee"
      }
 }
