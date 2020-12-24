@@ -154,13 +154,25 @@ async function refreshTMS() {
   }
 }
 
-async function refreshOracles() {
+function mapStr2str(symbolsMapStr) {
   const wanSymbols = [];
-  process.env.SYMBOLS_MAP.replace(/\s+/g,"").split(',').forEach(i => { 
+  symbolsMapStr.replace(/\s+/g,"").split(',').forEach(i => {
     const kv = i.split(':');
-    wanSymbols.push(kv[0]);
+    if (kv.length === 2) {
+      wanSymbols.push(kv[0]);
+    }
   })
-  const WAN_SYMBOLS = process.env.SYMBOLS + ','+ wanSymbols.toString();
+
+  if (wanSymbols.length > 0) {
+    return wanSymbols.toString()
+  } else {
+    return ''
+  }
+}
+
+async function refreshOracles() {
+  const mapStr = mapStr2str(process.env.SYMBOLS_MAP);
+  const WAN_SYMBOLS = process.env.SYMBOLS + mapStr.length > 0 ? ',' : "" + mapStr;
   const prePricesArray = await oracleWan.getValues(WAN_SYMBOLS);
   const symbolsStringArray = WAN_SYMBOLS.replace(/\s+/g,"").split(',');
   const prePricesMap = {}
@@ -169,7 +181,8 @@ async function refreshOracles() {
     prePricesMap[v] = padPrice.substr(0, padPrice.length - 18)+ '.'+ padPrice.substr(padPrice.length - 18, 18);
   })
 
-  const ETH_SYMBOLS = process.env.SYMBOLS_ETH
+  const mapStrEth = mapStr2str(process.env.SYMBOLS_MAP_ETH)
+  const ETH_SYMBOLS = process.env.SYMBOLS_ETH + mapStrEth.length > 0 ? "," : "" + mapStrEth
   const prePricesMap_Eth = {}
   const prePricesArray_Eth = await oracleEth.getValues(ETH_SYMBOLS);
   const symbolsStringArray_Eth = ETH_SYMBOLS.replace(/\s+/g,"").split(',');
