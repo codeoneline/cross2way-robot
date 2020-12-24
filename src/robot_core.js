@@ -150,23 +150,25 @@ async function updatePrice(oracle, pricesMap, symbolsStringArray) {
 //   await updatePrice_WAN(oracle, pricesMap)
 // }
 
+function mergePrice(pricesMap, symbolsOld, symbolsMapStr) {
+  symbolsMapStr.replace(/\s+/g,"").split(',').forEach(i => { 
+    const kv = i.split(':')
+    if (kv.length === 2) {
+      pricesMap[kv[0]] = pricesMap[kv[1]]
+      symbolsOld.push(kv[0])
+    }
+  })
+}
+
 async function updatePrice_WAN(oracle, pricesMap) {
   const symbols = process.env.SYMBOLS.replace(/\s+/g,"").split(',')
-  process.env.SYMBOLS_MAP.replace(/\s+/g,"").split(',').forEach(i => { 
-    const kv = i.split(':')
-    pricesMap[kv[0]] = pricesMap[kv[1]]
-    symbols.push(kv[0])
-  })
+  mergePrice(pricesMap, symbols, process.env.SYMBOLS_MAP)
   await updatePrice(oracle, pricesMap, symbols)
 }
 
 async function updatePrice_ETH(oracle, pricesMap) {
   const symbols = process.env.SYMBOLS_ETH.replace(/\s+/g,"").split(',')
-  process.env.SYMBOLS_MAP_ETH.replace(/\s+/g,"").split(',').forEach(i => { 
-    const kv = i.split(':')
-    pricesMap[kv[0]] = pricesMap[kv[1]]
-    symbols.push(kv[0])
-  })
+  mergePrice(pricesMap, symbols, process.env.SYMBOLS_MAP_ETH)
   await updatePrice(oracle, pricesMap, symbols)
 }
 
