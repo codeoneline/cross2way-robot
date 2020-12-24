@@ -130,7 +130,7 @@ const robotSchedules = function() {
   // update price 1 / 12 hour
   // schedule.scheduleJob('0 0 */12 * * *', updatePriceToChains);
 
-  schedule.scheduleJob('0 */1 * * * *', updatePriceToWAN);
+  schedule.scheduleJob('0 * * * * *', updatePriceToWAN);
 
   schedule.scheduleJob('0 0 */2 * * *', updatePriceToETH);
 
