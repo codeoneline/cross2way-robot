@@ -1,5 +1,5 @@
 const schedule = require('node-schedule');
-process.env.LOG_ENGINE = process.env.LOG_ENGINE_4js
+process.env.LOG_ENGINE = process.env.LOG_ENGINE_WINSTON
 const log = require('./lib/log');
 const getPrices_cmc = require("./lib/cmc");
 const getPrices_crypto = require("./lib/crypto_compare");
