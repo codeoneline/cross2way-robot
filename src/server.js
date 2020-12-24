@@ -172,7 +172,7 @@ function mapStr2str(symbolsMapStr) {
 
 async function refreshOracles() {
   const mapStr = mapStr2str(process.env.SYMBOLS_MAP);
-  const WAN_SYMBOLS = process.env.SYMBOLS + mapStr.length > 0 ? ',' : "" + mapStr;
+  const WAN_SYMBOLS = process.env.SYMBOLS + (mapStr.length > 0 ? ',' : "") + mapStr;
   const prePricesArray = await oracleWan.getValues(WAN_SYMBOLS);
   const symbolsStringArray = WAN_SYMBOLS.replace(/\s+/g,"").split(',');
   const prePricesMap = {}
@@ -182,7 +182,7 @@ async function refreshOracles() {
   })
 
   const mapStrEth = mapStr2str(process.env.SYMBOLS_MAP_ETH)
-  const ETH_SYMBOLS = process.env.SYMBOLS_ETH + mapStrEth.length > 0 ? "," : "" + mapStrEth
+  const ETH_SYMBOLS = process.env.SYMBOLS_ETH + (mapStrEth.length > 0 ? "," : "") + mapStrEth
   const prePricesMap_Eth = {}
   const prePricesArray_Eth = await oracleEth.getValues(ETH_SYMBOLS);
   const symbolsStringArray_Eth = ETH_SYMBOLS.replace(/\s+/g,"").split(',');
