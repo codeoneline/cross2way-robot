@@ -19,7 +19,8 @@ function readSyncByfs(tips) {
   return buf.toString('utf8', 0, response).trim();
 }
 
-const { createScanEvent, doSchedule, updateWanPrice, updatePrice_WAN, updatePrice_ETH, syncPriceToOtherChain, syncConfigToOtherChain } = require('./robot_core');
+// const { createScanEvent, doSchedule, updateWanPrice, updatePrice_WAN, updatePrice_ETH, syncPriceToOtherChain, syncConfigToOtherChain } = require('./robot_core');
+const { createScanEvent, doSchedule, updatePrice_WAN, updatePrice_ETH, syncConfigToOtherChain } = require('./robot_core');
 
 const { loadContract } = require('./lib/abi_address');
 
@@ -65,17 +66,23 @@ const scanInst = createScanEvent(
 //   await syncPriceToOtherChain(oracleWan, oracleEth);
 // }
 
-const updatePriceToChains = async function() {
-  const pricesMap = await doSchedule(getPrices_coingecko, [process.env.SYMBOLS]);
-  log.info(`updatePriceToChains begin: ${JSON.stringify(pricesMap)}`);
+// const syncPriceToChains = async function() {
+//   log.info(`syncPriceToChains begin`);
+//   await doSchedule(syncPriceToOtherChain, [oracleWan, oracleEth]);
+//   log.info(`syncPriceToChains end`);
+// }
 
-  await doSchedule(updateWanPrice, [oracleWan, pricesMap]);
-  log.info(`updatePriceToChains end`);
+// const updatePriceToChains = async function() {
+//   const pricesMap = await doSchedule(getPrices_coingecko, [process.env.SYMBOLS]);
+//   log.info(`updatePriceToChains begin: ${JSON.stringify(pricesMap)}`);
 
-  setTimeout(async() => {
-    await syncPriceToChains()
-  }, 30000)
-}
+//   await doSchedule(updateWanPrice, [oracleWan, pricesMap]);
+//   log.info(`updatePriceToChains end`);
+
+//   setTimeout(async() => {
+//     await syncPriceToChains()
+//   }, 30000)
+// }
 
 const updatePriceToWAN = async function() {
   const pricesMap = await doSchedule(getPrices_coingecko, [process.env.SYMBOLS]);
@@ -91,12 +98,6 @@ const updatePriceToETH = async function() {
 
   await doSchedule(updatePrice_ETH, [oracleEth, pricesMap]);
   log.info(`updatePriceToChains end`);
-}
-
-const syncPriceToChains = async function() {
-  log.info(`syncPriceToChains begin`);
-  await doSchedule(syncPriceToOtherChain, [oracleWan, oracleEth]);
-  log.info(`syncPriceToChains end`);
 }
 
 const scanNewStoreMan = () => {

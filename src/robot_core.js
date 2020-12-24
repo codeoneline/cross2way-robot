@@ -72,50 +72,49 @@ async function doSchedule(func, args, tryTimes = process.env.SCHEDULE_RETRY_TIME
 //   return
 // }
 
-async function preUpdateMapTokenPrice(oracle, needUpdateMap, oldMap, deltaMap) {
-  const symbols = [];
-  const wanSymbols = [];
-  process.env.SYMBOLS_MAP.replace(/\s+/g,"").split(',').forEach(i => { 
-    const kv = i.split(':');
-    wanSymbols.push(kv[0]);
-    symbols.push(kv[1])}
-  )
+// async function preUpdateMapTokenPrice(oracle, needUpdateMap, oldMap, deltaMap) {
+//   const symbols = [];
+//   const wanSymbols = [];
+//   process.env.SYMBOLS_MAP.replace(/\s+/g,"").split(',').forEach(i => { 
+//     const kv = i.split(':');
+//     wanSymbols.push(kv[0]);
+//     symbols.push(kv[1])}
+//   )
 
-  const oldPricesArray = await oracle.getValuesByArray(symbols)
-  const mapPricesArray = await oracle.getValuesByArray(wanSymbols)
-  wanSymbols.forEach((wanSymbol, i) => {
-    const newPriceStr = needUpdateMap[symbols[i]];
-    let newPrice = web3.utils.toBN(oldPricesArray[i]);
-    if (newPriceStr) {
-      newPrice = web3.utils.toBN(newPriceStr);
-    }
-    const oldPrice = web3.utils.toBN(mapPricesArray[i]);
+//   const oldPricesArray = await oracle.getValuesByArray(symbols)
+//   const mapPricesArray = await oracle.getValuesByArray(wanSymbols)
+//   wanSymbols.forEach((wanSymbol, i) => {
+//     const newPriceStr = needUpdateMap[symbols[i]];
+//     let newPrice = web3.utils.toBN(oldPricesArray[i]);
+//     if (newPriceStr) {
+//       newPrice = web3.utils.toBN(newPriceStr);
+//     }
+//     const oldPrice = web3.utils.toBN(mapPricesArray[i]);
     
-    if (oldPrice.cmp(newPrice) !== 0) {
-      if (oldPrice.cmp(zero) === 0) {
-        needUpdateMap[wanSymbol] = '0x' + newPrice.toString(16);
-        oldMap[wanSymbol] = '0';
-        deltaMap[wanSymbol] = 'infinity'
-      } else {
-        const deltaTimes = newPrice.sub(oldPrice).mul(times).div(oldPrice).abs();
-        if (deltaTimes.cmp(threshold) > 0) {
-          needUpdateMap[wanSymbol] = '0x' + newPrice.toString(16);
-          oldMap[wanSymbol] = oldPrice.toString(10);
-          deltaMap[wanSymbol] = deltaTimes.toString(10);
-        }
-      }
-    }
-  })
-  return
-}
-async function updatePrice(oracle, pricesMap, symbolsStr) {
+//     if (oldPrice.cmp(newPrice) !== 0) {
+//       if (oldPrice.cmp(zero) === 0) {
+//         needUpdateMap[wanSymbol] = '0x' + newPrice.toString(16);
+//         oldMap[wanSymbol] = '0';
+//         deltaMap[wanSymbol] = 'infinity'
+//       } else {
+//         const deltaTimes = newPrice.sub(oldPrice).mul(times).div(oldPrice).abs();
+//         if (deltaTimes.cmp(threshold) > 0) {
+//           needUpdateMap[wanSymbol] = '0x' + newPrice.toString(16);
+//           oldMap[wanSymbol] = oldPrice.toString(10);
+//           deltaMap[wanSymbol] = deltaTimes.toString(10);
+//         }
+//       }
+//     }
+//   })
+//   return
+// }
+async function updatePrice(oracle, pricesMap, symbolsStringArray) {
   log.info(`updatePrice ${oracle.core.chainType} begin`);
   if (pricesMap) {
     const symbols = Object.keys(pricesMap);
 
     if (symbols.length > 0) {
-      const prePricesArray = await oracle.getValues(symbolsStr);
-      const symbolsStringArray = symbolsStr.replace(/\s+/g,"").split(',');
+      const prePricesArray = await oracle.getValuesByArray(symbolsStringArray);
 
       const prePricesMap = {}
       symbolsStringArray.forEach((v,i) => {prePricesMap[v] = prePricesArray[i];})
@@ -140,43 +139,51 @@ async function updatePrice(oracle, pricesMap, symbolsStr) {
           }
         }
       })
-      if (oracle.core.chainType === 'WAN') {
-        await preUpdateMapTokenPrice(oracle, needUpdateMap, oldMap, deltaMap)
-      }
+
       await oracle.updatePrice(needUpdateMap, oldMap, deltaMap);
     }
   }
   log.info(`updatePrice ${oracle.core.chainType} end`);
 }
 
-async function updateWanPrice(oracle, pricesMap) {
-  await updatePrice(oracle, pricesMap)
-}
+// async function updateWanPrice(oracle, pricesMap) {
+//   await updatePrice_WAN(oracle, pricesMap)
+// }
 
 async function updatePrice_WAN(oracle, pricesMap) {
-  await updateWanPrice(oracle, pricesMap)
+  const symbols = process.env.SYMBOLS.replace(/\s+/g,"").split(',')
+  process.env.SYMBOLS_MAP.replace(/\s+/g,"").split(',').forEach(i => { 
+    const kv = i.split(':')
+    pricesMap[kv[0]] = pricesMap[kv[1]]
+    symbols.push(kv[0])
+  })
+  await updatePrice(oracle, pricesMap, symbols)
 }
 
 async function updatePrice_ETH(oracle, pricesMap) {
-  const prePricesArray = await oracle.getValues(process.env.SYMBOLS);
-  const symbols = process.env.SYMBOLS_SYNC_2_ETH.replace(/\s+/g,"").split(',');
-  await updateWanPrice(oracle, pricesMap)
-}
-
-async function syncPriceToOtherChain(fromOracle, toOracle) {
-  log.info(`syncPriceToOtherChain from:${fromOracle.core.chainType} to:${toOracle.core.chainType} begin`);
-  const fromPricesArray = await fromOracle.getValues(process.env.SYMBOLS_SYNC_2_ETH);
-  const toPricesArray = await toOracle.getValues(process.env.SYMBOLS_SYNC_2_ETH);
-  const symbols = process.env.SYMBOLS_SYNC_2_ETH.replace(/\s+/g,"").split(',');
-  const deltaPricesMap = {}
-  symbols.forEach((symbol, i) => {
-    if (fromPricesArray[i] && (toPricesArray[i] !== fromPricesArray[i])) {
-      deltaPricesMap[symbol] = fromPricesArray[i];
-    }
+  const symbols = process.env.SYMBOLS_ETH.replace(/\s+/g,"").split(',')
+  process.env.SYMBOLS_MAP_ETH.replace(/\s+/g,"").split(',').forEach(i => { 
+    const kv = i.split(':')
+    pricesMap[kv[0]] = pricesMap[kv[1]]
+    symbols.push(kv[0])
   })
-
-  await toOracle.updatePrice(deltaPricesMap)
+  await updatePrice(oracle, pricesMap, symbols)
 }
+
+// async function syncPriceToOtherChain(fromOracle, toOracle) {
+//   log.info(`syncPriceToOtherChain from:${fromOracle.core.chainType} to:${toOracle.core.chainType} begin`);
+//   const fromPricesArray = await fromOracle.getValues(process.env.SYMBOLS_ETH);
+//   const toPricesArray = await toOracle.getValues(process.env.SYMBOLS_ETH);
+//   const symbols = process.env.SYMBOLS_ETH.replace(/\s+/g,"").split(',');
+//   const deltaPricesMap = {}
+//   symbols.forEach((symbol, i) => {
+//     if (fromPricesArray[i] && (toPricesArray[i] !== fromPricesArray[i])) {
+//       deltaPricesMap[symbol] = fromPricesArray[i];
+//     }
+//   })
+
+//   await toOracle.updatePrice(deltaPricesMap)
+// }
 
 async function updateDeposit(oracle, smgID, amount) {
   log.info(`updateDeposit`);
@@ -296,8 +303,8 @@ async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
 module.exports = {
   createScanEvent,
   doSchedule,
-  updateWanPrice,
-  syncPriceToOtherChain,
+  // updateWanPrice,
+  // syncPriceToOtherChain,
   syncConfigToOtherChain,
   updatePrice_WAN,
   updatePrice_ETH

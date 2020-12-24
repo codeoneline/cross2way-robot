@@ -169,7 +169,7 @@ async function refreshOracles() {
     prePricesMap[v] = padPrice.substr(0, padPrice.length - 18)+ '.'+ padPrice.substr(padPrice.length - 18, 18);
   })
 
-  const ETH_SYMBOLS = process.env.SYMBOLS_SYNC_2_ETH
+  const ETH_SYMBOLS = process.env.SYMBOLS_ETH
   const prePricesMap_Eth = {}
   const prePricesArray_Eth = await oracleEth.getValues(ETH_SYMBOLS);
   const symbolsStringArray_Eth = ETH_SYMBOLS.replace(/\s+/g,"").split(',');
