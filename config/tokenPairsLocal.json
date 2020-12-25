@@ -64,5 +64,27 @@
     "originAddress": "0xB1A601398BD79108853CDb1be8F2d81D5b9E6204",
 
     "mapChain": "ethereum"
+  },
+  "BTC2ETH": {
+    "id": "7",
+
+    "ancestorChain": "bitcoin",
+    "ancestorAddress": "0x0000000000000000000000000000000000000000",
+
+    "originChain": "bitcoin",
+    "originAddress": "0x0000000000000000000000000000000000000000",
+
+    "mapChain": "ethereum"
+  },
+  "BTC2WAN": {
+    "id": "8",
+
+    "ancestorChain": "bitcoin",
+    "ancestorAddress": "0x0000000000000000000000000000000000000000",
+
+    "originChain": "bitcoin",
+    "originAddress": "0x0000000000000000000000000000000000000000",
+
+    "mapChain": "wanchain"
   }
 }

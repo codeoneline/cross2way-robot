@@ -5,7 +5,6 @@ const ScanEvent = require('./scan_event');
 const db = require('./lib/sqlite_db');
 
 const times = web3.utils.toBN(process.env.THRESHOLD_TIMES);
-const threshold = web3.utils.toBN(process.env.THRESHOLD);
 const zero = web3.utils.toBN(0);
 
 function createScanEvent(contract, eventName, chainName, step, uncertainBlock, delay) {
@@ -110,6 +109,11 @@ async function doSchedule(func, args, tryTimes = process.env.SCHEDULE_RETRY_TIME
 // }
 async function updatePrice(oracle, pricesMap, symbolsStringArray) {
   log.info(`updatePrice ${oracle.core.chainType} begin`);
+
+  const threshold = oracle.core.chainType === 'ETH' 
+    ? web3.utils.toBN(process.env.THRESHOLD_ETH) 
+    : web3.utils.toBN(process.env.THRESHOLD);
+  
   if (pricesMap) {
     const symbols = Object.keys(pricesMap);
 
