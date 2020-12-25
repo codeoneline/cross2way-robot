@@ -24,7 +24,7 @@ class Oracle extends Contract {
       symbolByteArray.push(web3.utils.toHex(it));
       priceUintArray.push(priceUnit);
       if (oldMap && deltaMap) {
-        log.debug(`${this.core.chainType} ${it} will update from ${formatToFraction(oldMap[it])} to ${formatToFraction(web3.utils.toBN(priceUnit).toString(10))}, delta = ${deltaMap[it]}/${process.env.THRESHOLD_TIMES}`)
+        log.info(`${this.core.chainType} ${it} will update from ${formatToFraction(oldMap[it])} to ${formatToFraction(web3.utils.toBN(priceUnit).toString(10))}, delta = ${deltaMap[it]}/${process.env.THRESHOLD_TIMES}`)
       }
     })
 
