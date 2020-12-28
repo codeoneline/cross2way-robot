@@ -4,6 +4,7 @@ const OracleProxy = require('./contract/oracle_proxy');
 const TokenManagerProxy = require('./contract/token_manager_proxy');
 const StoremanGroupAdmin = require('./contract/storeman_group_admin');
 const MapToken = require('./contract/map_token');
+const log = require('./lib/log');
 
 const {changeOwner, upgradeTo, mint, unlockAccount, getBalance} = require('./admin_core');
 const { loadContract } = require('./lib/abi_address');
