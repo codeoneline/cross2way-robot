@@ -158,6 +158,6 @@
     "originAddress": "0x0000000000000000000000000000000000000000",
 
     "mapChain": "ethereum",
-    "mapToken": "0x058a55925627980dbb6d6d39f8dad5de5be16764"
+    "mapAddress": "0x058a55925627980dbb6d6d39f8dad5de5be16764"
   }
 }

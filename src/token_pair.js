@@ -160,7 +160,7 @@ const deployAndUpdate = async () => {
     if (tokenPairsConfig[key].mapChain === 'wanchain' || tokenPairsConfig[key].mapChain === 'ethereum') {
       await doAddOrUpdate(config, tokenPairsConfig, key, tokenPairsConfig[key].mapChain)
     }
-    if (tokenPairsConfig[key].mapChain === 'originChain' || tokenPairsConfig[key].originChain === 'ethereum') {
+    if (tokenPairsConfig[key].originChain === 'wanchain' || tokenPairsConfig[key].originChain === 'ethereum') {
       await doAddOrUpdate(config, tokenPairsConfig, key, tokenPairsConfig[key].originChain)
     }
     // if mapChain and originChain != 'wanchain', then add to wanchain oracle

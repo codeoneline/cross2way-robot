@@ -50,9 +50,10 @@
     "ancestorAddress": "0x0000000000000000000000000000000000000000",
 
     "originChain": "wanchain",
-    "originAddress": "0x27c65F357C261264aCBDD97A7f6605451002a368",
+    "originAddress": "0x75201c4483c1f9b99969650d49073effccf2fc79",
 
-    "mapChain": "ethereum"
+    "mapChain": "ethereum",
+    "mapAddress": "0x71203e012365c475069070583da412d5592c585c"
   },
   "WEOS2ETH": {
     "id": "6",
