@@ -117,6 +117,17 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "admin local",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}/src/admin.js",
+      "envFile": "${workspaceFolder}/.env.dev.local"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "robot local",
       "skipFiles": [
         "<node_internals>/**"
