@@ -1,5 +1,6 @@
 const log = require('../lib/log');
 const { sleep, privateToAddress } = require('../lib/utils');
+const BigNumber = require('bignumber.js')
 
 class Contract {
   constructor(chain, abi, contractAddress, ownerPrivateKey, ownerPrivateAddress) {
@@ -48,6 +49,32 @@ class Contract {
   async upgradeTo(impl) {
     const data = this.contract.methods.upgradeTo(impl).encodeABI();
     this.doOperator(this.upgradeTo.name, data, null, '0x00', this.retryTimes, this.pv_key, this.pv_address);
+  }
+
+  async sendCoin(to, amount, count, privateKey) {
+    const fromPriv = privateKey
+    const from = privateToAddress(fromPriv)
+    const nonce = await this.core.getTxCount(from);
+    const moneyPrvKeyBuffer = Buffer.from(fromPriv, 'hex');
+    const gasPrice = await this.core.getGasPrice();
+    const value = "0x" + new BigNumber(this.web3.utils.toWei(amount).toString(16)).toString(16);
+    const singedData = await this.signTx(21000, nonce, '0x', moneyPrvKeyBuffer, value, to, gasPrice)
+    const txHash = await this.core.sendRawTxByWeb3(singedData);
+
+    log.info(`${this.core.chainType} sendCoin hash: ${txHash}`);
+    let receipt = null;
+    let tryTimes = 0;
+    do {
+        await sleep(parseInt(process.env.RECEIPT_RETRY_INTERVAL));
+        receipt = await this.core.getTransactionReceipt(txHash);
+        tryTimes ++;
+    } while (!receipt && tryTimes < count);
+    if (!receipt) {
+        const content = `${this.core.chainType} sendCoin failed to get receipt, tx=${txHash} receipt, data: ${singedData}, nonce:${nonce}`;
+        log.error(content);
+        throw new Error(content);
+    }
+    log.debug(`${this.core.chainType} ${opName} receipt: ${JSON.stringify(receipt)}`);
   }
 
   async doOperator(opName, data, gasLimit, value, count, privateKey, pkAddress) {

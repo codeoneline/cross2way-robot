@@ -5,6 +5,7 @@ const TokenManagerProxy = require('./contract/token_manager_proxy');
 const StoremanGroupAdmin = require('./contract/storeman_group_admin');
 const MapToken = require('./contract/map_token');
 const log = require('./lib/log');
+const { privateToAddress} = require('./lib/utils')
 
 const {changeOwner, upgradeTo, mint, unlockAccount, getBalance} = require('./admin_core');
 const { loadContract } = require('./lib/abi_address');
@@ -82,7 +83,10 @@ setTimeout( async () => {
   // await wanEth.update('WAN@ethereum', 'WAN', {from: "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8"});
   // await mint([fnxWan], "0xb78fda5880f96DFf34CE1cE649B99E8B29AD570f".toLowerCase(), 100000);
   // await mint([linkEth], "0x1d26f4a4a5c14c3d61e4d3629657304e55cba69e".toLowerCase(), 100000);
-  await mint([btcWan], "0xFB683bDDB0ACBB00Dd162CD5E3798c7Fc6E5CFc0".toLowerCase(), 100000);
+  // await mint([btcWan], "0xFB683bDDB0ACBB00Dd162CD5E3798c7Fc6E5CFc0".toLowerCase(), 100000);
+  // await mint([fnxWan], "0xFB683bDDB0ACBB00Dd162CD5E3798c7Fc6E5CFc0".toLowerCase(), 100000);
+  // await fnxWan.sendCoin("0xFB683bDDB0ACBB00Dd162CD5E3798c7Fc6E5CFc0","10000",100,process.env.FNX_OWNER_SK);
+  await linkEth.sendCoin("0xFB683bDDB0ACBB00Dd162CD5E3798c7Fc6E5CFc0","10000",100,process.env.FNX_OWNER_SK);
   // await mint([linkEth], "0x67e3b428acbc3aa2fd38813f65dafbd5af97c6d5", 100000000);
   // await mint([fnxWan, btcWan, eosWan], "0xded23dd19136574fce6b4ab4ea76395c4088a033".toLowerCase(), 1000);
   // await mint([linkEth], "0xded23dd19136574fce6b4ab4ea76395c4088a033", 100000000);
