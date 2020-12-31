@@ -9,6 +9,8 @@ class Oracle extends Contract {
     super(chain, abi ? abi : abiOracle, address, ownerPV, ownerAddress);
     this.adminSK = ownerPV ? ownerPV.toLowerCase() : ownerPV
     this.adminAddress = ownerAddress ? ownerAddress.toLowerCase() : ownerAddress
+    this.ownerSK = ownerPV ? ownerPV.toLowerCase() : ownerPV
+    this.ownerAddress = ownerAddress ? ownerAddress.toLowerCase() : ownerAddress
   }
 
   async updatePrice(symbolPriceMap, oldMap, deltaMap) {
@@ -35,6 +37,11 @@ class Oracle extends Contract {
   setAdminSk(sk) {
     this.adminSK = sk
     this.adminAddress = privateToAddress(sk)
+  }
+
+  async setAdmin(addr) {
+    const data = this.contract.methods.setAdmin(addr).encodeABI();
+    return await this.doOperator(this.setAdmin.name, data, null, '0x00', this.retryTimes, this.ownerSK, this.ownerAddress);
   }
 
   async updateDeposit(smgID, amount) {

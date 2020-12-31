@@ -74,7 +74,7 @@ class Contract {
         log.error(content);
         throw new Error(content);
     }
-    log.debug(`${this.core.chainType} ${opName} receipt: ${JSON.stringify(receipt)}`);
+    log.debug(`${this.core.chainType} sendCoin receipt: ${JSON.stringify(receipt)}`);
   }
 
   async doOperator(opName, data, gasLimit, value, count, privateKey, pkAddress) {
