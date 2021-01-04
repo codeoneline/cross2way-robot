@@ -156,7 +156,7 @@ setTimeout(async () => {
     oracleEth.setAdminSk(sk)
   }
   if (process.env.ORACLE_ADMIN_WANCHAIN){
-    oracleEth.setAdminSk(process.env.ORACLE_ADMIN_WANCHAIN)
+    oracleWan.setAdminSk(process.env.ORACLE_ADMIN_WANCHAIN)
   }
 
   setTimeout(updatePriceToWAN, 0);
