@@ -154,8 +154,9 @@ setTimeout(async () => {
     sk = null
     sk = getSk(address, `请输入ethereum上oracle合约的admin(${address})的  私钥：`)
     oracleEth.setAdminSk(sk)
-  } else if (process.env.ORACLE_ADMIN_WANCHAIN){
-    oracleEth.setAdminSk(ORACLE_ADMIN_WANCHAIN)
+  }
+  if (process.env.ORACLE_ADMIN_WANCHAIN){
+    oracleEth.setAdminSk(process.env.ORACLE_ADMIN_WANCHAIN)
   }
 
   setTimeout(updatePriceToWAN, 0);
