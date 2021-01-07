@@ -1,7 +1,7 @@
 const axios = require('axios')
 const { getTestMessageUrl } = require('nodemailer');
 
-const { web3, sleep } = require('./lib/utils');
+const { web3, sleep, chainIds } = require('./lib/utils');
 const { loadContract, loadContractAt } = require('./lib/abi_address');
 
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
@@ -45,13 +45,7 @@ const dingSend = async (msg) => {
   console.log(ret.data);
 }
 
-const chainId = {
-  ETH: 0x8000003c,
-  WAN: 0x8057414e,
-  BTC: 0x80000000,
-  ETC: 0x8000003d,
-  EOS: 0x800000c2,
-}
+const chainId = chainIds
 
 const ObjectType = {
   Normal: 0,

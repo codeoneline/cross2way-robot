@@ -96,6 +96,26 @@ describe("sqlite3 test", function () {
     config = db.getSga("0x1111");
     assert.deepEqual(config, sga_config_new);
 
+    const sga_config2 = {
+      groupId: "0x1112",
+      status: 7,
+      deposit: "12345566778889",
+      chain1: 3,
+      chain2: 4,
+      curve1: 5,
+      curve2: 6,
+      gpk1: "0x2222",
+      gpk2: "0xaaaa",
+      startTime: 7,
+      endTime: 8,
+      updateTime: 9
+    };
+    db.insertSga(sga_config2);
+    const all = db.getAllSga();
+    const actives = db.getActiveSga();
+
+    assert.equal(all.length, actives.length + 1)
+
     // const sga_config_new2 = {
     //   groupId: "0x1111",
     // }

@@ -94,6 +94,9 @@ class DB {
   getSga(id) {
     return this.db.prepare(`select * from sga where groupId = ?`).get(id);
   }
+  getActiveSga() {
+    return this.db.prepare(`select * from sga where status < 8`).all();
+  }
 
   insertSga(item) {
     this.db.prepare(`insert into sga values (@groupId, @status, @deposit, @chain1, @chain2, @curve1, @curve2, @gpk1, @gpk2, @startTime, @endTime, @updateTime)`).run(item);

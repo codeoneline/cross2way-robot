@@ -7,7 +7,8 @@ const chainIds = {
     WAN: 0x8057414e,
     BTC: 0x80000000,
     ETC: 0x8000003d,
-    EOS: 0x800000c2
+    EOS: 0x800000c2,
+    XRP: 0x80000090,
 }
 
 function privateToAddress(sk) {

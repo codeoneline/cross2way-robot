@@ -5,6 +5,7 @@ const getPrices_crypto = require("./lib/crypto_compare");
 const getPrices_coingecko = require("./lib/coingecko");
 const readlineSync = require('readline-sync');
 const keythereum = require("keythereum");
+const db = require('./lib/sqlite_db');
 
 function readSyncByfs(tips) {
   tips = tips || '> ';
@@ -28,6 +29,9 @@ const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
 
 const oracleWan = loadContract(chainWan, 'OracleDelegate')
 const oracleEth = loadContract(chainEth, 'OracleDelegate')
+
+const quotaWan = loadContract(chainWan, 'QuotaDelegate')
+const quotaEth = loadContract(chainEth, 'QuotaDelegate')
 
 const sgaWan = loadContract(chainWan, 'StoremanGroupDelegate')
 
@@ -55,33 +59,6 @@ const scanInst = createScanEvent(
   parseInt(process.env.SCAN_UNCERTAIN_BLOCK),
   parseInt(process.env.SCAN_DELAY),
 );
-
-// const updatePriceToChains = async function() {
-//   const pricesMap = await doSchedule(getPrices_cmc, [process.env.SYMBOLS]);
-
-//   log.info(`prices: ${JSON.stringify(pricesMap)}`);
-
-//   await updateWanPrice(oracleWan, pricesMap);
-//   await syncPriceToOtherChain(oracleWan, oracleEth);
-// }
-
-// const syncPriceToChains = async function() {
-//   log.info(`syncPriceToChains begin`);
-//   await doSchedule(syncPriceToOtherChain, [oracleWan, oracleEth]);
-//   log.info(`syncPriceToChains end`);
-// }
-
-// const updatePriceToChains = async function() {
-//   const pricesMap = await doSchedule(getPrices_coingecko, [process.env.SYMBOLS]);
-//   log.info(`updatePriceToChains begin: ${JSON.stringify(pricesMap)}`);
-
-//   await doSchedule(updateWanPrice, [oracleWan, pricesMap]);
-//   log.info(`updatePriceToChains end`);
-
-//   setTimeout(async() => {
-//     await syncPriceToChains()
-//   }, 30000)
-// }
 
 const updatePriceToWAN = async function() {
   const pricesMap = await doSchedule(getPrices_coingecko, [process.env.SYMBOLS]);
@@ -125,6 +102,25 @@ const updateStoreManToChainsPart = async function() {
   },[])
 }
 
+const syncIsDebtCleanToWan = async function() {
+  // 0. 获取 wan chain 上活跃的 store man -- 记录在db里
+  const sgs = db.getActiveSga();
+  for (let i = 0; i<sgs.length; i++) {
+    const sg = sgs[i];
+    const groupId = sg.groupId;
+    // 1. 获取 wan上 quota合约 store man 的 debt clean
+    const isDebtClean_wan = await quotaWan.isDebtClean(groupId)
+    // 2. 获取 eth上 quota合约 store man 的 debt clean
+    const isDebtClean_eth = await quotaEth.isDebtClean(groupId)
+    // 3. 获取 btc上 quota合约 store man的gpk对应的btc地址，6个块前的utxo是否为空，为空则debt clean
+    // const isDebtClean_btc = true 
+    // 4. 如果其他链上都debt clean， 则将debt clean状态同步到wanChain的oracle上
+
+    console.log("wan", isDebtClean_wan, "eth", isDebtClean_eth)
+  }
+
+}
+
 const robotSchedules = function() {
   schedule.scheduleJob('0 * * * * *', updatePriceToWAN);
 
@@ -142,31 +138,33 @@ const robotSchedules = function() {
 // helper functions
 setTimeout(async () => {
   // set admin
-  const wanAdminAddress = await oracleWan.admin()
-  const ethAdminAddress = await oracleEth.admin()
+  // const wanAdminAddress = await oracleWan.admin()
+  // const ethAdminAddress = await oracleEth.admin()
 
-  if (process.env.USE_KEYSTORE === 'true') {
-    let address = wanAdminAddress.toLowerCase() 
-    let sk = getSk(address, `请输入wanchain上oracle合约的admin(${address})的  私钥：`)
-    oracleWan.setAdminSk(sk)
+  // if (process.env.USE_KEYSTORE === 'true') {
+  //   let address = wanAdminAddress.toLowerCase() 
+  //   let sk = getSk(address, `请输入wanchain上oracle合约的admin(${address})的  私钥：`)
+  //   oracleWan.setAdminSk(sk)
 
-    address = ethAdminAddress.toLowerCase()
-    sk = null
-    sk = getSk(address, `请输入ethereum上oracle合约的admin(${address})的  私钥：`)
-    oracleEth.setAdminSk(sk)
-  }
-  if (process.env.ORACLE_ADMIN_WANCHAIN){
-    oracleWan.setAdminSk(process.env.ORACLE_ADMIN_WANCHAIN)
-  }
+  //   address = ethAdminAddress.toLowerCase()
+  //   sk = null
+  //   sk = getSk(address, `请输入ethereum上oracle合约的admin(${address})的  私钥：`)
+  //   oracleEth.setAdminSk(sk)
+  // }
+  // if (process.env.ORACLE_ADMIN_WANCHAIN){
+  //   oracleWan.setAdminSk(process.env.ORACLE_ADMIN_WANCHAIN)
+  // }
 
-  setTimeout(updatePriceToWAN, 0);
-  setTimeout(updatePriceToETH, 0);
+  // setTimeout(updatePriceToWAN, 0);
+  // setTimeout(updatePriceToETH, 0);
 
-  setTimeout(scanNewStoreMan, 0);
+  // setTimeout(scanNewStoreMan, 0);
 
-  setTimeout(updateStoreManToChains, 0);
+  // setTimeout(updateStoreManToChains, 0);
 
-  robotSchedules();
+  // robotSchedules();
+
+  await syncIsDebtCleanToWan()
 }, 0)
 
 

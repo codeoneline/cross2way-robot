@@ -39,6 +39,11 @@ const chains = {
     symbol: "EOS",
     decimals: "4",
     chainId: chainIds.EOS.toString(),
+  },
+  "xrp": {
+    symbol: "XRP",
+    decimals: "6",
+    chainId: chainIds.XRP.toString(),
   }
 }
 

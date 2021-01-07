@@ -209,23 +209,26 @@ const chainCurveTypeConfig = {
   'ETH': '1',
   'BTC': '0',
 }
+
+async function writeToDB(config) {
+  const c = JSON.parse(JSON.stringify(config));
+  const updateTime = new Date().getTime();
+  c.updateTime = updateTime;
+  db.updateSga(c);
+}
 async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
   log.info(`syncConfigToOtherChain begin`);
-  const sgs = db.getAllSga();
-  const updateTime = new Date().getTime();
+  const sgs = db.getActiveSga();
   for (let i = 0; i<sgs.length; i++) {
     const sg = sgs[i];
     const groupId = sg.groupId;
     const config = await sgaContract.getStoremanGroupConfig(groupId);
     if (config) {
-      if ((sg.status !== parseInt(config.status)) ||
-        (sg.deposit !== config.deposit)
-      ) {
-        const c = JSON.parse(JSON.stringify(config));
-        c.updateTime = updateTime;
-        db.updateSga(c);
-      }
       if (!config.gpk1 || !config.gpk2) {
+        if ((sg.status !== parseInt(config.status)) ||
+            (sg.deposit !== config.deposit)){
+          writeToDB(config)
+        }
         continue;
       }
       for(let j = 0; j<oracles.length; j++) {
@@ -256,12 +259,15 @@ async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
               config.startTime,
               config.endTime,
             );
+            await writeToDB(config)
           } else if (config.deposit !== config_eth.deposit) {
             if (!isPart) {
               await updateDeposit(oracle, groupId, config.deposit);
+              await writeToDB(config)
             }
           } else if (config.status !== config_eth.status) {
             await setStoremanGroupStatus(oracle, groupId, config.status);
+            await writeToDB(config)
           }
         } else {
           const curve1 = chainCurveTypeConfig[oracle.chain.core.chainType]
@@ -292,12 +298,15 @@ async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
               config.startTime,
               config.endTime,
             );
+            await writeToDB(config)
           } else if (config.deposit !== config_eth.deposit) {
             if (!isPart) {
               await updateDeposit(oracle, groupId, config.deposit);
+              await writeToDB(config)
             }
           } else if (config.status !== config_eth.status) {
             await setStoremanGroupStatus(oracle, groupId, config.status);
+            await writeToDB(config)
           }
         }
       }
