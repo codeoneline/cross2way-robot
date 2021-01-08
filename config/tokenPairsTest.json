@@ -170,16 +170,5 @@
     "originAddress": "0x0000000000000000000000000000000000000000",
 
     "mapChain": "wanchain"
-  },
-  "XRP2WAN": {
-    "id": "16",
-
-    "ancestorChain": "xrp",
-    "ancestorAddress": "0x0000000000000000000000000000000000000000",
-
-    "originChain": "xrp",
-    "originAddress": "0x0000000000000000000000000000000000000000",
-
-    "mapChain": "wanchain"
   }
 }
