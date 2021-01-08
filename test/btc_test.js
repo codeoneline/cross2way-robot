@@ -130,7 +130,6 @@ const addressVersion = {
     "p2wifPk": 0x80,          // K / L    L1aW4aubDFB7yfras2S1mN3bqg9nwySY8nkoLmJebSLD5BWv3ENZ
     "p2bip32pk": 0x0488B21E,  // xpub     xpub661MyMwAqRbcEYS8w7XLSVeEsBXy79zSzH1J8vCdxAZningWLdN3 zgtU6LBpB85b3D2yc8sfvZU521AAwdZafEz7mnzBBsz4wKY5e4cp9LB
     "p2bip32sk": 0x0488ADE4,  // xprv     xprv9s21ZrQH143K24Mfq5zL5MhWK9hUhhGbd45hLXo2Pq2oqzMMo63o StZzF93Y5wvzdUayhgkkFoicQZcP3y52uPPxFnfoLZB21Teqt1VvEHx
-    // bech32 编码 p2wpkh p2wsh
   },
   "testnet" : {
     // base58 编码
@@ -140,9 +139,51 @@ const addressVersion = {
     "p2wifPk": 0xef,          // c        cNJFgo1driFnPcBdBX8BrJrpxchBWXwXCvNH5SoSkdcF6JXXwHMm
     "p2bip32pk": 0x043587CF,  // tpub     tpubD6NzVbkrYhZ4WLczPJWReQycCJdd6YVWXubbVUFnJ5KgU5MDQrD9 98ZJLNGbhd2pq7ZtDiPYTfJ7iBenLVQpYgSQqPjUsQeJXH8VQ8xA67D
     "p2bip32sk": 0x04358394,  // tprv     tprv8ZgxMBicQKsPcsbCVeqqF1KVdH7gwDJbxbzpCxDUsoXHdb6SnTPY xdwSAKDC6KKJzv7khnNWRAJQsRA8BBQyiSfYnRt6zuu4vZQGKjeW4YF
-    // bech32 编码 p2wpkh p2wsh
   }
 }
+// 地址的生成: 隔离见证
+//  准备解锁脚本
+//    p2wpkh: 
+//        op_0 <20-bytes hash>
+//    p2wsh : 
+//        op_hash160 <32-bytes hash> op_equal，地址32字节，其余地址20字节
+//      mainnet: bc
+//      testnet: tb
+//      regtest: bcrt
+//
+//    为了满足旧钱包的需求，将wpkh、wsh对应的锁定脚本,转到普通的p2sh地址格式
+//    p2sh-p2wpkh
+//    p2sh-p2wsh
+//      mainnet: 0x05
+//      testnet: 0xc4
+//      regtest: 0xc4
+
+// 锁定脚本的结构
+//   p2pkh: 是利用公钥的哈希，相对来说比较简单，现在新版本的钱包应用的越来越少, 25字节长度
+//      OP_DUP OP_HASH160 OPCODE_LEN ADDR OP_EQUALVERIFY OP_CHECKSIG
+//       0x76    0xa9        0x14  20字节地址     0x88        0xac
+//   p2sh: 脚本的哈希, 23字节长度
+//      OP_HASH160 OPCODE_LEN ADDR OP_EQUAL
+//         0xa9      0x14   20字节地址 0x87
+//   p2wpkh: 是隔离见证中公钥地址的表示，格式主要是为了与非隔离见证的锁定脚本区别。旧钱包是不支持的， 22字节长度
+//      VER   OPCODE_LEN  ADDR
+//      0x00     0x14    20字节地址
+//   p2wsh: 是隔离见证中脚本地址的表示，34字节长度
+//      VER   OPCODE_LEN  ADDR
+//      0x00     0x20    32字节地址
+//   p2sh-p2wpkh: 对P2WPKH进行HASH160得到20字节地址, 23字节长度
+//   p2sh-p2wsh: 对P2WSH进行HASH160得到20字节地址, 23字节长度
+//      OP_HASH160 OPCODE_LEN ADDR OP_EQUAL
+//         0xa9      0x14   20字节地址 0x87
+
+// 比特币地址类型：
+// 比特币地址类型分为3中格式： legacy p2sh-segwit bech32
+
+// legacy类型实际上就是取公钥或脚本的HASH160值得到20位字节地址。
+
+// p2sh-segwit：对应生成P2SH-P2WPKH 和 P2SH-P2WSH中的地址
+
+// bech32：对应生成P2WPKH 和 P2WSH中的地址
 function toAddress(pk, bSegwit, version) {
   // hash160 = ripemd160(sha256())
   const hash160 = bitcoin.crypto.hash160
@@ -189,6 +230,45 @@ if (addr === "bc1qxwrmaesyve53tynmn02jz4cc8qeu25d2afxww8") {
   console.log("haha good")
 }
 
+// 地址的生成
+//  准备解锁脚本
+//    p2wpkh: op_0 <20-bytes hash>
+//    p2wsh : op_hash160 <32-bytes hash> op_equal
+// https://juejin.cn/post/6844904003302588423
+function generateSegWitAddress(pk, type, chainType) {
+  let hrp = 'bc'
+  switch(chainType) {
+    case 'testnet':
+      hrp = 'tb'
+      break
+    case 'regtest':
+      hrp = 'bcrt'
+      break
+  }
+  if (type === 'p2wpkh') {
+    // op_0 <20-bytes hash>
+    // hash160 = ripemd160(sha256())
+    const hash160 = bitcoin.crypto.hash160
+    // hash256 = sha256(sha256)
+    const hash256 = bitcoin.crypto.hash256
+
+    // 20-bytes hash
+    const b20 = hash160(Buffer.from(pk, 'hex'))
+
+    let words = bech32.toWords(b20);
+    // op_0 ?
+    words.unshift(0);
+
+    const address = bech32.encode(hrp, words);
+
+    console.log(`seg wit ${address}`)
+
+    return address
+  } else if (type === 'p2wsh') {
+    // op_hash160 <32-bytes hash> op_equal
+  }
+
+}
 
 const pubKeyStr = '0x2e9ad92f5f541b6c2ddb672a70577c252aaa8b9b8dfdff9a5381912395985d12dc18f19ecb673a3b675697ae97913fcb69598c089f6d66ae7a3f6dc179e4da56'
 
