@@ -1,26 +1,53 @@
 {
-  "TokenManagerProxy": {
-    "address": "0x9f35da7049FD6CF80c5fe77e2E94bFD969FaE16A",
-    "abi": "abi.TokenManagerDelegate.json"
-  },
-  "TokenManagerDelegate": {
-    "address": "0x220BE1d091cCC609f43EE11F62F7585108be100A",
-    "abi": "abi.TokenManagerDelegate.json"
-  },
-  "OracleProxy": {
-    "address": "0xF728FB2e26Be1f12496d9F68BDDFe1Eac0eBFD26",
-    "abi": "abi.OracleDelegate.json"
-  },
-  "OracleDelegate": {
-    "address": "0x753A5e8546bbE2fcA75342782c31162C1b12e434",
-    "abi": "abi.OracleDelegate.json"
-  },
-  "CrossProxy": {
-    "address": "0x7B985C9379A13D2AdF685AEe9cb6d2E3F1809ffB",
-    "abi": "abi.CrossDelegate.json"
-  },
-  "QuotaProxy": {
-    "address": "0xCFA99170C6e897BF78eE8809f0Bde3cd9D9c6652",
-    "abi": "abi.QuotaDelegate.json"
-  }
+     "TokenManagerProxy": {
+          "address": "0x33E5C27DBe52153db485aa66d57cB318D259ffe5",
+          "abi": "abi.TokenManagerDelegate.json"
+     },
+     "TokenManagerDelegate": {
+          "address": "0xf012d189b76bE03820649579936594A0ff5DeDd7",
+          "abi": "abi.TokenManagerDelegate.json"
+     },
+     "QuotaProxy": {
+          "address": "0x59448a4BfeE3A6a5B7528e209d77aB172a9CF599",
+          "abi": "abi.QuotaDelegate.json"
+     },
+     "QuotaDelegate": {
+          "address": "0x57b739171fc9a4a52E34E979E95FeB5766bd1409",
+          "abi": "abi.QuotaDelegate.json"
+     },
+     "OracleProxy": {
+          "address": "0xA1119EDf05E027A805B51A8263461B74c167C1ae",
+          "abi": "abi.OracleDelegate.json"
+     },
+     "OracleDelegate": {
+          "address": "0xFDB6f88A18298BDdbbfD5A91Ea99a562a80a8882",
+          "abi": "abi.OracleDelegate.json"
+     },
+     "HTLCTxLib": {
+          "address": "0xDA0E8CC991bacA73089b8e68C58F9610A85fc90f"
+     },
+     "HTLCDebtLib": {
+          "address": "0x27bC6403AF394D511e2fE40b0444f27FB89915eF"
+     },
+     "RapidityLib": {
+          "address": "0xd9531876Ada346d900E26DB94c355537980460DE"
+     },
+     "CrossProxy": {
+          "address": "0x9154E6A720F8F5414E31b9554772B993A9692a11",
+          "abi": "abi.CrossDelegate.json"
+     },
+     "CrossDelegate": {
+          "address": "0x967215321518fA1C1b28Bb03Cc6C20092B710f4B",
+          "abi": "abi.CrossDelegate.json"
+     },
+     "SignatureVerifier": {
+          "address": "0x16CbbC3088Bf87B32d37C04f9B89566Cc702D85e",
+          "abi": "abi.SignatureVerifier.json"
+     },
+     "Bn128SchnorrVerifier": {
+          "address": "0xda1eef6AF970B377D4cdbDDd8FE87C0FE57D91a2"
+     },
+     "Secp256k1SchnorrVerifier": {
+          "address": "0x0948e0238BBe10eDa041AB3A8288F3431EaE21bd"
+     }
 }
