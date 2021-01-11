@@ -117,6 +117,17 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "admin mainnet",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}/src/admin.js",
+      "envFile": "${workspaceFolder}/.env.production"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "admin local",
       "skipFiles": [
         "<node_internals>/**"

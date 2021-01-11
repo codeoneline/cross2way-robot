@@ -6,6 +6,7 @@ const StoremanGroupAdmin = require('./contract/storeman_group_admin');
 const MapToken = require('./contract/map_token');
 const log = require('./lib/log');
 const { privateToAddress} = require('./lib/utils')
+const { sendCoin } = require('./contract/index')
 
 const {changeOwner, upgradeTo, mint, unlockAccount, getBalance} = require('./admin_core');
 const { loadContract } = require('./lib/abi_address');
@@ -24,10 +25,10 @@ const tmEth = loadContract(chainEth, 'TokenManagerDelegate')
 
 const oracleWan = loadContract(chainWan, 'OracleDelegate')
 
-const fnxWan = new MapToken(chainWan, process.env.FNX_ADDR, process.env.FNX_OWNER_SK, process.env.FNX_OWNER_ADDR);
-const linkEth = new MapToken(chainEth, process.env.LINK_ADDR_ETH, process.env.LINK_OWNER_SK_ETH, process.env.LINK_OWNER_ADDR_ETH);
-const btcWan = new MapToken(chainWan, process.env.BTC_ADDR, process.env.FNX_OWNER_SK, process.env.FNX_OWNER_ADDR);
-const eosWan = new MapToken(chainWan, process.env.EOS_ADDR, process.env.FNX_OWNER_SK, process.env.FNX_OWNER_ADDR);
+// const fnxWan = new MapToken(chainWan, process.env.FNX_ADDR, process.env.FNX_OWNER_SK, process.env.FNX_OWNER_ADDR);
+// const linkEth = new MapToken(chainEth, process.env.LINK_ADDR_ETH, process.env.LINK_OWNER_SK_ETH, process.env.LINK_OWNER_ADDR_ETH);
+// const btcWan = new MapToken(chainWan, process.env.BTC_ADDR, process.env.FNX_OWNER_SK, process.env.FNX_OWNER_ADDR);
+// const eosWan = new MapToken(chainWan, process.env.EOS_ADDR, process.env.FNX_OWNER_SK, process.env.FNX_OWNER_ADDR);
 
 const tms = {
   "WAN": tmWan,
@@ -74,7 +75,7 @@ setTimeout( async () => {
   // const new_owner_addr = "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8";
   // const new_owner_sk = "b6a0`3207128827eaae0d31d97a7a6243de31f2baf99eabd764e33389ecf436fc";
 
-  console.log(await chainEth.core.getBlockNumber())
+  // console.log(await chainEth.core.getBlockNumber())
 
   // await unlockAccount([chainWan], "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8", "wanglu", 36000);
 
@@ -92,7 +93,7 @@ setTimeout( async () => {
   // await linkEth.sendCoin("0xe2f31d7ba3e0098ea0e64d94c0224365812b986c","10000",100,process.env.FNX_OWNER_SK);
   // await mint([linkEth], "0xe2f31d7ba3e0098ea0e64d94c0224365812b986c".toLowerCase(), 1000000);
 
-  await oracleWan.setAdmin("0x941c3f932182dfa95a30dc5859c062d4ff8e6859");
+  // await oracleWan.setAdmin("0x941c3f932182dfa95a30dc5859c062d4ff8e6859");
 
   // await mint([linkEth], "0x67e3b428acbc3aa2fd38813f65dafbd5af97c6d5", 100000000);
   // await mint([fnxWan, btcWan, eosWan], "0xded23dd19136574fce6b4ab4ea76395c4088a033".toLowerCase(), 1000);

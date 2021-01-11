@@ -334,6 +334,12 @@ describe('bitcoinjs-lib (addresses)', function () {
 // }
 
 // 7957a35fe64f80d234d76d83a2a8f1a0d8149a41d81de548f0a65a8a999f6f18
+// "vout": [
+//   {
+//     "value": 0.10000000,
+//     "scriptPubKey": "OP_DUP OP_HASH160 7f9b1a7fb68d60c536c2fd8aeaa53a8f3cc025a8 OP_EQUALVERIFY OP_CHECKSIG"
+//   }
+// ]
 // value 0.1
 // Inputs
 // index      0, 
@@ -347,3 +353,13 @@ describe('bitcoinjs-lib (addresses)', function () {
 // address    1Cdid9KFAaatwczBwBttQcwXYCpvK8h7FK
 // Pkscript   Invalid   ASM
 // Value      0.1
+// 交易序列化
+//  交易输入
+//    交易ID以反转字节顺序序列化，因此以（十六进制）18开头，以79结尾
+//    输出索引为4字节组的“0”，容易识别
+//    scriptSig的长度为139个字节，或十六进制为8b
+//    序列号设置为FFFFFFFF，也容易识别
+
+
+// curl https://bitcoinfees.21.co/api/v1/fees/recommended
+// {"fastestFee":80,"halfHourFee":80,"hourFee":60}
