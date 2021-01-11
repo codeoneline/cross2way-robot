@@ -29,7 +29,7 @@ const oracleWan = loadContract(chainWan, 'OracleDelegate')
 // const btcWan = new MapToken(chainWan, process.env.BTC_ADDR, process.env.FNX_OWNER_SK, process.env.FNX_OWNER_ADDR);
 // const eosWan = new MapToken(chainWan, process.env.EOS_ADDR, process.env.FNX_OWNER_SK, process.env.FNX_OWNER_ADDR);
 
-const uniEthMapToken = new MapToken(chainWan, "0xff41E7f3b22328853d351BE2a8f4090e713DA850", process.env.FNX_OWNER_SK, process.env.FNX_OWNER_ADDR)
+// const uniEthMapToken = new MapToken(chainWan, "0xff41E7f3b22328853d351BE2a8f4090e713DA850", process.env.FNX_OWNER_SK, process.env.FNX_OWNER_ADDR)
 
 const tms = {
   "WAN": tmWan,
