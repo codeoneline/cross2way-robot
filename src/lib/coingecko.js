@@ -1,5 +1,6 @@
 const axios = require('axios');
 const { fractionToDecimalString } = require('./utils');
+const log = require('./log')
 
 const getData = async url => {
   try {
@@ -34,6 +35,8 @@ const getIDs = async (url, symbolsStr) => {
     symbols.forEach(symbol => {
       if (symbol === "fnx") {
         symbolsMap[symbol] = "finnexus"
+      } else if (symbol === "uni") {
+        symbolsMap[symbol] = "uniswap"
       } else {
         symbolsMap[symbol] = ""
       }
@@ -46,8 +49,9 @@ const getIDs = async (url, symbolsStr) => {
         if (symbolsMap[item.symbol] === "") {
           symbolsMap[item.symbol] = item.id
         } else {
-          if (item.symbol !== "fnx") {
-            throw new Error(`duplicated new ${JSON.stringify(item, null, 2)}, old ${JSON.stringify(symbolsMap[item.symbol], null, 2)}}`)
+          if (item.symbol !== "fnx" && item.symbol !== "uni") {
+            log.error(`duplicated new ${JSON.stringify(item, null, 2)}, old ${JSON.stringify(symbolsMap[item.symbol], null, 2)}`)
+            throw new Error(`duplicated new ${JSON.stringify(item, null, 2)}, old ${JSON.stringify(symbolsMap[item.symbol], null, 2)}`)
           }
         }
       }
@@ -55,11 +59,7 @@ const getIDs = async (url, symbolsStr) => {
 
     return symbolsMap
   } catch (error) {
-    if (typeof(error) === "string") {
-      console.error(error)
-    } else {
-      console.error(JSON.stringify(error))
-    }
+    console.error(error)
   }
   return null
 }
