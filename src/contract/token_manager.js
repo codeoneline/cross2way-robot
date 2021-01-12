@@ -77,6 +77,11 @@ class TokenManager extends Contract {
   async mapTokenPairInfo(id) {
     return await this.core.getScMap('mapTokenPairInfo', id, this.contract, this.abi);
   }
+
+  async removeTokenPair(id) {
+    const data = this.contract.methods.removeTokenPair(id).encodeABI();
+    return await this.doOperator(this.removeTokenPair.name, data, null, '0x00', this.retryTimes, this.pv_key, this.pv_address);
+  }
 }
 
 module.exports = TokenManager;
