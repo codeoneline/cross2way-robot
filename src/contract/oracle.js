@@ -39,6 +39,11 @@ class Oracle extends Contract {
     this.adminAddress = privateToAddress(sk)
   }
 
+  async removeTokenPair(id) {
+    const data = this.contract.methods.removeTokenPair(id).encodeABI();
+    return await this.doOperator(this.removeTokenPair.name, data, null, '0x00', this.retryTimes, this.ownerSK, this.ownerAddress);
+  }
+
   async setAdmin(addr) {
     const data = this.contract.methods.setAdmin(addr).encodeABI();
     return await this.doOperator(this.setAdmin.name, data, null, '0x00', this.retryTimes, this.ownerSK, this.ownerAddress);

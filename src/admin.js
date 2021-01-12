@@ -23,6 +23,7 @@ const tmWan = loadContract(chainWan, 'TokenManagerDelegate')
 const tmEth = loadContract(chainEth, 'TokenManagerDelegate')
 
 const oracleWan = loadContract(chainWan, 'OracleDelegate')
+const oracleEth = loadContract(chainEth, 'OracleDelegate')
 
 // event SetStoremanGroupConfig(bytes32 indexed id, uint8 status, uint deposit, uint[2] chain, uint[2] curve, bytes gpk1, bytes gpk2, uint startTime, uint endTime);
 //   event SetStoremanGroupStatus(bytes32 indexed id, uint8 status);
@@ -88,6 +89,9 @@ setTimeout( async () => {
   // const old_owner_sk = "a4369e77024c2ade4994a9345af5c47598c7cfb36c65e8a4a3117519883d9014";
   // const new_owner_addr = "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8";
   // const new_owner_sk = "b6a0`3207128827eaae0d31d97a7a6243de31f2baf99eabd764e33389ecf436fc";
+
+  await tmWan.removeTokenPair(17)
+  await tmEth.removeTokenPair(17)
 
   // console.log(await chainEth.core.getBlockNumber())
   // await uniEthMapToken.transferOwner('0x017ab6485ff91c1a0a16b90e71f92b935b7213d3')
