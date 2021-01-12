@@ -24,6 +24,19 @@ const tmEth = loadContract(chainEth, 'TokenManagerDelegate')
 
 const oracleWan = loadContract(chainWan, 'OracleDelegate')
 
+// event SetStoremanGroupConfig(bytes32 indexed id, uint8 status, uint deposit, uint[2] chain, uint[2] curve, bytes gpk1, bytes gpk2, uint startTime, uint endTime);
+//   event SetStoremanGroupStatus(bytes32 indexed id, uint8 status);
+//   event UpdateDeposit(bytes32 indexed id, uint deposit);
+const id = web3.utils.keccak256('SetStoremanGroupConfig(bytes32,uint8,uint256,uint256[2],uint256[2],bytes,bytes,uint256,uint256)')
+console.log(`SetStoremanGroupConfig : ${id}`)
+const id1 = web3.utils.keccak256('SetStoremanGroupStatus(bytes32,uint8)')
+console.log(`SetStoremanGroupStatus : ${id1}`)
+const id2 = web3.utils.keccak256('UpdateDeposit(bytes32,uint256)')
+console.log(`UpdateDeposit : ${id2}`)
+const id3 = web3.utils.keccak256('UpdatePrice(bytes32[],uint256[])')
+console.log(`UpdatePrice : ${id3}`)
+console.log(`end`)
+
 // const fnxWan = new MapToken(chainWan, process.env.FNX_ADDR, process.env.FNX_OWNER_SK, process.env.FNX_OWNER_ADDR);
 // const linkEth = new MapToken(chainEth, process.env.LINK_ADDR_ETH, process.env.LINK_OWNER_SK_ETH, process.env.LINK_OWNER_ADDR_ETH);
 // const btcWan = new MapToken(chainWan, process.env.BTC_ADDR, process.env.FNX_OWNER_SK, process.env.FNX_OWNER_ADDR);
