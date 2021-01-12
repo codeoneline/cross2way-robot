@@ -159,5 +159,39 @@
 
     "mapChain": "ethereum",
     "mapAddress": "0xab839532149d889a417e1275eab0b62b2ad32d09"
+  },
+  "BTC2WAN": {
+    "id": "15",
+
+    "ancestorChain": "bitcoin",
+    "ancestorAddress": "0x0000000000000000000000000000000000000000",
+
+    "originChain": "bitcoin",
+    "originAddress": "0x0000000000000000000000000000000000000000",
+
+    "mapChain": "wanchain"
+  },
+  "UNI2WAN": {
+    "id": "16",
+
+    "ancestorChain": "ethereum",
+    "ancestorAddress": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+
+    "originChain": "ethereum",
+    "originAddress": "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+
+    "mapChain": "wanchain",
+    "mapAddress": "0xd60dc0751ccd13180c375d001c63de8adc6cf915"
+  },
+  "XRP2WAN": {
+    "id": "17",
+
+    "ancestorChain": "xrp",
+    "ancestorAddress": "0x0000000000000000000000000000000000000000",
+
+    "originChain": "xrp",
+    "originAddress": "0x0000000000000000000000000000000000000000",
+
+    "mapChain": "wanchain"
   }
 }
