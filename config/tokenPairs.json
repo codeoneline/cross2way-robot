@@ -159,5 +159,16 @@
 
     "mapChain": "ethereum",
     "mapAddress": "0x058a55925627980dbb6d6d39f8dad5de5be16764"
+  },
+  "UNI2WAN": {
+    "id": "16",
+
+    "ancestorChain": "ethereum",
+    "ancestorAddress": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+
+    "originChain": "ethereum",
+    "originAddress": "0x1f9840a85d5af5bf1d1762f925bdaddc4201f984",
+
+    "mapChain": "wanchain"
   }
 }

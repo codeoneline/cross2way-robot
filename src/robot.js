@@ -114,9 +114,10 @@ const syncIsDebtCleanToWan = async function() {
     const isDebtClean_eth = await quotaEth.isDebtClean(groupId)
     // 3. 获取 btc上 quota合约 store man的gpk对应的btc地址，6个块前的utxo是否为空，为空则debt clean
     // const isDebtClean_btc = true 
+    const isDebtClean_btc = await quotaEth.isDebtClean(groupId)
     // 4. 如果其他链上都debt clean， 则将debt clean状态同步到wanChain的oracle上
 
-    console.log("wan", isDebtClean_wan, "eth", isDebtClean_eth)
+    console.log("wan", isDebtClean_wan, "eth", isDebtClean_eth, "btc", isDebtClean_btc)
   }
 
 }
