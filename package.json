@@ -48,6 +48,7 @@
     "nodemailer": "^6.4.10",
     "readline-sync": "^1.4.10",
     "request-promise": "^4.2.5",
+    "ripple-keypairs": "^1.0.2",
     "secp256k1": "^4.0.1",
     "wanchainjs-tx": "^1.5.0",
     "web3": "^1.2.9",
