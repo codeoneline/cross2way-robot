@@ -20,12 +20,13 @@ function readSyncByfs(tips) {
 }
 
 // const { createScanEvent, doSchedule, updateWanPrice, updatePrice_WAN, updatePrice_ETH, syncPriceToOtherChain, syncConfigToOtherChain } = require('./robot_core');
-const { createScanEvent, doSchedule, updatePrice_WAN, updatePrice_ETH, syncConfigToOtherChain } = require('./robot_core');
+const { createScanEvent, doSchedule, updatePrice_WAN, updatePrice_ETH, syncConfigToOtherChain, syncIsDebtCleanToWan } = require('./robot_core');
 
 const { loadContract } = require('./lib/abi_address');
 
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
+const chainBtc = require(`./chain/${process.env.IWAN_BTC_CHAIN_ENGINE}`);
 
 const oracleWan = loadContract(chainWan, 'OracleDelegate')
 const oracleEth = loadContract(chainEth, 'OracleDelegate')
@@ -102,38 +103,26 @@ const updateStoreManToChainsPart = async function() {
   },[])
 }
 
-const syncIsDebtCleanToWan = async function() {
-  // 0. 获取 wan chain 上活跃的 store man -- 记录在db里
-  const sgs = db.getActiveSga();
-  for (let i = 0; i<sgs.length; i++) {
-    const sg = sgs[i];
-    const groupId = sg.groupId;
-    // 1. 获取 wan上 quota合约 store man 的 debt clean
-    const isDebtClean_wan = await quotaWan.isDebtClean(groupId)
-    // 2. 获取 eth上 quota合约 store man 的 debt clean
-    const isDebtClean_eth = await quotaEth.isDebtClean(groupId)
-    // 3. 获取 btc上 quota合约 store man的gpk对应的btc地址，6个块前的utxo是否为空，为空则debt clean
-    // const isDebtClean_btc = true 
-    const isDebtClean_btc = await quotaEth.isDebtClean(groupId)
-    // 4. 如果其他链上都debt clean， 则将debt clean状态同步到wanChain的oracle上
-
-    console.log("wan", isDebtClean_wan, "eth", isDebtClean_eth, "btc", isDebtClean_btc)
-  }
-
+const updateDebtCleanToWan = async function() {
+  log.info("updateDebtCleanToWan")
+  await doSchedule(async () => {
+    await syncIsDebtCleanToWan(oracleWan, quotaWan, quotaEth, chainBtc)
+  }, [])
 }
-
 const robotSchedules = function() {
-  schedule.scheduleJob('0 * * * * *', updatePriceToWAN);
+  schedule.scheduleJob('20 * * * * *', updatePriceToWAN);
 
-  schedule.scheduleJob('0 0 */2 * * *', updatePriceToETH);
+  schedule.scheduleJob('20 0 */2 * * *', updatePriceToETH);
 
   // sync sga to sga database, 1 / 5min
   schedule.scheduleJob('0 */5 * * * *', scanNewStoreMan);
 
   // sync sga config from wan to other chain, sga database, 1 / 1day
-  schedule.scheduleJob('30 2 1 * * *', updateStoreManToChains);
+  schedule.scheduleJob('15 2 1 * * *', updateStoreManToChains);
 
-  schedule.scheduleJob('0 */8 * * * *', updateStoreManToChainsPart);
+  schedule.scheduleJob('30 */8 * * * *', updateStoreManToChainsPart);
+
+  schedule.scheduleJob('45 */11 * * * *', updateDebtCleanToWan);
 };
 
 // helper functions
@@ -158,14 +147,9 @@ setTimeout(async () => {
 
   setTimeout(updatePriceToWAN, 0);
   setTimeout(updatePriceToETH, 0);
-
   setTimeout(scanNewStoreMan, 0);
 
-  setTimeout(updateStoreManToChains, 0);
-
   robotSchedules();
-
-  // await syncIsDebtCleanToWan()
 }, 0)
 
 
