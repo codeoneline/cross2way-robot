@@ -23,11 +23,27 @@ const tmWan = loadContract(chainWan, 'TokenManagerDelegate')
 const tmEth = loadContract(chainEth, 'TokenManagerDelegate')
 
 const oracleWan = loadContract(chainWan, 'OracleDelegate')
+const oracleEth = loadContract(chainEth, 'OracleDelegate')
 
-const fnxWan = new MapToken(chainWan, process.env.FNX_ADDR, process.env.FNX_OWNER_SK, process.env.FNX_OWNER_ADDR);
-const linkEth = new MapToken(chainEth, process.env.LINK_ADDR_ETH, process.env.LINK_OWNER_SK_ETH, process.env.LINK_OWNER_ADDR_ETH);
-const btcWan = new MapToken(chainWan, process.env.BTC_ADDR, process.env.FNX_OWNER_SK, process.env.FNX_OWNER_ADDR);
-const eosWan = new MapToken(chainWan, process.env.EOS_ADDR, process.env.FNX_OWNER_SK, process.env.FNX_OWNER_ADDR);
+// event SetStoremanGroupConfig(bytes32 indexed id, uint8 status, uint deposit, uint[2] chain, uint[2] curve, bytes gpk1, bytes gpk2, uint startTime, uint endTime);
+//   event SetStoremanGroupStatus(bytes32 indexed id, uint8 status);
+//   event UpdateDeposit(bytes32 indexed id, uint deposit);
+const id = web3.utils.keccak256('SetStoremanGroupConfig(bytes32,uint8,uint256,uint256[2],uint256[2],bytes,bytes,uint256,uint256)')
+console.log(`SetStoremanGroupConfig : ${id}`)
+const id1 = web3.utils.keccak256('SetStoremanGroupStatus(bytes32,uint8)')
+console.log(`SetStoremanGroupStatus : ${id1}`)
+const id2 = web3.utils.keccak256('UpdateDeposit(bytes32,uint256)')
+console.log(`UpdateDeposit : ${id2}`)
+const id3 = web3.utils.keccak256('UpdatePrice(bytes32[],uint256[])')
+console.log(`UpdatePrice : ${id3}`)
+console.log(`end`)
+
+// const fnxWan = new MapToken(chainWan, process.env.FNX_ADDR, process.env.FNX_OWNER_SK, process.env.FNX_OWNER_ADDR);
+// const linkEth = new MapToken(chainEth, process.env.LINK_ADDR_ETH, process.env.LINK_OWNER_SK_ETH, process.env.LINK_OWNER_ADDR_ETH);
+// const btcWan = new MapToken(chainWan, process.env.BTC_ADDR, process.env.FNX_OWNER_SK, process.env.FNX_OWNER_ADDR);
+// const eosWan = new MapToken(chainWan, process.env.EOS_ADDR, process.env.FNX_OWNER_SK, process.env.FNX_OWNER_ADDR);
+
+// const uniEthMapToken = new MapToken(chainWan, "0xff41E7f3b22328853d351BE2a8f4090e713DA850", process.env.FNX_OWNER_SK, process.env.FNX_OWNER_ADDR)
 
 const tms = {
   "WAN": tmWan,
@@ -74,7 +90,11 @@ setTimeout( async () => {
   // const new_owner_addr = "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8";
   // const new_owner_sk = "b6a0`3207128827eaae0d31d97a7a6243de31f2baf99eabd764e33389ecf436fc";
 
-  console.log(await chainEth.core.getBlockNumber())
+  await tmWan.removeTokenPair(17)
+  await tmEth.removeTokenPair(17)
+
+  // console.log(await chainEth.core.getBlockNumber())
+  // await uniEthMapToken.transferOwner('0x017ab6485ff91c1a0a16b90e71f92b935b7213d3')
 
   // await unlockAccount([chainWan], "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8", "wanglu", 36000);
 
@@ -92,7 +112,7 @@ setTimeout( async () => {
   // await linkEth.sendCoin("0xe2f31d7ba3e0098ea0e64d94c0224365812b986c","10000",100,process.env.FNX_OWNER_SK);
   // await mint([linkEth], "0xe2f31d7ba3e0098ea0e64d94c0224365812b986c".toLowerCase(), 1000000);
 
-  await oracleWan.setAdmin("0x941c3f932182dfa95a30dc5859c062d4ff8e6859");
+  // await oracleWan.setAdmin("0x941c3f932182dfa95a30dc5859c062d4ff8e6859");
 
   // await mint([linkEth], "0x67e3b428acbc3aa2fd38813f65dafbd5af97c6d5", 100000000);
   // await mint([fnxWan, btcWan, eosWan], "0xded23dd19136574fce6b4ab4ea76395c4088a033".toLowerCase(), 1000);

@@ -1,5 +1,27 @@
-const bitcoinjs = require( 'bitcoinjs-lib' );
+const bitcoin = require( 'bitcoinjs-lib' );
+const bs58check = require('bs58check')
 
-const pubkey = Buffer.from( '0x2e9ad92f5f541b6c2ddb672a70577c252aaa8b9b8dfdff9a5381912395985d12dc18f19ecb673a3b675697ae97913fcb69598c089f6d66ae7a3f6dc179e4da56', 'hex' );
-const { address } = bitcoinjs.payments.p2pkh({ pubkeys: [pubkey] });
-console.log( address );
+function pkToAddress(gpk, network = 'mainnet') {
+  const pkBuffer = Buffer.from(gpk)
+  const hash160 = bitcoin.crypto.hash160
+  let prefix = 0x00
+  switch(network) {
+    case 'mainnet':
+      prefix = 0x00
+      break
+    default:
+      break
+  }
+  const v = Buffer.from([prefix])
+  const b20 = hash160(Buffer.from(pkBuffer, 'hex'))
+  const payload = Buffer.concat([v, b20])
+  const address = bs58check.encode(payload)
+
+  console.log(address)
+
+  return address
+}
+
+module.exports = {
+  pkToAddress
+}

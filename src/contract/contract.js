@@ -26,6 +26,11 @@ class Contract {
     return await this.core.getScVar("owner", this.contract, this.abi);
   }
 
+  async transferOwner(newOwner) {
+    const data = this.contract.methods.transferOwner(newOwner).encodeABI();
+    await this.doOperator("transferOwner", data, null, '0x00', this.retryTimes, this.pv_key, this.pv_address);
+  }
+
   async acceptOwnership(newSk, newOwner) {
     const data2 = this.contract.methods.acceptOwnership().encodeABI();
     const obj2 = await this.doOperator("acceptOwnership", data2, null, '0x00', this.retryTimes, newSk, newOwner);

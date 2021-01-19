@@ -86,7 +86,14 @@ class Oracle extends Contract {
     return await this.core.getScVar('admin', this.contract, this.abi);
   }
 
+  async setDebtClean(smgID, isClean) {
+    const data = this.contract.methods.setDebtClean(smgID, isClean).encodeABI();
+    return await this.doOperator(this.setDebtClean.name, data, null, '0x00', this.retryTimes, this.adminSK, this.adminAddress);
+  }
 
+  async isDebtClean(smgID) {
+    return await this.core.getScFun('isDebtClean', [smgID], this.contract, this.abi)
+  }
 }
 
 module.exports = Oracle;

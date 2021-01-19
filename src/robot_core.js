@@ -37,76 +37,6 @@ async function doSchedule(func, args, tryTimes = process.env.SCHEDULE_RETRY_TIME
   }
 }
 
-// async function preUpdateMapTokenPrice(oracle, needUpdateMap, oldMap, deltaMap) {
-//   if (oracle.core.chainType !== 'WAN') {
-//     return
-//   }
-//   const symbols = process.env.SYMBOLS.replace(/\s+/g,"").split(',').filter(i=> i!=='WAN');
-//   const wanSymbols = symbols.map(i => `wan${i}`);
-//   const oldPricesArray = await oracle.getValuesByArray(symbols)
-//   const mapPricesArray = await oracle.getValuesByArray(wanSymbols)
-//   wanSymbols.forEach((wanSymbol, i) => {
-//     const newPriceStr = needUpdateMap[symbols[i]];
-//     let newPrice = web3.utils.toBN(oldPricesArray[i]);
-//     if (newPriceStr) {
-//       newPrice = web3.utils.toBN(newPriceStr);
-//     }
-//     const oldPrice = web3.utils.toBN(mapPricesArray[i]);
-    
-//     if (oldPrice.cmp(newPrice) !== 0) {
-//       if (oldPrice.cmp(zero) === 0) {
-//         needUpdateMap[wanSymbol] = '0x' + newPrice.toString(16);
-//         oldMap[wanSymbol] = '0';
-//         deltaMap[wanSymbol] = 'infinity'
-//       } else {
-//         const deltaTimes = newPrice.sub(oldPrice).mul(times).div(oldPrice).abs();
-//         if (deltaTimes.cmp(threshold) > 0) {
-//           needUpdateMap[wanSymbol] = '0x' + newPrice.toString(16);
-//           oldMap[wanSymbol] = oldPrice.toString(10);
-//           deltaMap[wanSymbol] = deltaTimes.toString(10);
-//         }
-//       }
-//     }
-//   })
-//   return
-// }
-
-// async function preUpdateMapTokenPrice(oracle, needUpdateMap, oldMap, deltaMap) {
-//   const symbols = [];
-//   const wanSymbols = [];
-//   process.env.SYMBOLS_MAP.replace(/\s+/g,"").split(',').forEach(i => { 
-//     const kv = i.split(':');
-//     wanSymbols.push(kv[0]);
-//     symbols.push(kv[1])}
-//   )
-
-//   const oldPricesArray = await oracle.getValuesByArray(symbols)
-//   const mapPricesArray = await oracle.getValuesByArray(wanSymbols)
-//   wanSymbols.forEach((wanSymbol, i) => {
-//     const newPriceStr = needUpdateMap[symbols[i]];
-//     let newPrice = web3.utils.toBN(oldPricesArray[i]);
-//     if (newPriceStr) {
-//       newPrice = web3.utils.toBN(newPriceStr);
-//     }
-//     const oldPrice = web3.utils.toBN(mapPricesArray[i]);
-    
-//     if (oldPrice.cmp(newPrice) !== 0) {
-//       if (oldPrice.cmp(zero) === 0) {
-//         needUpdateMap[wanSymbol] = '0x' + newPrice.toString(16);
-//         oldMap[wanSymbol] = '0';
-//         deltaMap[wanSymbol] = 'infinity'
-//       } else {
-//         const deltaTimes = newPrice.sub(oldPrice).mul(times).div(oldPrice).abs();
-//         if (deltaTimes.cmp(threshold) > 0) {
-//           needUpdateMap[wanSymbol] = '0x' + newPrice.toString(16);
-//           oldMap[wanSymbol] = oldPrice.toString(10);
-//           deltaMap[wanSymbol] = deltaTimes.toString(10);
-//         }
-//       }
-//     }
-//   })
-//   return
-// }
 async function updatePrice(oracle, pricesMap, symbolsStringArray) {
   log.info(`updatePrice ${oracle.core.chainType} begin`);
 
@@ -150,10 +80,6 @@ async function updatePrice(oracle, pricesMap, symbolsStringArray) {
   log.info(`updatePrice ${oracle.core.chainType} end`);
 }
 
-// async function updateWanPrice(oracle, pricesMap) {
-//   await updatePrice_WAN(oracle, pricesMap)
-// }
-
 function mergePrice(pricesMap, symbolsOld, symbolsMapStr) {
   symbolsMapStr.replace(/\s+/g,"").split(',').forEach(i => { 
     const kv = i.split(':')
@@ -175,21 +101,6 @@ async function updatePrice_ETH(oracle, pricesMap) {
   mergePrice(pricesMap, symbols, process.env.SYMBOLS_MAP_ETH)
   await updatePrice(oracle, pricesMap, symbols)
 }
-
-// async function syncPriceToOtherChain(fromOracle, toOracle) {
-//   log.info(`syncPriceToOtherChain from:${fromOracle.core.chainType} to:${toOracle.core.chainType} begin`);
-//   const fromPricesArray = await fromOracle.getValues(process.env.SYMBOLS_ETH);
-//   const toPricesArray = await toOracle.getValues(process.env.SYMBOLS_ETH);
-//   const symbols = process.env.SYMBOLS_ETH.replace(/\s+/g,"").split(',');
-//   const deltaPricesMap = {}
-//   symbols.forEach((symbol, i) => {
-//     if (fromPricesArray[i] && (toPricesArray[i] !== fromPricesArray[i])) {
-//       deltaPricesMap[symbol] = fromPricesArray[i];
-//     }
-//   })
-
-//   await toOracle.updatePrice(deltaPricesMap)
-// }
 
 async function updateDeposit(oracle, smgID, amount) {
   log.info(`updateDeposit`);
@@ -218,7 +129,7 @@ async function writeToDB(config) {
 }
 async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
   log.info(`syncConfigToOtherChain begin`);
-  const sgs = db.getActiveSga();
+  const sgs = db.getAllSga();
   for (let i = 0; i<sgs.length; i++) {
     const sg = sgs[i];
     const groupId = sg.groupId;
@@ -315,6 +226,60 @@ async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
   log.info(`syncConfigToOtherChain end`);
 }
 
+const isBtcDebtClean = async function(chainBtc, sg) {
+  if (sg.curve1 === 0 || sg.curve2 === 0) {
+    const gpk = sg.curve1 === 0 ? sg.gpk1 : sg.gpk2
+    const balance = await chainBtc.core.getOneBalance(gpk)
+
+    if (balance === 0) {
+      return true
+    } else {
+      return false
+    }
+  }
+  // 1 1 的是老store man
+  return true
+}
+
+const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, chainBtc) {
+  const time = parseInt(new Date().getTime() / 1000);
+  // 0. 获取 wan chain 上活跃的 store man -- 记录在db里
+  const sgs = db.getAllSga();
+  for (let i = 0; i<sgs.length; i++) {
+    const sg = sgs[i];
+    const groupId = sg.groupId;
+
+    const isDebtClean = await oracleWan.isDebtClean(groupId)
+    if (isDebtClean) {
+      continue
+    }
+
+    // 1. 获取 wan上 quota合约 store man 的 debt clean
+    // 2. 获取 eth上 quota合约 store man 的 debt clean
+    let isDebtClean_wan = false
+    let isDebtClean_eth = false
+    if (sg.status === 6) {
+      console.log('status is 6')
+      isDebtClean_wan = await quotaWan.isDebtClean(groupId)
+      isDebtClean_eth = await quotaEth.isDebtClean(groupId)
+    }
+
+    // 3. 获取 btc上 quota合约 store man的gpk对应的btc地址，3个块前的utxo是否为空，为空则debt clean
+    let isDebtClean_btc = false
+    if (sg.status >= 5) {
+      if (time > sg.endTime) {
+        isDebtClean_btc = await isBtcDebtClean(chainBtc, sg)
+      }
+    }
+  
+    // 4. 如果其他链上都debt clean， 则将debt clean状态同步到wanChain的oracle上
+    if (isDebtClean_wan && isDebtClean_eth && isDebtClean_btc) {
+      await oracleWan.setDebtClean(groupId, true);
+    }
+    console.log("smgId", groupId, "wan", isDebtClean_wan, "eth", isDebtClean_eth, "btc", isDebtClean_btc)
+  }
+}
+
 module.exports = {
   createScanEvent,
   doSchedule,
@@ -322,5 +287,6 @@ module.exports = {
   // syncPriceToOtherChain,
   syncConfigToOtherChain,
   updatePrice_WAN,
-  updatePrice_ETH
+  updatePrice_ETH,
+  syncIsDebtCleanToWan
 }
