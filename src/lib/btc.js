@@ -10,6 +10,7 @@ function pkToAddress(gpk, network = 'mainnet') {
       prefix = 0x00
       break
     default:
+      prefix = 0x6f
       break
   }
   const v = Buffer.from([prefix])

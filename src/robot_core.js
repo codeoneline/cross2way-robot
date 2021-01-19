@@ -3,6 +3,7 @@ const { sleep, web3 } = require('./lib/utils');
 const logAndSendMail = require('./lib/email');
 const ScanEvent = require('./scan_event');
 const db = require('./lib/sqlite_db');
+const xrp = require('./lib/xrp');
 
 const times = web3.utils.toBN(process.env.THRESHOLD_TIMES);
 const zero = web3.utils.toBN(0);
@@ -129,7 +130,7 @@ async function writeToDB(config) {
 }
 async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
   log.info(`syncConfigToOtherChain begin`);
-  const sgs = db.getActiveSga();
+  const sgs = db.getAllSga();
   for (let i = 0; i<sgs.length; i++) {
     const sg = sgs[i];
     const groupId = sg.groupId;
@@ -241,10 +242,26 @@ const isBtcDebtClean = async function(chainBtc, sg) {
   return true
 }
 
-const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, chainBtc) {
+const isXrpDebtClean = async function(chainXrp, sg) {
+  if (sg.curve1 === 0 || sg.curve2 === 0) {
+    const gpk = sg.curve1 === 0 ? sg.gpk1 : sg.gpk2
+    const address = xrp.pkToAddress(gpk)
+    const balance = await chainXrp.core.getBalance(address)
+
+    if (balance === '0') {
+      return true
+    } else {
+      return false
+    }
+  }
+  // 1 1 的是老store man
+  return true
+}
+
+const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, chainBtc, chainXrp) {
   const time = parseInt(new Date().getTime() / 1000);
   // 0. 获取 wan chain 上活跃的 store man -- 记录在db里
-  const sgs = db.getActiveSga();
+  const sgs = db.getAllSga();
   for (let i = 0; i<sgs.length; i++) {
     const sg = sgs[i];
     const groupId = sg.groupId;
@@ -254,8 +271,6 @@ const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, chain
       continue
     }
 
-    // 1. 获取 wan上 quota合约 store man 的 debt clean
-    // 2. 获取 eth上 quota合约 store man 的 debt clean
     let isDebtClean_wan = false
     let isDebtClean_eth = false
     if (sg.status === 6) {
@@ -264,19 +279,20 @@ const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, chain
       isDebtClean_eth = await quotaEth.isDebtClean(groupId)
     }
 
-    // 3. 获取 btc上 quota合约 store man的gpk对应的btc地址，3个块前的utxo是否为空，为空则debt clean
     let isDebtClean_btc = false
+    let isDebtClean_xrp = false
     if (sg.status >= 5) {
-      if (time > sg.endTime) {
+      // if (time > sg.endTime) {
         isDebtClean_btc = await isBtcDebtClean(chainBtc, sg)
-      }
+        isDebtClean_xrp = await isXrpDebtClean(chainXrp, sg)
+      // }
     }
   
     // 4. 如果其他链上都debt clean， 则将debt clean状态同步到wanChain的oracle上
-    if (isDebtClean_wan && isDebtClean_eth && isDebtClean_btc) {
+    if (isDebtClean_wan && isDebtClean_eth && isDebtClean_btc && isDebtClean_xrp) {
       await oracleWan.setDebtClean(groupId, true);
+      console.log("smgId", groupId, "wan", isDebtClean_wan, "eth", isDebtClean_eth, "btc", isDebtClean_btc, "xrp", isDebtClean_xrp)
     }
-    console.log("smgId", groupId, "wan", isDebtClean_wan, "eth", isDebtClean_eth, "btc", isDebtClean_btc)
   }
 }
 

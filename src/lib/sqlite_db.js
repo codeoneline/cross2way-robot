@@ -95,7 +95,7 @@ class DB {
     return this.db.prepare(`select * from sga where groupId = ?`).get(id);
   }
   getActiveSga() {
-    return this.db.prepare(`select * from sga where status < 7`).all();
+    return this.db.prepare(`select * from sga where status < 8`).all();
   }
 
   insertSga(item) {

@@ -27,6 +27,7 @@ const { loadContract } = require('./lib/abi_address');
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
 const chainBtc = require(`./chain/${process.env.IWAN_BTC_CHAIN_ENGINE}`);
+const chainXrp = require(`./chain/${process.env.IWAN_XRP_CHAIN_ENGINE}`);
 
 const oracleWan = loadContract(chainWan, 'OracleDelegate')
 const oracleEth = loadContract(chainEth, 'OracleDelegate')
@@ -106,7 +107,7 @@ const updateStoreManToChainsPart = async function() {
 const updateDebtCleanToWan = async function() {
   log.info("updateDebtCleanToWan")
   await doSchedule(async () => {
-    await syncIsDebtCleanToWan(oracleWan, quotaWan, quotaEth, chainBtc)
+    await syncIsDebtCleanToWan(oracleWan, quotaWan, quotaEth, chainBtc, chainXrp)
   }, [])
 }
 const robotSchedules = function() {
