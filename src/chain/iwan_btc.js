@@ -1,5 +1,6 @@
 const IWan = require('../lib/iwan_chain');
 const { pkToAddress } = require('../lib/btc');
+const BigNumber = require('bignumber.js')
 
 class IWanBtc extends IWan {
   constructor() {
@@ -9,12 +10,13 @@ class IWanBtc extends IWan {
 
   async getOneBalance(gpk) {
     const address = pkToAddress(gpk, this.network)
-    const utxoArray = await this.apiClient.getUTXO('BTC', 1, 3, [address])
-    let balance = 0
+    const utxoArray = await this.apiClient.getUTXO('BTC', 1, 0xffffff, [address])
+    let balance = new BigNumber(0)
     utxoArray.forEach((v) => {
-      balance += v.value
+      balance = balance.plus(new BigNumber(v.value))
     })
-    return balance
+    console.log(balance.toNumber())
+    return balance.toNumber()
   }
 
 }

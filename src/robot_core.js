@@ -232,10 +232,10 @@ const isBtcDebtClean = async function(chainBtc, sg) {
     const gpk = sg.curve1 === 0 ? sg.gpk1 : sg.gpk2
     const balance = await chainBtc.core.getOneBalance(gpk)
 
-    if (balance === 0) {
-      return true
-    } else {
+    if (balance > 0) {
       return false
+    } else {
+      return true
     }
   }
   // 1 1 的是老store man

@@ -2,7 +2,7 @@ const bitcoin = require( 'bitcoinjs-lib' );
 const bs58check = require('bs58check')
 
 function pkToAddress(gpk, network = 'mainnet') {
-  const pkBuffer = Buffer.from(gpk)
+  const pkBuffer = Buffer.from("04" + gpk.slice(2), 'hex')
   const hash160 = bitcoin.crypto.hash160
   let prefix = 0x00
   switch(network) {
