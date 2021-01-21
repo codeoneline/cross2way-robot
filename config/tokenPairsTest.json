@@ -182,5 +182,16 @@
 
     "mapChain": "wanchain",
     "mapAddress": "0xff41E7f3b22328853d351BE2a8f4090e713DA850"
+  },
+  "WSAP2ETH": {
+    "id": "17",
+
+    "ancestorChain": "wanchain",
+    "ancestorAddress": "0x0a3b082c1ceda3d35e5bad2776c5a5236044a03d",
+
+    "originChain": "wanchain",
+    "originAddress": "0x0a3b082c1ceda3d35e5bad2776c5a5236044a03d",
+
+    "mapChain": "ethereum"
   }
 }

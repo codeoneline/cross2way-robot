@@ -75,7 +75,12 @@ const getIDs = async (url, symbolsStr) => {
 // }
 async function getPrices(symbolsStr) {
   const symbolIds = await getIDs("https://api.coingecko.com/api/v3/coins/list", symbolsStr)
-  const symbols = symbolsStr.toLowerCase().replace(/\s+/g,"").split(',')
+  let hasWasp = false
+  if (symbolIds['wasp'] !== undefined) {
+    hasWasp = true
+    delete symbolIds['wasp']
+  }
+  const symbols = symbolsStr.toLowerCase().replace(/\s+/g,"").replace(/,wasp/g,"").split(',')
   const idsArr = []
   symbols.forEach(it => {
     idsArr.push(symbolIds[it])
@@ -88,6 +93,9 @@ async function getPrices(symbolsStr) {
   symbols.forEach(it => {
     priceMap[it.toUpperCase()] = fractionToDecimalString(priceIdMap[symbolIds[it]].usd, process.env.PRICE_DECIMAL);
   });
+  if (hasWasp) {
+    priceMap['WASP'] = fractionToDecimalString(0.01, 18)
+  }
   return priceMap
 }
 
