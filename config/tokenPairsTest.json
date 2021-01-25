@@ -193,5 +193,16 @@
     "originAddress": "0x0a3b082c1ceda3d35e5bad2776c5a5236044a03d",
 
     "mapChain": "ethereum"
+  },
+  "XRP2WAN": {
+    "id": "18",
+
+    "ancestorChain": "xrp",
+    "ancestorAddress": "0x0000000000000000000000000000000000000000",
+
+    "originChain": "xrp",
+    "originAddress": "0x0000000000000000000000000000000000000000",
+
+    "mapChain": "wanchain"
   }
 }
