@@ -18,6 +18,17 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "deploy eth local",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}/src/deploy.js",
+      "envFile": "${workspaceFolder}/.env.dev.local"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "cmc",
       "skipFiles": [
         "<node_internals>/**"
