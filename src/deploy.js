@@ -5,6 +5,7 @@ const Web3 = require('web3');
 const readlineSync = require('readline-sync');
 const keythereum = require("keythereum");
 // const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
+const gasPrice = process.env.DEPLOY_GASPRICE_ETH
 
 function getSk(addressTip, tip) {
   let sk = null
@@ -37,7 +38,7 @@ const web3 = new Web3(provider);
 
   console.log(`Attempting to deploy from account: ${accounts[0]}`);
 
-  const gasPrice = await web3.eth.getGasPrice()
+  // const gasPrice = await web3.eth.getGasPrice()
   console.log(`gasPrice : ${gasPrice}`)
 
 	const deployedContract = await new web3.eth.Contract(compiledContract.abi)
@@ -51,17 +52,18 @@ const web3 = new Web3(provider);
 			gasPrice: gasPrice
     });
 
-	console.log(
-		`Contract deployed at address: ${deployedContract.options.address}`
-  );
+    console.log(
+      `Contract deployed at address: ${deployedContract.options.address}`
+    );
   
   let newOwner = ""
   while (newOwner.length != 42) {
     newOwner = readlineSync.question("请输入新owner的地址，以0x开头: ").trim().toLowerCase()
   }
+
   const tx = await deployedContract.methods.transferOwner(newOwner).send({
 			from: accounts[0],
-			gas: '2000000',
+			gas: '400000',
 			gasPrice: gasPrice
   });
   console.log(`tx ${JSON.stringify(tx, null, 2)}`)
