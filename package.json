@@ -41,7 +41,7 @@
     "ethereumjs-tx": "^1.3.7",
     "ethereumjs-util": "^7.0.2",
     "express": "^4.17.1",
-    "iwan-sdk": "^1.2.1",
+    "iwan-sdk": "git://github.com/wanchain/iwan-js-sdk.git#feature-two-way-bridge",
     "keythereum": "^1.2.0",
     "log4js": "^6.3.0",
     "lowdb": "^1.0.0",
