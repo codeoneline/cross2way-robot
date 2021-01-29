@@ -207,8 +207,8 @@ async function refreshOracles() {
         delete config[str];
         delete configEth[str];
       }
-      configEth.isDebtClean = await oracleEth.isDebtClean(groupId)
-      config.isDebtClean = await oracleWan.isDebtClean(groupId)
+      configEth.isDebtClean = (await oracleEth.isDebtClean(groupId)).toString()
+      config.isDebtClean = (await oracleWan.isDebtClean(groupId)).toString()
       sgs_eth[groupId] = configEth;
       sgs[groupId] = config;
     // }
@@ -372,24 +372,24 @@ async function refreshCross() {
 }
 
 setTimeout(async function() {
-  await refreshTMS();
+  // await refreshTMS();
   await refreshOracles();
-  await refreshChains();
-  await refreshQuota();
-  await refreshCross();
+  // await refreshChains();
+  // await refreshQuota();
+  // await refreshCross();
 }, 0);
 
-setInterval(async function() {
-  try {
-    await refreshTMS();
-    await refreshOracles();
-    await refreshChains();
-    await refreshQuota();
-    await refreshCross();
-  } catch(e) {
-    console.log(e);
-  }
-}, 60000);
+// setInterval(async function() {
+//   try {
+//     await refreshTMS();
+//     await refreshOracles();
+//     await refreshChains();
+//     await refreshQuota();
+//     await refreshCross();
+//   } catch(e) {
+//     console.log(e);
+//   }
+// }, 60000);
 
 app.get('/tms', (req, res) => {
   res.send(tmsResult);
