@@ -9,6 +9,10 @@ class StoremanGroupAdmin extends Contract {
   async getStoremanGroupConfig(id) {
     return await this.core.getScFun("getStoremanGroupConfig", [id], this.contract, this.abi);
   }
+
+  async quotaInst() {
+    return await this.getVar('quotaInst')
+  }
 }
 
 module.exports = StoremanGroupAdmin;

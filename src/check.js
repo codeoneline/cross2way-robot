@@ -99,6 +99,12 @@ function writePrint(...message) {
 }
 
 //////////////////////////////////////////////
+let g_store_man = {}
+const getStoreMan = async () => {
+  const quotaInst = await sgaWan.quotaInst()
+  g_store_man.quotaInst = quotaInst.toLowerCase()
+}
+
 let g_oracle = {}
 const getOracle = async () => {
   const odAddr = await oracleWanProxy.implementation();
@@ -565,6 +571,10 @@ const check = async () => {
   }
 
   try {
+    writePrint(`store man check`)
+    const stm = await getStoreMan();
+    checkValue(stm.quotaInst, oracle.WanChain.oracleProxy, "storeman quotaInst != wanchain oracle")
+
     const oracle = await getOracle();
 
     writePrint(`oracle check`)
