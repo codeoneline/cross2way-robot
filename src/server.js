@@ -198,7 +198,9 @@ async function refreshOracles() {
     const sg = sgAll[i];
     const groupId = sg.groupId;
     const config = await sgaWan.getStoremanGroupConfig(groupId);
+    config.isDebtClean = await oracleWan.isDebtClean(groupId)
     const configEth = await oracleEth.getStoremanGroupConfig(groupId);
+    configEth.isDebtClean = await oracleEth.isDebtClean(groupId)
     const ks = Object.keys(config);
 
     // if (config.gpk1 !== null || configEth.gpk1 !== null) {
