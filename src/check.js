@@ -103,6 +103,7 @@ let g_store_man = {}
 const getStoreMan = async () => {
   const quotaInst = await sgaWan.quotaInst()
   g_store_man.quotaInst = quotaInst.toLowerCase()
+  return g_store_man;
 }
 
 let g_oracle = {}
@@ -573,9 +574,10 @@ const check = async () => {
   try {
     writePrint(`store man check`)
     const stm = await getStoreMan();
-    checkValue(stm.quotaInst, oracle.WanChain.oracleProxy, "storeman quotaInst != wanchain oracle")
 
     const oracle = await getOracle();
+
+    checkValue(stm.quotaInst, oracle.WanChain.oracleProxy, "storeman quotaInst == wanchain oracle")
 
     writePrint(`oracle check`)
     checkValue(oracle.WanChain.oracleProxyOwner, oracle.WanChain.oracleDelegatorOwner, "oracle proxy and delegator owner on WanChain")
