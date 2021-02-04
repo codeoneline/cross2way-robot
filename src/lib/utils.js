@@ -52,6 +52,13 @@ function promiseEvent(func, paras=[], obj=null, event){
   });
 }
 
+function fractionRatioToDecimalString(priceRaw, price_decimal, ratio) {
+    const ratioPrice = fractionToDecimalString(priceRaw, price_decimal)
+    const ratio_price = web3.utils.toBN(ratioPrice)
+    const ratio_p = web3.utils.toBN(ratio)
+    const price = web3.utils.toBN(ratioPrice).mul(web3.utils.toBN(ratio)).div(web3.utils.toBN(Math.pow(10, price_decimal)))
+    return '0x' + price.toString('hex')
+}
 
 function fractionToDecimalString(priceRaw, price_decimal) {
     let leftDecimal = price_decimal;
@@ -61,12 +68,15 @@ function fractionToDecimalString(priceRaw, price_decimal) {
     let priceStr = priceRawSplit[0];
     if (priceRawSplit.length > 1) {
         decimal = priceRawSplit[1].length;
-        priceStr += priceRawSplit[1];
+        if (decimal > price_decimal) {
+            // throw new Error(`${it} decimal > ${price_decimal}, price = ${symbolPriceMap[it]}`);
+            decimal = price_decimal
+            priceStr += priceRawSplit[1].substr(0, decimal);
+        } else {
+            priceStr += priceRawSplit[1];
+        }
     }
     const price = web3.utils.toBN(priceStr);
-    if (decimal > price_decimal) {
-        throw new Error(`${it} decimal > ${price_decimal}, price = ${symbolPriceMap[it]}`);
-    }
 
     return '0x' + price.mul(web3.utils.toBN(Math.pow(10, price_decimal - decimal))).toString('hex');
 }
@@ -81,6 +91,7 @@ module.exports = {
   promisify,
   promiseEvent,
   fractionToDecimalString,
+  fractionRatioToDecimalString,
   web3,
   chainIds,
   privateToAddress,

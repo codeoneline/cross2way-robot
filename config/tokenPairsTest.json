@@ -204,5 +204,28 @@
     "originAddress": "0x0000000000000000000000000000000000000000",
 
     "mapChain": "wanchain"
+  },
+  "XRP2ETH": {
+    "id": "19",
+
+    "ancestorChain": "xrp",
+    "ancestorAddress": "0x0000000000000000000000000000000000000000",
+
+    "originChain": "xrp",
+    "originAddress": "0x0000000000000000000000000000000000000000",
+
+    "mapChain": "ethereum"
+  },
+  "WXRP2ETH": {
+    "id": "20",
+
+    "ancestorChain": "xrp",
+    "ancestorAddress": "0x0000000000000000000000000000000000000000",
+
+    "originChain": "wanchain",
+    "originAddress": "0x456a7a43f1bbb1c8bc5dacc8c801d7e495a71bcf",
+
+    "mapChain": "ethereum",
+    "mapAddress": "0xf451372043c88e5960be1ca6b1ac5e5181a1800b"
   }
 }
