@@ -35,7 +35,7 @@
     "apollo-cache-inmemory": "^1.6.6",
     "apollo-client": "^2.6.10",
     "apollo-link-http": "^1.5.17",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "better-sqlite3": "^7.1.0",
     "bignumber.js": "^9.0.0",
     "bitcoinjs-lib": "^5.2.0",
