@@ -155,10 +155,14 @@ setTimeout( async () => {
   // await tmWan.updateToken("0x48344649b9611a891987b2db33faada3ac1d05ec","wanETH@wanchain", "wanETH")
   // await tmEth.updateToken("0x9df2251629afba66baac69789a3e9aee7d53aeaa","WAN@ethereum", "WAN")
 
-  await tmWan.updateToken("0xd32c5cbe6a6dbde0dc7a7842e4ac376853734388","wanLINK@wanchain", "wanLINK")
-  await tmEth.updateToken("0x7b090fd2c9ec564bd2c029405c7efb927c9cb62e","wanFNX@ethereum", "wanFNX")
-  await tmEth.updateToken("0xab839532149d889a417e1275eab0b62b2ad32d09","wanBTC@ethereum", "wanBTC")
-  await tmEth.updateToken("0x323eaaa7ec772739576b2690dec5a03134b2d328","wanEOS@ethereum", "wanEOS")
+  // await tmWan.updateToken("0xd32c5cbe6a6dbde0dc7a7842e4ac376853734388","wanLINK@wanchain", "wanLINK")
+  // await tmEth.updateToken("0x7b090fd2c9ec564bd2c029405c7efb927c9cb62e","wanFNX@ethereum", "wanFNX")
+  // await tmEth.updateToken("0xab839532149d889a417e1275eab0b62b2ad32d09","wanBTC@ethereum", "wanBTC")
+  // await tmEth.updateToken("0x323eaaa7ec772739576b2690dec5a03134b2d328","wanEOS@ethereum", "wanEOS")
+
+  await tmWan.updateToken("0x48c305d49e2721a2b0ce3641236aa2ec7658a39f","wanSUSHI@wanchain", "wanSUSHI")
+  // await tmEth.updateToken("0x7b090fd2c9ec564bd2c029405c7efb927c9cb62e","wanFNX@ethereum", "wanFNX")
+
   console.log("hello")
 }, 0);
 

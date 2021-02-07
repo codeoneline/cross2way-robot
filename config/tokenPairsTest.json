@@ -227,5 +227,17 @@
 
     "mapChain": "ethereum",
     "mapAddress": "0xf451372043c88e5960be1ca6b1ac5e5181a1800b"
+  },
+  "SUSHI2ETH": {
+    "id": "21",
+
+    "ancestorChain": "ethereum",
+    "ancestorAddress": "0x1025f3761fab891be445dfc9703834d463457b10",
+
+    "originChain": "ethereum",
+    "originAddress": "0x1025f3761fab891be445dfc9703834d463457b10",
+
+    "mapChain": "wanchain",
+    "mapAddress": "0x48c305d49e2721a2b0ce3641236aa2ec7658a39f"
   }
 }
