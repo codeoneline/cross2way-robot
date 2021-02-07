@@ -71,7 +71,7 @@ const updatePriceToWAN = async function() {
 }
 
 const updatePriceToETH = async function() {
-  const pricesMap = await doSchedule(getPrices_coingecko, [process.env.SYMBOLS]);
+  const pricesMap = await doSchedule(getPrices_coingecko, [process.env.SYMBOLS_ETH]);
   log.info(`updatePriceToChains begin, get prices: ${JSON.stringify(pricesMap)}`);
 
   await doSchedule(updatePrice_ETH, [oracleEth, pricesMap]);
