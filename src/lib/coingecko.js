@@ -1,22 +1,8 @@
 const axios = require('axios');
-const { fractionToDecimalString, fractionRatioToDecimalString } = require('./utils');
-const Web3 = require('web3');
+const { fractionToDecimalString } = require('./utils');
 const log = require('./log')
-const fetch = require('node-fetch')
-const { ApolloClient } = require('apollo-client')
-const { InMemoryCache } = require('apollo-cache-inmemory')
-const { createHttpLink } = require('apollo-link-http')
-const gql = require('graphql-tag')
-const BigNumber = require('bignumber.js');
 
-const client = new ApolloClient({
-  link: new createHttpLink({
-    uri: 'https://graph.wanswap.finance/subgraphs/name/wanswap/wanswap-subgraph-3',
-    fetch: fetch
-  }),
-  cache: new InMemoryCache(),
-  shouldBatch: true,
-})
+const { getWaspPriceFromContract } = require('./wasp')
 
 const getData = async url => {
   try {
@@ -80,43 +66,6 @@ const getIDs = async (url, symbolsStr) => {
   return null
 }
 
-// price
-// {
-//   "finnexus": {
-//     "usd": 0.120816
-//   },
-//   "wanchain": {
-//     "usd": 0.370103
-//   }
-// }
-
-function TOKEN_DATA() {
-  return gql`query tokens {
-    tokens(where:{symbol: "WASP"}) {
-      id
-      symbol
-      derivedETH
-    }
-  }`
-}
-
-const abi = [{"constant":true,"inputs":[],"name":"getReserves","outputs":[{"internalType":"uint112","name":"_reserve0","type":"uint112"},{"internalType":"uint112","name":"_reserve1","type":"uint112"},{"internalType":"uint32","name":"_blockTimestampLast","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"}];
-const address = "0x29239a9b93a78decec6e0dd58ddbb854b7ffb0af";
-async function getWaspPrice(wanPrice) {
-    const web3 = new Web3(new Web3.providers.HttpProvider('https://gwan-ssl.wandevs.org:56891'));
-    const sc = new web3.eth.Contract(abi, address);
-    let ret = await sc.methods.getReserves().call();
-    console.log('ret', ret);
-    const wp = new BigNumber(wanPrice)
-    const wsp = new BigNumber(ret._reserve1)
-    const wan = new BigNumber(ret._reserve0)
-    let p = wsp.div(wan).multipliedBy(wp).integerValue();
-
-    console.log("p", p.toString());
-
-    return '0x' + p.toString(16)
-}
-
 async function getPrices(symbolsStr) {
   const symbolIds = await getIDs("https://api.coingecko.com/api/v3/coins/list", symbolsStr)
   let hasWasp = false
@@ -138,15 +87,7 @@ async function getPrices(symbolsStr) {
     priceMap[it.toUpperCase()] = fractionToDecimalString(priceIdMap[symbolIds[it]].usd, process.env.PRICE_DECIMAL);
   });
   if (hasWasp) {
-    // const query = TOKEN_DATA()
-    // const p = await client.query({
-    //   query: query,
-    //   fetchPolicy: 'cache-first',
-    // })
-    // console.log(JSON.stringify(p, null, 2))
-    // const waspPrice = fractionRatioToDecimalString(p.data.tokens[0].derivedETH, 18, priceMap['WAN'])
-    // priceMap['WASP'] = waspPrice
-    const waspPrice = await getWaspPrice(priceMap['WAN'])
+    const waspPrice = await getWaspPriceFromContract(priceMap['WAN'])
     priceMap['WASP'] = waspPrice
   }
   return priceMap
