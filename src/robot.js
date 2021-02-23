@@ -5,7 +5,6 @@ const getPrices_crypto = require("./lib/crypto_compare");
 const getPrices_coingecko = require("./lib/coingecko");
 const readlineSync = require('readline-sync');
 const keythereum = require("keythereum");
-const db = require('./lib/sqlite_db');
 
 function readSyncByfs(tips) {
   tips = tips || '> ';
