@@ -122,7 +122,7 @@ const chainCurveTypeConfig = {
   'BTC': '0',
 }
 
-async function writeToDB(config) {
+function writeToDB(config) {
   const c = JSON.parse(JSON.stringify(config));
   const updateTime = new Date().getTime();
   c.updateTime = updateTime;
@@ -171,15 +171,15 @@ async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
               config.startTime,
               config.endTime,
             );
-            await writeToDB(config)
+            writeToDB(config)
           } else if (config.deposit !== config_eth.deposit) {
             if (!isPart) {
               await updateDeposit(oracle, groupId, config.deposit);
-              await writeToDB(config)
+              writeToDB(config)
             }
           } else if (config.status !== config_eth.status) {
             await setStoremanGroupStatus(oracle, groupId, config.status);
-            await writeToDB(config)
+            writeToDB(config)
           }
         } else {
           const curve1 = chainCurveTypeConfig[oracle.chain.core.chainType]
@@ -210,15 +210,15 @@ async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
               config.startTime,
               config.endTime,
             );
-            await writeToDB(config)
+            writeToDB(config)
           } else if (config.deposit !== config_eth.deposit) {
             if (!isPart) {
               await updateDeposit(oracle, groupId, config.deposit);
-              await writeToDB(config)
+              writeToDB(config)
             }
           } else if (config.status !== config_eth.status) {
             await setStoremanGroupStatus(oracle, groupId, config.status);
-            await writeToDB(config)
+            writeToDB(config)
           }
         }
       }

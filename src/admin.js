@@ -160,7 +160,7 @@ setTimeout( async () => {
   // await tmEth.updateToken("0xab839532149d889a417e1275eab0b62b2ad32d09","wanBTC@ethereum", "wanBTC")
   // await tmEth.updateToken("0x323eaaa7ec772739576b2690dec5a03134b2d328","wanEOS@ethereum", "wanEOS")
 
-  await tmWan.updateToken("0x48c305d49e2721a2b0ce3641236aa2ec7658a39f","wanSUSHI@wanchain", "wanSUSHI")
+  // await tmWan.updateToken("0x48c305d49e2721a2b0ce3641236aa2ec7658a39f","wanSUSHI@wanchain", "wanSUSHI")
   // await tmEth.updateToken("0x7b090fd2c9ec564bd2c029405c7efb927c9cb62e","wanFNX@ethereum", "wanFNX")
 
   console.log("hello")
