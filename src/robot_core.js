@@ -280,11 +280,11 @@ const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, chain
     }
 
     let isDebtClean_btc = false
-    let isDebtClean_xrp = false
+    let isDebtClean_xrp = true
     if (sg.status >= 5) {
       if (time > sg.endTime) {
         isDebtClean_btc = await isBtcDebtClean(chainBtc, sg)
-        isDebtClean_xrp = await isXrpDebtClean(chainXrp, sg)
+        // isDebtClean_xrp = await isXrpDebtClean(chainXrp, sg)
       }
     }
   
