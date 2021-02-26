@@ -112,7 +112,7 @@ const updateDebtCleanToWan = async function() {
 const robotSchedules = function() {
   schedule.scheduleJob('20 * * * * *', updatePriceToWAN);
 
-  schedule.scheduleJob('20 0 */2 * * *', updatePriceToETH);
+  // schedule.scheduleJob('20 0 */2 * * *', updatePriceToETH);
 
   // sync sga to sga database, 1 / 5min
   schedule.scheduleJob('0 */5 * * * *', scanNewStoreMan);
