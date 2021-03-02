@@ -146,7 +146,6 @@ setTimeout(async () => {
   }
 
   setTimeout(updatePriceToWAN, 0);
-  setTimeout(updatePriceToETH, 0);
   setTimeout(scanNewStoreMan, 0);
 
   robotSchedules();

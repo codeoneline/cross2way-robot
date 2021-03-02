@@ -239,5 +239,17 @@
 
     "mapChain": "wanchain",
     "mapAddress": "0x48c305d49e2721a2b0ce3641236aa2ec7658a39f"
+  },
+  "ZCN2WAN": {
+    "id": "22",
+
+    "ancestorChain": "ethereum",
+    "ancestorAddress": "0x3d0dedc66978bdae04cebf5afc946fa343acca7b",
+
+    "originChain": "ethereum",
+    "originAddress": "0x3d0dedc66978bdae04cebf5afc946fa343acca7b",
+
+    "mapChain": "wanchain",
+    "mapAddress": "0x382Ba0a67c1a6DA1f648Cf2c02116a96F605e97C"
   }
 }
