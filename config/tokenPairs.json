@@ -160,6 +160,17 @@
     "mapChain": "ethereum",
     "mapAddress": "0x058a55925627980dbb6d6d39f8dad5de5be16764"
   },
+  "BTC2WAN": {
+    "id": "15",
+
+    "ancestorChain": "bitcoin",
+    "ancestorAddress": "0x0000000000000000000000000000000000000000",
+
+    "originChain": "bitcoin",
+    "originAddress": "0x0000000000000000000000000000000000000000",
+
+    "mapChain": "wanchain"
+  },
   "UNI2WAN": {
     "id": "16",
 
