@@ -137,8 +137,7 @@ async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
     const config = await sgaContract.getStoremanGroupConfig(groupId);
     if (config) {
       if (!config.gpk1 || !config.gpk2) {
-        if ((sg.status !== parseInt(config.status)) ||
-            (sg.deposit !== config.deposit)){
+        if (sg.status !== parseInt(config.status)) {
           writeToDB(config)
         }
         continue;
@@ -156,8 +155,7 @@ async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
             (config.gpk1 !== config_eth.gpk2) ||
             (config.gpk2 !== config_eth.gpk1) ||
             (config.startTime !== config_eth.startTime) ||
-            (config.endTime !== config_eth.endTime) ||
-            ((config.deposit !== config_eth.deposit) && (config.status !== config_eth.status))
+            (config.endTime !== config_eth.endTime)
           ) {
             // chain1 -> chain2
             await oracle.setStoremanGroupConfig(
@@ -172,11 +170,6 @@ async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
               config.endTime,
             );
             writeToDB(config)
-          } else if (config.deposit !== config_eth.deposit) {
-            if (!isPart) {
-              await updateDeposit(oracle, groupId, config.deposit);
-              writeToDB(config)
-            }
           } else if (config.status !== config_eth.status) {
             await setStoremanGroupStatus(oracle, groupId, config.status);
             writeToDB(config)
@@ -195,8 +188,7 @@ async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
             (gpk1 != config_eth.gpk1) ||
             (gpk2 != config_eth.gpk2) ||
             (config.startTime !== config_eth.startTime) ||
-            (config.endTime !== config_eth.endTime) ||
-            ((config.deposit !== config_eth.deposit) && (config.status !== config_eth.status))
+            (config.endTime !== config_eth.endTime)
           ) {
             // chain1 -> chain2
             await oracle.setStoremanGroupConfig(
@@ -211,11 +203,6 @@ async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
               config.endTime,
             );
             writeToDB(config)
-          } else if (config.deposit !== config_eth.deposit) {
-            if (!isPart) {
-              await updateDeposit(oracle, groupId, config.deposit);
-              writeToDB(config)
-            }
           } else if (config.status !== config_eth.status) {
             await setStoremanGroupStatus(oracle, groupId, config.status);
             writeToDB(config)
