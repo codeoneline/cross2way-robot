@@ -4,6 +4,7 @@ const logAndSendMail = require('./lib/email');
 const ScanEvent = require('./scan_event');
 const db = require('./lib/sqlite_db');
 const xrp = require('./lib/xrp');
+const { default: BigNumber } = require('bignumber.js');
 
 const times = web3.utils.toBN(process.env.THRESHOLD_TIMES);
 const zero = web3.utils.toBN(0);
@@ -32,7 +33,7 @@ async function doSchedule(func, args, tryTimes = process.env.SCHEDULE_RETRY_TIME
         await logAndSendMail(`${func.name} exception`, `args=${args}, tried ${tryTimes} still failed, ${e instanceof Error ? e.stack : e}`);
         return;
       }
-      log.warn(`${func.name} exception : ${e}`);
+      log.warn(`${func.name} exception : ${e instanceof Error ? e.stack : e}`);
       await sleep(parseInt(process.env.SCHEDULE_RETRY_INTERVAL));
     }
   }
@@ -135,13 +136,18 @@ async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
     const sg = sgs[i];
     const groupId = sg.groupId;
     const config = await sgaContract.getStoremanGroupConfig(groupId);
+    let hasWriteDb = false
     if (config) {
+      if ((sg.status !== parseInt(config.status)) ||
+        (sg.deposit !== config.deposit)
+      ) {
+        writeToDB(config)
+        hasWriteDb = true
+      }
       if (!config.gpk1 || !config.gpk2) {
-        if (sg.status !== parseInt(config.status)) {
-          writeToDB(config)
-        }
         continue;
       }
+      
       for(let j = 0; j<oracles.length; j++) {
         const oracle = oracles[j];
         const config_eth = await oracle.getStoremanGroupConfig(groupId);
@@ -169,10 +175,10 @@ async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
               config.startTime,
               config.endTime,
             );
-            writeToDB(config)
+            if (!hasWriteDb) writeToDB(config)
           } else if (config.status !== config_eth.status) {
             await setStoremanGroupStatus(oracle, groupId, config.status);
-            writeToDB(config)
+            if (!hasWriteDb) writeToDB(config)
           }
         } else {
           const curve1 = chainCurveTypeConfig[oracle.chain.core.chainType]
@@ -202,10 +208,10 @@ async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
               config.startTime,
               config.endTime,
             );
-            writeToDB(config)
+            if (!hasWriteDb) writeToDB(config)
           } else if (config.status !== config_eth.status) {
             await setStoremanGroupStatus(oracle, groupId, config.status);
-            writeToDB(config)
+            if (!hasWriteDb) writeToDB(config)
           }
         }
       }
@@ -214,12 +220,13 @@ async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
   log.info(`syncConfigToOtherChain end`);
 }
 
+const bigZero = new BigNumber(0)
 const isBtcDebtClean = async function(chainBtc, sg) {
   if (sg.curve1 === 0 || sg.curve2 === 0) {
     const gpk = sg.curve1 === 0 ? sg.gpk1 : sg.gpk2
     const balance = await chainBtc.core.getOneBalance(gpk)
 
-    if (balance > 0) {
+    if (balance.gt(bigZero)) {
       return false
     } else {
       return true
@@ -229,13 +236,16 @@ const isBtcDebtClean = async function(chainBtc, sg) {
   return true
 }
 
+const xrpUnit = new BigNumber(Math.pow(10, 6))
+const minXrpAmount = (new BigNumber('21')).multipliedBy(xrpUnit)
 const isXrpDebtClean = async function(chainXrp, sg) {
   if (sg.curve1 === 0 || sg.curve2 === 0) {
     const gpk = sg.curve1 === 0 ? sg.gpk1 : sg.gpk2
     const address = xrp.pkToAddress(gpk)
-    const balance = await chainXrp.core.getBalance(address)
+    const balanceStr = await chainXrp.core.getBalance(address)
 
-    if (balance === '0') {
+    const balance = new BigNumber(balanceStr)
+    if (balance.lt(minXrpAmount)) {
       return true
     } else {
       return false
@@ -267,11 +277,11 @@ const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, chain
     }
 
     let isDebtClean_btc = false
-    let isDebtClean_xrp = true
+    let isDebtClean_xrp = false
     if (sg.status >= 5) {
       if (time > sg.endTime) {
         isDebtClean_btc = await isBtcDebtClean(chainBtc, sg)
-        // isDebtClean_xrp = await isXrpDebtClean(chainXrp, sg)
+        isDebtClean_xrp = await isXrpDebtClean(chainXrp, sg)
       }
     }
   

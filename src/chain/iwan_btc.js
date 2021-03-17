@@ -15,8 +15,8 @@ class IWanBtc extends IWan {
     utxoArray.forEach((v) => {
       balance = balance.plus(new BigNumber(v.value))
     })
-    console.log(balance.toNumber())
-    return balance.toNumber()
+    console.log(balance.toString(10))
+    return balance
   }
 
 }

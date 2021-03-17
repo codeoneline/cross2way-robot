@@ -149,6 +149,10 @@ setTimeout(async () => {
   setTimeout(scanNewStoreMan, 0);
 
   robotSchedules();
+
+  // await scanNewStoreMan()
+  // await updateStoreManToChains()
+  // await updateDebtCleanToWan()
 }, 0)
 
 
