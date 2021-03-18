@@ -251,5 +251,17 @@
 
     "mapChain": "wanchain",
     "mapAddress": "0x382Ba0a67c1a6DA1f648Cf2c02116a96F605e97C"
+  },
+  "VIBE2WAN": {
+    "id": "23",
+
+    "ancestorChain": "ethereum",
+    "ancestorAddress": "0x912569843202948f475b69e73D258fC684F4aD86",
+
+    "originChain": "ethereum",
+    "originAddress": "0x912569843202948f475b69e73D258fC684F4aD86",
+
+    "mapChain": "wanchain",
+    "mapAddress": "0x2cc9b65dfaab4512ceecfe591196bd1f3ebdedf9"
   }
 }

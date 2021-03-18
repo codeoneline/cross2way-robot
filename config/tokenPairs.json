@@ -193,5 +193,16 @@
 
     "mapChain": "wanchain",
     "mapAddress": "0xF1D0ad0C4a612EcF4931b673245f1FC2935BccdC"
+  },
+  "VIBE2WAN": {
+    "id": "23",
+
+    "ancestorChain": "ethereum",
+    "ancestorAddress": "0xe8ff5c9c75deb346acac493c463c8950be03dfba",
+
+    "originChain": "ethereum",
+    "originAddress": "0xe8ff5c9c75deb346acac493c463c8950be03dfba",
+
+    "mapChain": "wanchain"
   }
 }
