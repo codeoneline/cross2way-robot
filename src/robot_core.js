@@ -116,13 +116,6 @@ async function setStoremanGroupStatus(oracle, smgID, status) {
   await oracle.setStoremanGroupStatus(smgID, statusHex);
 }
 
-// 0 sep 256, 1: bn128
-const chainCurveTypeConfig = {
-  'WAN': '1',
-  'ETH': '1',
-  'BTC': '0',
-}
-
 function writeToDB(config) {
   const c = JSON.parse(JSON.stringify(config));
   const updateTime = new Date().getTime();
@@ -181,7 +174,7 @@ async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
             if (!hasWriteDb) writeToDB(config)
           }
         } else {
-          const curve1 = chainCurveTypeConfig[oracle.chain.core.chainType]
+          const curve1 = process.env[oracle.chain.core.chainType + '_CURVETYPE']
           const curve2 = curve1 === config.curve1 ? config.curve2 : config.curve1
           const gpk1 = config.curve1 === curve1 ? config.gpk1 : config.gpk2
           const gpk2 = gpk1 === config.gpk1 ? config.gpk2 : config.gpk1
@@ -255,7 +248,7 @@ const isXrpDebtClean = async function(chainXrp, sg) {
   return true
 }
 
-const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, chainBtc, chainXrp) {
+const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, quotaBsc, chainBtc, chainXrp) {
   const time = parseInt(new Date().getTime() / 1000);
   // 0. 获取 wan chain 上活跃的 store man -- 记录在db里
   const sgs = db.getAllSga();
@@ -270,10 +263,12 @@ const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, chain
 
     let isDebtClean_wan = false
     let isDebtClean_eth = false
+    let isDebtClean_bsc = false
     if (sg.status === 6) {
       console.log('status is 6')
       isDebtClean_wan = await quotaWan.isDebtClean(groupId)
       isDebtClean_eth = await quotaEth.isDebtClean(groupId)
+      isDebtClean_bsc = await quotaBsc.isDebtClean(groupId)
     }
 
     let isDebtClean_btc = false
@@ -286,9 +281,9 @@ const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, chain
     }
   
     // 4. 如果其他链上都debt clean， 则将debt clean状态同步到wanChain的oracle上
-    if (isDebtClean_wan && isDebtClean_eth && isDebtClean_btc && isDebtClean_xrp) {
+    if (isDebtClean_wan && isDebtClean_eth && isDebtClean_bsc && isDebtClean_btc && isDebtClean_xrp) {
       await oracleWan.setDebtClean(groupId, true);
-      log.info("smgId", groupId, "wan", isDebtClean_wan, "eth", isDebtClean_eth, "btc", isDebtClean_btc, "xrp", isDebtClean_xrp)
+      log.info("smgId", groupId, "wan", isDebtClean_wan, "eth", isDebtClean_eth, "bsc", isDebtClean_bsc, "btc", isDebtClean_btc, "xrp", isDebtClean_xrp)
     }
   }
 }

@@ -16,12 +16,16 @@ const contracts = {
 
 const wanConfig = require(path.resolve(process.env.DEPLOYED_FOLD, process.env.DEPLOYED_FILE_WANCHAIN))
 const ethConfig = require(path.resolve(process.env.DEPLOYED_FOLD, process.env.DEPLOYED_FILE_ETHEREUM))
+const bscConfig = require(path.resolve(process.env.DEPLOYED_FOLD, process.env.DEPLOYED_FILE_BSC))
 
 const wanPrivateKey = process.env.OWNER_SK_WANCHAIN
 const wanAddress = privateToAddress(wanPrivateKey);
 
 const ethPrivateKey = process.env.OWNER_SK_ETHEREUM
 const ethAddress = privateToAddress(ethPrivateKey);
+
+const bscPrivateKey = process.env.OWNER_SK_BSC
+const bscAddress = privateToAddress(bscPrivateKey);
 
 const configs = {}
 configs[process.env.CHAINTYPE_WAN] = {
@@ -33,6 +37,11 @@ configs[process.env.CHAINTYPE_ETH] = {
   config: ethConfig,
   ownerPrivateKey: ethPrivateKey,
   ownerAddress: ethAddress
+}
+configs[process.env.CHAINTYPE_BSC] = {
+  config: bscConfig,
+  ownerPrivateKey: bscPrivateKey,
+  ownerAddress: bscAddress
 }
 
 const abi2replace = {

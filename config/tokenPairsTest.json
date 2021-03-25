@@ -32,17 +32,6 @@
 
     "mapChain": "wanchain"
   },
-  "FNX2ETH": {
-    "id": "4",
-
-    "ancestorChain": "wanchain",
-    "ancestorAddress": "0x974ab46969d3d9a4569546051a797729e301d6eb",
-
-    "originChain": "wanchain",
-    "originAddress": "0x974ab46969d3d9a4569546051a797729e301d6eb",
-
-    "mapChain": "ethereum"
-  },
   "WBTC2ETH": {
     "id": "5",
 
@@ -263,5 +252,18 @@
 
     "mapChain": "wanchain",
     "mapAddress": "0x2cc9b65dfaab4512ceecfe591196bd1f3ebdedf9"
+  },
+  "eFNX2BSC": {
+    "id": "26",
+
+    "ancestorChain": "ethereum",
+    "ancestorAddress": "0x5dbec454b9f90837aba015322979e696004c2b7e",
+
+    "originChain": "ethereum",
+    "originAddress": "0x5dbec454b9f90837aba015322979e696004c2b7e",
+
+    "mapChain": "bsc",
+    "mapAddress": "0x6ff66d6bb918be1ab92c0d784e377e5e726fb839"
   }
+
 }

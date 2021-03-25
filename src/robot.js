@@ -25,14 +25,17 @@ const { loadContract } = require('./lib/abi_address');
 
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
+const chainBsc = require(`./chain/${process.env.BSC_CHAIN_ENGINE}`);
 const chainBtc = require(`./chain/${process.env.IWAN_BTC_CHAIN_ENGINE}`);
 const chainXrp = require(`./chain/${process.env.IWAN_XRP_CHAIN_ENGINE}`);
 
 const oracleWan = loadContract(chainWan, 'OracleDelegate')
 const oracleEth = loadContract(chainEth, 'OracleDelegate')
+const oracleBsc = loadContract(chainBsc, 'OracleDelegate')
 
 const quotaWan = loadContract(chainWan, 'QuotaDelegate')
 const quotaEth = loadContract(chainEth, 'QuotaDelegate')
+const quotaBsc = loadContract(chainBsc, 'QuotaDelegate')
 
 const sgaWan = loadContract(chainWan, 'StoremanGroupDelegate')
 
@@ -85,7 +88,7 @@ const updateStoreManToChains = async function() {
   log.info("updateStoreManToChains")
   await doSchedule(async () => {
     if (!scanInst.bScanning) {
-      await syncConfigToOtherChain(sgaWan, [oracleEth]);
+      await syncConfigToOtherChain(sgaWan, [oracleEth, oracleBsc]);
     } else {
       setTimeout(async() => {
         await updateStoreManToChains()
@@ -98,7 +101,7 @@ const updateStoreManToChainsPart = async function() {
   log.info("updateStoreManToChainsPart")
   await doSchedule(async () => {
     if (!scanInst.bScanning) {
-      await syncConfigToOtherChain(sgaWan, [oracleEth], true);
+      await syncConfigToOtherChain(sgaWan, [oracleEth, oracleBsc], true);
     }
   },[])
 }
@@ -106,7 +109,7 @@ const updateStoreManToChainsPart = async function() {
 const updateDebtCleanToWan = async function() {
   log.info("updateDebtCleanToWan")
   await doSchedule(async () => {
-    await syncIsDebtCleanToWan(oracleWan, quotaWan, quotaEth, chainBtc, chainXrp)
+    await syncIsDebtCleanToWan(oracleWan, quotaWan, quotaEth, quotaBsc, chainBtc, chainXrp)
   }, [])
 }
 const robotSchedules = function() {
@@ -149,10 +152,6 @@ setTimeout(async () => {
   setTimeout(scanNewStoreMan, 0);
 
   robotSchedules();
-
-  // await scanNewStoreMan()
-  // await updateStoreManToChains()
-  // await updateDebtCleanToWan()
 }, 0)
 
 

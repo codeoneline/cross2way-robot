@@ -8,11 +8,13 @@ const { loadContract } = require('./lib/abi_address')
 
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
+const chainBsc = require(`./chain/${process.env.BSC_CHAIN_ENGINE}`);
 // const chainWan = require(`./chain/${process.env.IWAN_WAN_CHAIN_ENGINE}`);
 // const chainEth = require(`./chain/${process.env.IWAN_ETH_CHAIN_ENGINE}`);
 
 const tmWan = loadContract(chainWan, 'TokenManagerDelegate')
 const tmEth = loadContract(chainEth, 'TokenManagerDelegate')
+const tmBsc = loadContract(chainBsc, 'TokenManagerDelegate')
 
 const hexToBytes = web3.utils.hexToBytes;
 const hexToString = web3.utils.hexToString;
@@ -44,7 +46,12 @@ const chains = {
     symbol: "XRP",
     decimals: "6",
     chainId: chainIds.XRP.toString(),
-  }
+  },
+  "bsc": {
+    symbol: "BNB",
+    decimals: "18",
+    chainId: chainIds.BSC.toString(),
+  },
 }
 
 const contracts = {
@@ -53,6 +60,9 @@ const contracts = {
   },
   "ethereum": {
     tm : tmEth,
+  },
+  "bsc": {
+    tm : tmBsc,
   }
 }
 
@@ -162,10 +172,10 @@ const deployAndUpdate = async () => {
     const key = keys[i]
     const config = configs[key]
 
-    if (tokenPairsConfig[key].mapChain === 'wanchain' || tokenPairsConfig[key].mapChain === 'ethereum') {
+    if (tokenPairsConfig[key].mapChain === 'wanchain' || tokenPairsConfig[key].mapChain === 'ethereum' || tokenPairsConfig[key].mapChain === 'bsc') {
       await doAddOrUpdate(config, tokenPairsConfig, key, tokenPairsConfig[key].mapChain)
     }
-    if (tokenPairsConfig[key].originChain === 'wanchain' || tokenPairsConfig[key].originChain === 'ethereum') {
+    if (tokenPairsConfig[key].originChain === 'wanchain' || tokenPairsConfig[key].originChain === 'ethereum'|| tokenPairsConfig[key].originChain === 'bsc') {
       await doAddOrUpdate(config, tokenPairsConfig, key, tokenPairsConfig[key].originChain)
     }
     // if mapChain and originChain != 'wanchain', then add to wanchain oracle

@@ -24,6 +24,7 @@ const { web3, sleep } = require('./lib/utils');
 
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
+const chainBsc = require(`./chain/${process.env.BSC_CHAIN_ENGINE}`);
 // const chainWan = require(`./chain/${process.env.IWAN_WAN_CHAIN_ENGINE}`);
 // const chainEth = require(`./chain/${process.env.IWAN_ETH_CHAIN_ENGINE}`);
 
@@ -31,15 +32,19 @@ const { loadContract } = require('./lib/abi_address');
 
 const oracleWanProxy = loadContract(chainWan, 'OracleProxy')
 const oracleEthProxy = loadContract(chainEth, 'OracleProxy')
+const oracleBscProxy = loadContract(chainBsc, 'OracleProxy')
 
 const tmWanProxy = loadContract(chainWan, 'TokenManagerProxy')
 const tmEthProxy = loadContract(chainEth, 'TokenManagerProxy')
+const tmBscProxy = loadContract(chainBsc, 'TokenManagerProxy')
 
 const oracleWan = loadContract(chainWan, 'OracleDelegate')
 const oracleEth = loadContract(chainEth, 'OracleDelegate')
+const oracleBsc = loadContract(chainBsc, 'OracleDelegate')
 
 const tmWan = loadContract(chainWan, 'TokenManagerDelegate')
 const tmEth = loadContract(chainEth, 'TokenManagerDelegate')
+const tmBsc = loadContract(chainBsc, 'TokenManagerDelegate')
 
 const sgaWan = loadContract(chainWan, 'StoremanGroupDelegate')
 
@@ -79,6 +84,8 @@ function getMapTm(toChainId) {
     return tmWan
   } else if (tmEth.core.chainId === toChainId) {
     return tmEth
+  } else if (tmBsc.core.chainId === toChainId) {
+    return tmBsc
   } else {
     return null;
   }
@@ -109,9 +116,11 @@ let crossResult = {};
 async function refreshTMS() {
   const totalTokenPairs = await tmWan.totalTokenPairs();
   const totalTokenPairs_eth = await tmEth.totalTokenPairs();
+  const totalTokenPairs_bsc = await tmBsc.totalTokenPairs();
 
   const tokenPairs = await getTokenPairs(tmWan, totalTokenPairs)
   const tokenPairs_eth = await getTokenPairs(tmEth, totalTokenPairs_eth)
+  const tokenPairs_bsc = await getTokenPairs(tmBsc, totalTokenPairs_bsc)
 
   const result = {
     'WanChain' : {
@@ -119,6 +128,9 @@ async function refreshTMS() {
     },
     'Ethereum' : {
       tokenPairs: tokenPairs_eth,
+    },
+    'Bsc' : {
+      tokenPairs: tokenPairs_bsc,
     }
   }
   // tmsResult = result;
@@ -193,12 +205,14 @@ async function refreshOracles() {
 
   const sgs = {}
   const sgs_eth = {}
+  const sgs_bsc = {}
   const sgAll = db.getAllSga();
   for (let i = 0; i<sgAll.length; i++) {
     const sg = sgAll[i];
     const groupId = sg.groupId;
     const config = await sgaWan.getStoremanGroupConfig(groupId);
     const configEth = await oracleEth.getStoremanGroupConfig(groupId);
+    const configBsc = await oracleBsc.getStoremanGroupConfig(groupId);
     const ks = Object.keys(config);
 
     // if (config.gpk1 !== null || configEth.gpk1 !== null) {
@@ -206,9 +220,12 @@ async function refreshOracles() {
         const str = j.toString();
         delete config[str];
         delete configEth[str];
+        delete configBsc[str];
       }
+      configBsc.isDebtClean = (await oracleBsc.isDebtClean(groupId)).toString()
       configEth.isDebtClean = (await oracleEth.isDebtClean(groupId)).toString()
       config.isDebtClean = (await oracleWan.isDebtClean(groupId)).toString()
+      sgs_bsc[groupId] = configBsc;
       sgs_eth[groupId] = configEth;
       sgs[groupId] = config;
     // }
@@ -222,6 +239,10 @@ async function refreshOracles() {
     'Ethereum' : {
       prices: prePricesMap_Eth,
       sgs: sgs_eth,
+    },
+    'Bsc' : {
+      prices: {},
+      sgs: sgs_bsc,
     }
   }
 
@@ -373,23 +394,23 @@ async function refreshCross() {
 
 setTimeout(async function() {
   await refreshTMS();
-  await refreshOracles();
-  await refreshChains();
-  await refreshQuota();
-  await refreshCross();
+  // await refreshOracles();
+  // await refreshChains();
+  // await refreshQuota();
+  // await refreshCross();
 }, 0);
 
-setInterval(async function() {
-  try {
-    await refreshTMS();
-    await refreshOracles();
-    await refreshChains();
-    await refreshQuota();
-    await refreshCross();
-  } catch(e) {
-    console.log(e);
-  }
-}, 60000);
+// setInterval(async function() {
+//   try {
+//     await refreshTMS();
+//     await refreshOracles();
+//     await refreshChains();
+//     await refreshQuota();
+//     await refreshCross();
+//   } catch(e) {
+//     console.log(e);
+//   }
+// }, 60000);
 
 app.get('/tms', (req, res) => {
   res.send(tmsResult);
