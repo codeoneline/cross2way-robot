@@ -297,13 +297,17 @@ async function refreshOracles() {
 async function refreshChains() {
   const odAddr = await oracleWanProxy.implementation();
   const odAddr_eth = await oracleEthProxy.implementation();
+  const odAddr_bsc = await oracleBscProxy.implementation();
   const od = new Oracle(chainWan, odAddr);
   const od_eth = new Oracle(chainEth, odAddr_eth);
+  const od_bsc = new Oracle(chainBsc, odAddr_bsc);
 
   const tmAddr = await tmWanProxy.implementation();
   const tmAddr_eth = await tmEthProxy.implementation();
+  const tmAddr_bsc = await tmBscProxy.implementation();
   const tm = new TokenManager(chainWan, odAddr);
   const tm_eth = new TokenManager(chainEth, odAddr_eth);
+  const tm_bsc = new TokenManager(chainBsc, odAddr_bsc);
 
   const storeOwner = (await sgaWan.getOwner()).toLowerCase();
   const storeOwnerConfig = sgaWan.pv_address;
@@ -336,6 +340,22 @@ async function refreshChains() {
       oracleDelegatorOwner: await od_eth.getOwner(),
       tokenManagerProxyOwner: await tmEthProxy.getOwner(),
       tokenManagerDelegatorOwner: await tm_eth.getOwner(),
+
+      storeManProxy: "no contract",
+      storeManProxyOwner: storeOwner ===  storeOwnerConfig? "equal" : storeOwnerConfig,
+    },
+    'Bsc' : {
+      blockNumber: await chainBsc.core.getBlockNumber(),
+
+      oracleProxy: oracleBscProxy.address,
+      oracleDelegator: odAddr_bsc,
+      tokenManagerProxy: tmBscProxy.address,
+      tokenManagerDelegator: tmAddr_bsc,
+
+      oracleProxyOwner: await oracleBscProxy.getOwner(),
+      oracleDelegatorOwner: await od_bsc.getOwner(),
+      tokenManagerProxyOwner: await tmBscProxy.getOwner(),
+      tokenManagerDelegatorOwner: await tm_bsc.getOwner(),
 
       storeManProxy: "no contract",
       storeManProxyOwner: storeOwner ===  storeOwnerConfig? "equal" : storeOwnerConfig,
@@ -394,23 +414,23 @@ async function refreshCross() {
 
 setTimeout(async function() {
   await refreshTMS();
-  // await refreshOracles();
-  // await refreshChains();
-  // await refreshQuota();
-  // await refreshCross();
+  await refreshOracles();
+  await refreshChains();
+  await refreshQuota();
+  await refreshCross();
 }, 0);
 
-// setInterval(async function() {
-//   try {
-//     await refreshTMS();
-//     await refreshOracles();
-//     await refreshChains();
-//     await refreshQuota();
-//     await refreshCross();
-//   } catch(e) {
-//     console.log(e);
-//   }
-// }, 60000);
+setInterval(async function() {
+  try {
+    await refreshTMS();
+    await refreshOracles();
+    await refreshChains();
+    await refreshQuota();
+    await refreshCross();
+  } catch(e) {
+    console.log(e);
+  }
+}, 60000);
 
 app.get('/tms', (req, res) => {
   res.send(tmsResult);
