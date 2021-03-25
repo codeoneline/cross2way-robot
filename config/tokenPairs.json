@@ -192,6 +192,7 @@
     "originChain": "ethereum",
     "originAddress": "0xe8ff5c9c75deb346acac493c463c8950be03dfba",
 
-    "mapChain": "wanchain"
+    "mapChain": "wanchain",
+    "mapAddress": "0xdE1A20792553B84ddB254cA78fA7c5996aD5Fbe2"
   }
 }
