@@ -90,8 +90,8 @@ setTimeout( async () => {
   // const new_owner_addr = "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8";
   // const new_owner_sk = "b6a0`3207128827eaae0d31d97a7a6243de31f2baf99eabd764e33389ecf436fc";
 
-  await tmWan.removeTokenPair(4)
-  await tmEth.removeTokenPair(4)
+  // await tmWan.removeTokenPair(17)
+  // await tmEth.removeTokenPair(17)
 
   // console.log(await chainEth.core.getBlockNumber())
   // await uniEthMapToken.transferOwner('0x017ab6485ff91c1a0a16b90e71f92b935b7213d3')

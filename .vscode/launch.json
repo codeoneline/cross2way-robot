@@ -29,6 +29,17 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "deploy eth testnet",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}/src/deploy.js",
+      "envFile": "${workspaceFolder}/.env.dev"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "cmc",
       "skipFiles": [
         "<node_internals>/**"
