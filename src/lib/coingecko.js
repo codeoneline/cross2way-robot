@@ -39,6 +39,8 @@ const getIDs = async (url, symbolsStr) => {
         symbolsMap[symbol] = "finnexus"
       } else if (symbol === "uni") {
         symbolsMap[symbol] = "uniswap"
+      } else if (symbol === "xrp") {
+        symbolsMap[symbol] = "ripple"
       } else {
         symbolsMap[symbol] = ""
       }
@@ -51,7 +53,7 @@ const getIDs = async (url, symbolsStr) => {
         if (symbolsMap[item.symbol] === "") {
           symbolsMap[item.symbol] = item.id
         } else {
-          if (item.symbol !== "fnx" && item.symbol !== "uni") {
+          if (item.symbol !== "fnx" && item.symbol !== "uni" && item.symbol !== 'xrp') {
             log.error(`duplicated new ${JSON.stringify(item, null, 2)}, old ${JSON.stringify(symbolsMap[item.symbol], null, 2)}`)
             throw new Error(`duplicated new ${JSON.stringify(item, null, 2)}, old ${JSON.stringify(symbolsMap[item.symbol], null, 2)}`)
           }
