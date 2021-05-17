@@ -228,6 +228,20 @@ const isBtcDebtClean = async function(chainBtc, sg) {
   // 1 1 的是老store man
   return true
 }
+const isLtcDebtClean = async function(chainLtc, sg) {
+  if (sg.curve1 === 0 || sg.curve2 === 0) {
+    const gpk = sg.curve1 === 0 ? sg.gpk1 : sg.gpk2
+    const balance = await chainLtc.core.getOneBalance(gpk)
+
+    if (balance.gt(bigZero)) {
+      return false
+    } else {
+      return true
+    }
+  }
+  // 1 1 的是老store man
+  return true
+}
 
 const xrpUnit = new BigNumber(Math.pow(10, 6))
 const minXrpAmount = (new BigNumber('21')).multipliedBy(xrpUnit)
@@ -248,7 +262,7 @@ const isXrpDebtClean = async function(chainXrp, sg) {
   return true
 }
 
-const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, quotaBsc, chainBtc, chainXrp) {
+const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, quotaBsc, chainBtc, chainXrp, chainLtc) {
   const time = parseInt(new Date().getTime() / 1000);
   // 0. 获取 wan chain 上活跃的 store man -- 记录在db里
   const sgs = db.getAllSga();
@@ -273,17 +287,19 @@ const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, quota
 
     let isDebtClean_btc = false
     let isDebtClean_xrp = false
+    let isDebtClean_ltc = false
     if (sg.status >= 5) {
       if (time > sg.endTime) {
         isDebtClean_btc = await isBtcDebtClean(chainBtc, sg)
         isDebtClean_xrp = await isXrpDebtClean(chainXrp, sg)
+        isDebtClean_ltc = await isLtcDebtClean(chainLtc, sg)
       }
     }
   
     // 4. 如果其他链上都debt clean， 则将debt clean状态同步到wanChain的oracle上
-    if (isDebtClean_wan && isDebtClean_eth && isDebtClean_bsc && isDebtClean_btc && isDebtClean_xrp) {
+    if (isDebtClean_wan && isDebtClean_eth && isDebtClean_bsc && isDebtClean_btc && isDebtClean_xrp && isDebtClean_ltc) {
       await oracleWan.setDebtClean(groupId, true);
-      log.info("smgId", groupId, "wan", isDebtClean_wan, "eth", isDebtClean_eth, "bsc", isDebtClean_bsc, "btc", isDebtClean_btc, "xrp", isDebtClean_xrp)
+      log.info("smgId", groupId, "wan", isDebtClean_wan, "eth", isDebtClean_eth, "bsc", isDebtClean_bsc, "btc", isDebtClean_btc, "xrp", isDebtClean_xrp, "ltc", isDebtClean_ltc)
     }
   }
 }

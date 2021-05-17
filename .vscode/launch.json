@@ -7,6 +7,17 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "dev lib ltc",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}/src/lib/ltc.js",
+      "envFile": "${workspaceFolder}/.env.dev"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "coingecko",
       "skipFiles": [
         "<node_internals>/**"
