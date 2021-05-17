@@ -52,6 +52,11 @@ const chains = {
     decimals: "18",
     chainId: chainIds.BSC.toString(),
   },
+  "ltc": {
+    symbol: "LTC",
+    decimals: "8",
+    chainId: chainIds.LTC.toString(),
+  },
 }
 
 const contracts = {

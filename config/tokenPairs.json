@@ -171,6 +171,66 @@
 
     "mapChain": "wanchain"
   },
+  "WSAP2ETH": {
+    "id": "17",
+
+    "ancestorChain": "wanchain",
+    "ancestorAddress": "0x8b9f9f4aa70b1b0d586be8adfb19c1ac38e05e9a",
+
+    "originChain": "wanchain",
+    "originAddress": "0x8b9f9f4aa70b1b0d586be8adfb19c1ac38e05e9a",
+
+    "mapChain": "ethereum"
+  },
+  "XRP2WAN": {
+    "id": "18",
+
+    "ancestorChain": "xrp",
+    "ancestorAddress": "0x0000000000000000000000000000000000000000",
+
+    "originChain": "xrp",
+    "originAddress": "0x0000000000000000000000000000000000000000",
+
+    "mapChain": "wanchain"
+  },
+  "XRP2ETH": {
+    "id": "19",
+
+    "ancestorChain": "xrp",
+    "ancestorAddress": "0x0000000000000000000000000000000000000000",
+
+    "originChain": "xrp",
+    "originAddress": "0x0000000000000000000000000000000000000000",
+
+    "mapChain": "ethereum"
+  },
+  "WXRP2ETH": {
+    "id": "20",
+
+    "ancestorChain": "xrp",
+    "ancestorAddress": "0x0000000000000000000000000000000000000000",
+
+    "originChain": "wanchain",
+    "originAddress": "0xf665e0e3e75d16466345e1129530ec28839efaea",
+
+    "mapChain": "ethereum",
+    "mapAddress": "0x4917a9a03bdf9be520e0b342da8c3c8787237302"
+  },
+  "SUSHI2ETH": {
+    "id": "21",
+
+    "ancestorChain": "ethereum",
+    "ancestorAddress": "0xb9ef770b6a5e12e45983c5d80545258aa38f3b78",
+    "ancestorName": "SUSHI",
+    "ancestorSymbol": "SUSHI",
+    "ancestorDecimal": "18",
+
+    "originChain": "ethereum",
+    "originAddress": "0xb9ef770b6a5e12e45983c5d80545258aa38f3b78",
+
+    "mapChain": "wanchain",
+    "mapAddress": "0xf1d0ad0c4a612ecf4931b673245f1fc2935bccdc"
+  },
   "ZCN2WAN": {
     "id": "22",
 
@@ -181,7 +241,7 @@
     "originAddress": "0xb9ef770b6a5e12e45983c5d80545258aa38f3b78",
 
     "mapChain": "wanchain",
-    "mapAddress": "0xF1D0ad0C4a612EcF4931b673245f1FC2935BccdC"
+    "mapAddress": "0xf1d0ad0c4a612ecf4931b673245f1fc2935bccdc"
   },
   "VIBE2WAN": {
     "id": "23",
@@ -193,6 +253,62 @@
     "originAddress": "0xe8ff5c9c75deb346acac493c463c8950be03dfba",
 
     "mapChain": "wanchain",
-    "mapAddress": "0xdE1A20792553B84ddB254cA78fA7c5996aD5Fbe2"
+    "mapAddress": "0xde1a20792553b84ddb254ca78fa7c5996ad5fbe2"
+  },
+  "FNX2WAN": {
+    "id": "24",
+
+    "ancestorChain": "ethereum",
+    "ancestorAddress": "0xef9cd7882c067686691b6ff49e650b43afbbcc6b",
+
+    "originChain": "ethereum",
+    "originAddress": "0xef9cd7882c067686691b6ff49e650b43afbbcc6b",
+
+    "mapChain": "wanchain"
+  },
+  "cFNX2WAN": {
+    "id": "25",
+
+    "ancestorChain": "ethereum",
+    "ancestorAddress": "0x6ba35e244a837d80a0ecc2f8089ea741de9de9a5",
+
+    "originChain": "ethereum",
+    "originAddress": "0x6ba35e244a837d80a0ecc2f8089ea741de9de9a5",
+
+    "mapChain": "wanchain"
+  },
+  "eFNX2BSC": {
+    "id": "26",
+
+    "ancestorChain": "ethereum",
+    "ancestorAddress": "0x5dbec454b9f90837aba015322979e696004c2b7e",
+
+    "originChain": "ethereum",
+    "originAddress": "0x5dbec454b9f90837aba015322979e696004c2b7e",
+
+    "mapChain": "bsc",
+    "mapAddress": "0x6ff66d6bb918be1ab92c0d784e377e5e726fb839"
+  },
+  "waneFNX2BSC": {
+    "id": "27",
+
+    "ancestorChain": "ethereum",
+    "ancestorAddress": "0x5dbec454b9f90837aba015322979e696004c2b7e",
+
+    "originChain": "wanchain",
+    "originAddress": "0xcbf7eab1639c175545a0d8b24ac47ea36a2720ed",
+
+    "mapChain": "bsc"
+  },
+  "ocean2wanchain": {
+    "id": "28",
+
+    "ancestorChain": "ethereum",
+    "ancestorAddress": "0x8967bcf84170c91b0d24d4302c2376283b0b3a07",
+
+    "originChain": "ethereum",
+    "originAddress": "0x8967bcf84170c91b0d24d4302c2376283b0b3a07",
+
+    "mapChain": "wanchain"
   }
 }

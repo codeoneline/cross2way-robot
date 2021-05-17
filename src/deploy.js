@@ -4,7 +4,8 @@ const HDWalletProvider = require('truffle-hdwallet-provider');
 const Web3 = require('web3');
 const readlineSync = require('readline-sync');
 const keythereum = require("keythereum");
-const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
+// const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
+const gasPrice = process.env.DEPLOY_GASPRICE_ETH
 
 function getSk(addressTip, tip) {
   let sk = null
@@ -40,10 +41,7 @@ const web3 = new Web3(provider);
   // const gasPrice = await web3.eth.getGasPrice()
   console.log(`gasPrice : ${gasPrice}`)
 
-  const myContract = new web3.eth.Contract(compiledContract.abi)
-  console.log(JSON.stringify(myContract.options))
-
-	const deployedContract = await myContract
+	const deployedContract = await new web3.eth.Contract(compiledContract.abi)
 		.deploy({
 			data: compiledContract.bytecode,
 			arguments: ["wanWASP@ethereum", "wanWASP", 18]

@@ -10,6 +10,7 @@ const chainIds = {
     EOS: 0x800000c2,
     XRP: 0x80000090,
     BSC: 0x800002ca,
+    LTC: 0x80000002,
 }
 
 function privateToAddress(sk) {

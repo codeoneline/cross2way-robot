@@ -150,9 +150,9 @@ setTimeout(async () => {
     sk = getSk(address, `请输入bsc上oracle合约的admin(${address})的  私钥：`)
     oracleBsc.setAdminSk(sk)
   }
-  // if (process.env.ORACLE_ADMIN_WANCHAIN){
-  //   oracleWan.setAdminSk(process.env.ORACLE_ADMIN_WANCHAIN)
-  // }
+  if (process.env.ORACLE_ADMIN_WANCHAIN){
+    oracleWan.setAdminSk(process.env.ORACLE_ADMIN_WANCHAIN)
+  }
 
   setTimeout(updatePriceToWAN, 0);
   setTimeout(scanNewStoreMan, 0);
