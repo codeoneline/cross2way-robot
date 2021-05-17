@@ -48,7 +48,6 @@
     "graphql-tag": "^2.11.0",
     "iwan-sdk": "^1.3.0",
     "keythereum": "^1.2.0",
-    "litecore-lib": "^0.13.22",
     "log4js": "^6.3.0",
     "lowdb": "^1.0.0",
     "node-fetch": "^2.6.1",
