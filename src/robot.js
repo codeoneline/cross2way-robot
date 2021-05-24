@@ -66,18 +66,18 @@ const scanInst = createScanEvent(
 );
 
 const updatePriceToWAN = async function() {
-  const pricesMap = await doSchedule(getPrices_coingecko, [process.env.SYMBOLS]);
+  const pricesMap = await doSchedule(getPrices_coingecko, process.env.SCHEDULE_RETRY_TIMES, process.env.SYMBOLS, process.env.SYMBOLIDS);
   log.info(`updatePriceToChains begin, get prices: ${JSON.stringify(pricesMap)}`);
 
-  await doSchedule(updatePrice_WAN, [oracleWan, pricesMap]);
+  await doSchedule(updatePrice_WAN, process.env.SCHEDULE_RETRY_TIMES, oracleWan, pricesMap);
   log.info(`updatePriceToChains end`);
 }
 
 const updatePriceToETH = async function() {
-  const pricesMap = await doSchedule(getPrices_coingecko, [process.env.SYMBOLS_ETH]);
+  const pricesMap = await doSchedule(getPrices_coingecko, process.env.SCHEDULE_RETRY_TIMES, process.env.SYMBOLS_ETH, process.env.SYMBOLIDS);
   log.info(`updatePriceToChains begin, get prices: ${JSON.stringify(pricesMap)}`);
 
-  await doSchedule(updatePrice_ETH, [oracleEth, pricesMap]);
+  await doSchedule(updatePrice_ETH, process.env.SCHEDULE_RETRY_TIMES, oracleEth, pricesMap);
   log.info(`updatePriceToChains end`);
 }
 
@@ -95,7 +95,7 @@ const updateStoreManToChains = async function() {
         await updateStoreManToChains()
       }, 10000)
     }
-  },[])
+  })
 }
 
 const updateStoreManToChainsPart = async function() {
@@ -104,14 +104,14 @@ const updateStoreManToChainsPart = async function() {
     if (!scanInst.bScanning) {
       await syncConfigToOtherChain(sgaWan, [oracleEth, oracleBsc], true);
     }
-  },[])
+  })
 }
 
 const updateDebtCleanToWan = async function() {
   log.info("updateDebtCleanToWan")
   await doSchedule(async () => {
     await syncIsDebtCleanToWan(oracleWan, quotaWan, quotaEth, quotaBsc, chainBtc, chainXrp, chainLtc)
-  }, [])
+  })
 }
 const robotSchedules = function() {
   schedule.scheduleJob('20 * * * * *', updatePriceToWAN);

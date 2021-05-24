@@ -20,7 +20,7 @@ function createScanEvent(contract, eventName, chainName, step, uncertainBlock, d
   );
 }
 
-async function doSchedule(func, args, tryTimes = process.env.SCHEDULE_RETRY_TIMES) {
+async function doSchedule(func, tryTimes = process.env.SCHEDULE_RETRY_TIMES, ...args) {
   log.info(`${func.name} begin`);
   let leftTime = parseInt(tryTimes);
 

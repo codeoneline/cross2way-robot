@@ -18,17 +18,30 @@ const getData = async url => {
   return null;
 }
 
-// list
-// {
-//   "id": "yearn-finance-bit2",
-//   "symbol": "yfb2",
-//   "name": "Yearn Finance Bit2"
-// },
-// {
-//   "id": "yearn-finance-center",
-//   "symbol": "yfc",
-//   "name": "Yearn Finance Center"
-// },
+const printIDs = async (url, symbolsStr) => {
+  try {
+    const symbols = symbolsStr.toLowerCase().replace(/\s+/g,"").split(',')
+    const symbolsMap = {}
+    symbols.forEach(symbol => {symbolsMap[symbol] = []})
+
+    const response = (await axios.get(url))
+    const data = response.data
+    data.forEach(item => {
+      if (symbolsMap.hasOwnProperty(item.symbol)) {
+        symbolsMap[item.symbol].push(item.id)
+      }
+    })
+    let str = ''
+    symbols.forEach(symbol => {
+      const ids = symbolsMap[symbol].length > 1 ? `[${symbolsMap[symbol]}]` : symbolsMap[symbol]
+      str = str === '' ? ids : str + ',' + ids
+    })
+    console.log(str)
+  } catch (error) {
+    console.error(error)
+  }
+  return null
+}
 
 const getIDs = async (url, symbolsStr) => {
   try {
@@ -43,6 +56,8 @@ const getIDs = async (url, symbolsStr) => {
         symbolsMap[symbol] = "ripple"
       } else if (symbol === 'ltc') {
         symbolsMap[symbol] = "litecoin"
+      } else if (symbol === 'eos') { 
+        symbolsMap[symbol] = "eos"
       } else {
         symbolsMap[symbol] = ""
       }
@@ -55,7 +70,7 @@ const getIDs = async (url, symbolsStr) => {
         if (symbolsMap[item.symbol] === "") {
           symbolsMap[item.symbol] = item.id
         } else {
-          if (item.symbol !== "fnx" && item.symbol !== "uni" && item.symbol !== 'xrp' && item.symbol !== 'ltc') {
+          if (item.symbol !== "fnx" && item.symbol !== "uni" && item.symbol !== 'xrp' && item.symbol !== 'ltc' && item.symbol !== 'eos') {
             log.error(`duplicated new ${JSON.stringify(item, null, 2)}, old ${JSON.stringify(symbolsMap[item.symbol], null, 2)}`)
             throw new Error(`duplicated new ${JSON.stringify(item, null, 2)}, old ${JSON.stringify(symbolsMap[item.symbol], null, 2)}`)
           }
@@ -70,8 +85,20 @@ const getIDs = async (url, symbolsStr) => {
   return null
 }
 
-async function getPrices(symbolsStr) {
-  const symbolIds = await getIDs("https://api.coingecko.com/api/v3/coins/list", symbolsStr)
+const getIDsMap = (symbolsStr, IdsStr) => {
+  const symbolsMap = {}
+  const symbols = symbolsStr.toLowerCase().replace(/\s+/g,"").split(',')
+  const ids = IdsStr.replace(/\s+/g,"").split(',')
+
+  for( let i = 0; i < symbols.length; i++ ) {
+    symbolsMap[symbols[i]] = ids[i]
+  }
+  return symbolsMap
+}
+
+async function getPrices(symbolsStr, idsStr) {
+  // const symbolIds = await getIDs("https://api.coingecko.com/api/v3/coins/list", symbolsStr)
+  const symbolIds = getIDsMap(symbolsStr, idsStr)
   let hasWasp = false
   if (symbolIds['wasp'] !== undefined) {
     hasWasp = true
@@ -96,6 +123,11 @@ async function getPrices(symbolsStr) {
   }
   return priceMap
 }
+
+// setTimeout(async () => {
+//   const symbolsStr = "ETH,USDC,TUSD,GUSD,LINK,MKR,ZXC,EURS,USDT,WAN,FNX,BTC,EOS,UNI,SUSHI,WASP,XRP,ZCN,VIBE,LTC"
+//   await printIDs("https://api.coingecko.com/api/v3/coins/list", symbolsStr)
+// }, 0);
 
 // https://api.coingecko.com/api/v3/coins/list
 // https://api.coingecko.com/api/v3/simple/price?ids=<coin>&vs_currencies=usd
