@@ -26,7 +26,41 @@ function pkToAddress(gpk, network = 'mainnet') {
 
   return address
 }
+// function convert(address) {
+//   try {
+//       let decoded = bitcoin.address.fromBase58Check(address);
+//       let version = decoded['version']
+//       let message;
 
+//       switch (version) {
+//           case 5:
+//               message = "Mainnet p2sh address: ";
+//               version = 50;
+//               break;
+//           case 50:
+//               message = "Mainnet p2sh address (deprecated): ";
+//               version = 5;
+//               break;
+//           case 196:
+//               message = "Testnet p2sh address: ";
+//               version = 58;
+//               break;
+//           case 58:
+//               message = "Testnet p2sh address (deprecated): ";
+//               version = 196;
+//               break;
+//           default:
+//               throw "unknown";
+//       }
+//       // 5 <-> 50
+//       // 196 <-> 58
+//       return bitcoin.address.toBase58Check(decoded['hash'], version);
+//   } catch (err) {
+//       message = "Please enter a valid address."
+//       console.log(err);
+//   }
+//   return '';
+// }
 module.exports = {
   pkToAddress
 }

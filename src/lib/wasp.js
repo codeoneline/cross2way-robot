@@ -48,21 +48,36 @@ const BigNumber = require('bignumber.js');
 //   return waspPrice
 // }
 
+const web3 = new Web3(new Web3.providers.HttpProvider('https://gwan-ssl.wandevs.org:56891'));
 const abi = [{"constant":true,"inputs":[],"name":"getReserves","outputs":[{"internalType":"uint112","name":"_reserve0","type":"uint112"},{"internalType":"uint112","name":"_reserve1","type":"uint112"},{"internalType":"uint32","name":"_blockTimestampLast","type":"uint32"}],"payable":false,"stateMutability":"view","type":"function"}];
-const address = "0x29239a9b93a78decec6e0dd58ddbb854b7ffb0af";
 async function getWaspPriceFromContract(wanPrice) {
-    const web3 = new Web3(new Web3.providers.HttpProvider('https://gwan-ssl.wandevs.org:56891'));
-    const sc = new web3.eth.Contract(abi, address);
-    let ret = await sc.methods.getReserves().call();
-    console.log('ret', ret);
-    const wp = new BigNumber(wanPrice)
-    const wsp = new BigNumber(ret._reserve1)
-    const wan = new BigNumber(ret._reserve0)
-    let p = wsp.div(wan).multipliedBy(wp).integerValue();
+  const address = "0x29239a9b93a78decec6e0dd58ddbb854b7ffb0af";
+  const sc = new web3.eth.Contract(abi, address);
+  let ret = await sc.methods.getReserves().call();
+  console.log('ret', ret);
+  const wp = new BigNumber(wanPrice)
+  const wsp = new BigNumber(ret._reserve1)
+  const wan = new BigNumber(ret._reserve0)
+  let p = wsp.div(wan).multipliedBy(wp).integerValue();
 
-    console.log("p", p.toString());
+  console.log("p", p.toString());
 
-    return '0x' + p.toString(16)
+  return '0x' + p.toString(16)
+}
+
+async function getFnxPriceFromContract(wanPrice) {
+  const fnxWanPairAddress = '0x4bbbaaa14725d157bf9dde1e13f73c3f96343f3d'
+  const sc = new web3.eth.Contract(abi, fnxWanPairAddress);
+  let ret = await sc.methods.getReserves().call();
+  console.log('ret', ret);
+  const wp = new BigNumber(wanPrice)
+  const fnx = new BigNumber(ret._reserve1)
+  const wan = new BigNumber(ret._reserve0)
+  let p = fnx.div(wan).multipliedBy(wp).integerValue();
+
+  console.log("p", p.toString());
+
+  return '0x' + p.toString(16)
 }
 
 module.exports = {
