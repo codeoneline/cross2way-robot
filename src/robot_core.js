@@ -127,6 +127,9 @@ async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
   const sgs = db.getAllSga();
   for (let i = 0; i<sgs.length; i++) {
     const sg = sgs[i];
+    if (sg.status === 7) {
+      continue;
+    }
     const groupId = sg.groupId;
     const config = await sgaContract.getStoremanGroupConfig(groupId);
     let hasWriteDb = false
@@ -271,6 +274,7 @@ const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, quota
     const groupId = sg.groupId;
 
     const isDebtClean = await oracleWan.isDebtClean(groupId)
+    console.log(`groupId ${groupId}, debt ${isDebtClean} status ${sg.status}`)
     if (isDebtClean) {
       continue
     }
@@ -283,6 +287,7 @@ const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, quota
       isDebtClean_wan = await quotaWan.isDebtClean(groupId)
       isDebtClean_eth = await quotaEth.isDebtClean(groupId)
       isDebtClean_bsc = await quotaBsc.isDebtClean(groupId)
+      console.log(`debt clean on wan ${isDebtClean_wan}, eth ${isDebtClean_eth}, bsc ${isDebtClean_bsc}`)
     }
 
     let isDebtClean_btc = false
@@ -293,6 +298,7 @@ const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, quota
         isDebtClean_btc = await isBtcDebtClean(chainBtc, sg)
         isDebtClean_xrp = await isXrpDebtClean(chainXrp, sg)
         isDebtClean_ltc = await isLtcDebtClean(chainLtc, sg)
+        console.log(`debt clean on btc ${isDebtClean_btc}, xrp ${isDebtClean_xrp}, ltc ${isDebtClean_ltc}`)
       }
     }
   

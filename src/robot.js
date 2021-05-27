@@ -89,7 +89,14 @@ const updateStoreManToChains = async function() {
   log.info("updateStoreManToChains")
   await doSchedule(async () => {
     if (!scanInst.bScanning) {
-      await syncConfigToOtherChain(sgaWan, [oracleEth, oracleBsc]);
+      scanInst.bScanning = true
+      try{
+        await syncConfigToOtherChain(sgaWan, [oracleEth, oracleBsc]);
+      } catch(e) {
+        log.error(e)
+      } finally {
+        scanInst.bScanning = false
+      }
     } else {
       setTimeout(async() => {
         await updateStoreManToChains()
@@ -102,7 +109,14 @@ const updateStoreManToChainsPart = async function() {
   log.info("updateStoreManToChainsPart")
   await doSchedule(async () => {
     if (!scanInst.bScanning) {
-      await syncConfigToOtherChain(sgaWan, [oracleEth, oracleBsc], true);
+      scanInst.bScanning = true
+      try{
+        await syncConfigToOtherChain(sgaWan, [oracleEth, oracleBsc], true);
+      } catch(e) {
+        log.error(e)
+      } finally {
+        scanInst.bScanning = false
+      }
     }
   })
 }
@@ -124,7 +138,7 @@ const robotSchedules = function() {
   // sync sga config from wan to other chain, sga database, 1 / 1day
   schedule.scheduleJob('15 2 1 * * *', updateStoreManToChains);
 
-  schedule.scheduleJob('30 */8 * * * *', updateStoreManToChainsPart);
+  schedule.scheduleJob('30 */1 * * * *', updateStoreManToChainsPart);
 
   schedule.scheduleJob('45 */11 * * * *', updateDebtCleanToWan);
 };

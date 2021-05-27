@@ -256,51 +256,6 @@
     "mapChain": "wanchain",
     "mapAddress": "0x2cc9b65dfaab4512ceecfe591196bd1f3ebdedf9"
   },
-  "FNX2WAN": {
-    "id": "24",
-
-    "ancestorChain": "ethereum",
-    "ancestorAddress": "0x5dbec454b9f90837aba015322979e696004c2b7e",
-
-    "originChain": "ethereum",
-    "originAddress": "0x5dbec454b9f90837aba015322979e696004c2b7e",
-
-    "mapChain": "wanchain"
-  },
-  "cFNX2WAN": {
-    "id": "25",
-
-    "ancestorChain": "ethereum",
-    "ancestorAddress": "0x6ba35e244a837d80a0ecc2f8089ea741de9de9a5",
-
-    "originChain": "ethereum",
-    "originAddress": "0x6ba35e244a837d80a0ecc2f8089ea741de9de9a5",
-
-    "mapChain": "wanchain"
-  },
-  "eFNX2BSC": {
-    "id": "26",
-
-    "ancestorChain": "ethereum",
-    "ancestorAddress": "0x5dbec454b9f90837aba015322979e696004c2b7e",
-
-    "originChain": "ethereum",
-    "originAddress": "0x5dbec454b9f90837aba015322979e696004c2b7e",
-
-    "mapChain": "bsc",
-    "mapAddress": "0x6ff66d6bb918be1ab92c0d784e377e5e726fb839"
-  },
-  "waneFNX2BSC": {
-    "id": "27",
-
-    "ancestorChain": "ethereum",
-    "ancestorAddress": "0x5dbec454b9f90837aba015322979e696004c2b7e",
-
-    "originChain": "wanchain",
-    "originAddress": "0xcbf7eab1639c175545a0d8b24ac47ea36a2720ed",
-
-    "mapChain": "bsc"
-  },
   "ocean2wanchain": {
     "id": "28",
 
@@ -321,6 +276,17 @@
     "ancestorAddress": "0x0000000000000000000000000000000000000000",
 
     "originChain": "ltc",
+    "originAddress": "0x0000000000000000000000000000000000000000",
+
+    "mapChain": "wanchain"
+  },
+  "DOT2WAN": {
+    "id": "30",
+
+    "ancestorChain": "polkaTestnet",
+    "ancestorAddress": "0x0000000000000000000000000000000000000000",
+
+    "originChain": "polkaTestnet",
     "originAddress": "0x0000000000000000000000000000000000000000",
 
     "mapChain": "wanchain"

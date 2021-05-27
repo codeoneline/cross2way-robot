@@ -6,9 +6,10 @@ const util = require('ethereumjs-util');
 const { web3 } = require('./utils');
 
 const maxGas = parseInt(process.env.GASLIMIT_ETH);
-const maxGasPrice = parseInt(process.env.GASPRICE_ETH)
-async function signTx(gasLimit, nonce, data, prvKey, value, to, _gasPrice) {
+async function signTx(gasLimit, nonce, data, prvKey, value, to, _gasPrice, _maxGasPrice) {
   const gas = gasLimit > maxGas ? maxGas : gasLimit;
+
+  const maxGasPrice = !_maxGasPrice ? parseInt(process.env.GASPRICE_ETH) : _maxGasPrice
   const gasPrice = _gasPrice > maxGasPrice ? maxGasPrice : _gasPrice;
 
   const txParams = {

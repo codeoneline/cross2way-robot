@@ -90,7 +90,10 @@ setTimeout( async () => {
   // const new_owner_addr = "0x9da26fc2e1d6ad9fdd46138906b0104ae68a65d8";
   // const new_owner_sk = "b6a0`3207128827eaae0d31d97a7a6243de31f2baf99eabd764e33389ecf436fc";
 
-  // await tmWan.removeTokenPair(17)
+  // await tmWan.removeTokenPair(24)
+  // await tmWan.removeTokenPair(25)
+  // await tmWan.removeTokenPair(26)
+  // await tmWan.removeTokenPair(27)
   // await tmEth.removeTokenPair(17)
 
   // console.log(await chainEth.core.getBlockNumber())
@@ -115,10 +118,7 @@ setTimeout( async () => {
   // await oracleWan.setAdmin("0x941c3f932182dfa95a30dc5859c062d4ff8e6859");
 
   // await mint([linkEth], "0x67e3b428acbc3aa2fd38813f65dafbd5af97c6d5", 100000000);
-  // await mint([fnxWan, btcWan, eosWan], "0xded23dd19136574fce6b4ab4ea76395c4088a033".toLowerCase(), 1000);
-  // await mint([linkEth], "0xded23dd19136574fce6b4ab4ea76395c4088a033", 100000000);
-  // await mint([fnxWan, btcWan, eosWan], "0x0d5A1204c001693D86E70566Ae57D49F40d04C90".toLowerCase(), 1000);
-  // await mint([linkEth], "0x0d5A1204c001693D86E70566Ae57D49F40d04C90", 100000000);
+  // await mint([fnxWan, btcWan, eo
   // await mint([fnxWan, btcWan, eosWan], "0xE2A1dc77aAD2BB6b493c491572e822381f2a6E5d".toLowerCase(), 1000);
   // await mint([linkEth], "0xE2A1dc77aAD2BB6b493c491572e822381f2a6E5d", 100000000);
   // await mint([fnxWan], "0xE8DcC92a1eB5C42B63E32C448a53bD4FbE313820".toLowerCase(), 100000);

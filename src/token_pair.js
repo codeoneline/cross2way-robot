@@ -57,6 +57,16 @@ const chains = {
     decimals: "8",
     chainId: chainIds.LTC.toString(),
   },
+  "polka": {
+    symbol: "DOT",
+    decimals: "10",
+    chainId: chainIds.DOT.toString(),
+  },
+  "polkaTestnet": {
+    symbol: "WND",
+    decimals: "12",
+    chainId: chainIds.DOT.toString(),
+  },
 }
 
 const contracts = {

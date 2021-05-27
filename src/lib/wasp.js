@@ -82,5 +82,6 @@ async function getFnxPriceFromContract(wanPrice) {
 
 module.exports = {
   // getWaspPriceFromGraphql,
-  getWaspPriceFromContract
+  getWaspPriceFromContract,
+  getFnxPriceFromContract
 }
