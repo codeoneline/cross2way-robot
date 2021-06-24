@@ -121,6 +121,7 @@ async function getPrices(symbolsStr, idsStr) {
     const waspPrice = await getWaspPriceFromContract(priceMap['WAN'])
     priceMap['WASP'] = waspPrice
   }
+  priceMap['FNX'] = '0x01'
   return priceMap
 }
 

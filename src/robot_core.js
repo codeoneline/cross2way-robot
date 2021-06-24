@@ -142,6 +142,7 @@ async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
       continue;
     }
     const groupId = sg.groupId;
+    const groupIdUint = new BigNumber(sg.groupId).toString(10)
     const config = await sgaContract.getStoremanGroupConfig(groupId);
 
     // TODO: is a current group
@@ -170,12 +171,12 @@ async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
         const oracle = oracles[j];
         // TODO: is need set
         if (isCurrentConfig) {
-          if (curConfigs[j].chain1 !== groupId && curConfigs[j].chain2 !== groupId) {
+          if (curConfigs[j].chain1 !== groupIdUint && curConfigs[j].chain2 !== groupIdUint) {
             await oracle.setStoremanGroupConfig(
               curGroupId,
               '0',
               '0',
-              [groupId, curConfigs[j].chain1],
+              [groupIdUint, curConfigs[j].chain1],
               ['0', '0'],
               '0x',
               '0x',
@@ -304,7 +305,7 @@ const isXrpDebtClean = async function(chainXrp, sg) {
   return true
 }
 
-const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, quotaBsc, chainBtc, chainXrp, chainLtc) {
+const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, quotaBsc, quotaAvax, chainBtc, chainXrp, chainLtc) {
   const time = parseInt(new Date().getTime() / 1000);
   // 0. 获取 wan chain 上活跃的 store man -- 记录在db里
   const sgs = db.getAllSga();
@@ -313,7 +314,6 @@ const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, quota
     const groupId = sg.groupId;
 
     const isDebtClean = await oracleWan.isDebtClean(groupId)
-    console.log(`groupId ${groupId}, debt ${isDebtClean} status ${sg.status}`)
     if (isDebtClean) {
       continue
     }
@@ -321,12 +321,13 @@ const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, quota
     let isDebtClean_wan = false
     let isDebtClean_eth = false
     let isDebtClean_bsc = false
+    let isDebtClean_avax = false
     if (sg.status === 6) {
       console.log('status is 6')
       isDebtClean_wan = await quotaWan.isDebtClean(groupId)
       isDebtClean_eth = await quotaEth.isDebtClean(groupId)
       isDebtClean_bsc = await quotaBsc.isDebtClean(groupId)
-      console.log(`debt clean on wan ${isDebtClean_wan}, eth ${isDebtClean_eth}, bsc ${isDebtClean_bsc}`)
+      isDebtClean_avax = await quotaAvax.isDebtClean(groupId)
     }
 
     let isDebtClean_btc = false
@@ -337,14 +338,13 @@ const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, quota
         isDebtClean_btc = await isBtcDebtClean(chainBtc, sg)
         isDebtClean_xrp = await isXrpDebtClean(chainXrp, sg)
         isDebtClean_ltc = await isLtcDebtClean(chainLtc, sg)
-        console.log(`debt clean on btc ${isDebtClean_btc}, xrp ${isDebtClean_xrp}, ltc ${isDebtClean_ltc}`)
       }
     }
   
     // 4. 如果其他链上都debt clean， 则将debt clean状态同步到wanChain的oracle上
-    if (isDebtClean_wan && isDebtClean_eth && isDebtClean_bsc && isDebtClean_btc && isDebtClean_xrp && isDebtClean_ltc) {
+    if (isDebtClean_wan && isDebtClean_eth && isDebtClean_bsc && isDebtClean_btc && isDebtClean_xrp && isDebtClean_ltc && isDebtClean_avax) {
       await oracleWan.setDebtClean(groupId, true);
-      log.info("smgId", groupId, "wan", isDebtClean_wan, "eth", isDebtClean_eth, "bsc", isDebtClean_bsc, "btc", isDebtClean_btc, "xrp", isDebtClean_xrp, "ltc", isDebtClean_ltc)
+      log.info("smgId", groupId, "wan", isDebtClean_wan, "eth", isDebtClean_eth, "bsc", isDebtClean_bsc, "btc", isDebtClean_btc, "xrp", isDebtClean_xrp, "ltc", isDebtClean_ltc, "avax", isDebtClean_avax)
     }
   }
 }

@@ -25,6 +25,7 @@ const { web3, sleep } = require('./lib/utils');
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
 const chainBsc = require(`./chain/${process.env.BSC_CHAIN_ENGINE}`);
+const chainAvax = require(`./chain/${process.env.AVAX_CHAIN_ENGINE}`);
 // const chainWan = require(`./chain/${process.env.IWAN_WAN_CHAIN_ENGINE}`);
 // const chainEth = require(`./chain/${process.env.IWAN_ETH_CHAIN_ENGINE}`);
 
@@ -33,18 +34,22 @@ const { loadContract } = require('./lib/abi_address');
 const oracleWanProxy = loadContract(chainWan, 'OracleProxy')
 const oracleEthProxy = loadContract(chainEth, 'OracleProxy')
 const oracleBscProxy = loadContract(chainBsc, 'OracleProxy')
+const oracleAvaxProxy = loadContract(chainAvax, 'OracleProxy')
 
 const tmWanProxy = loadContract(chainWan, 'TokenManagerProxy')
 const tmEthProxy = loadContract(chainEth, 'TokenManagerProxy')
 const tmBscProxy = loadContract(chainBsc, 'TokenManagerProxy')
+const tmAvaxProxy = loadContract(chainAvax, 'TokenManagerProxy')
 
 const oracleWan = loadContract(chainWan, 'OracleDelegate')
 const oracleEth = loadContract(chainEth, 'OracleDelegate')
 const oracleBsc = loadContract(chainBsc, 'OracleDelegate')
+const oracleAvax = loadContract(chainAvax, 'OracleDelegate')
 
 const tmWan = loadContract(chainWan, 'TokenManagerDelegate')
 const tmEth = loadContract(chainEth, 'TokenManagerDelegate')
 const tmBsc = loadContract(chainBsc, 'TokenManagerDelegate')
+const tmAvax = loadContract(chainAvax, 'TokenManagerDelegate')
 
 const sgaWan = loadContract(chainWan, 'StoremanGroupDelegate')
 
@@ -86,6 +91,8 @@ function getMapTm(toChainId) {
     return tmEth
   } else if (tmBsc.core.chainId === toChainId) {
     return tmBsc
+  } else if (tmAvax.core.chainId === toChainId) {
+    return tmAvax
   } else {
     return null;
   }
@@ -117,10 +124,12 @@ async function refreshTMS() {
   const totalTokenPairs = await tmWan.totalTokenPairs();
   const totalTokenPairs_eth = await tmEth.totalTokenPairs();
   const totalTokenPairs_bsc = await tmBsc.totalTokenPairs();
+  const totalTokenPairs_avax = await tmAvax.totalTokenPairs();
 
   const tokenPairs = await getTokenPairs(tmWan, totalTokenPairs)
   const tokenPairs_eth = await getTokenPairs(tmEth, totalTokenPairs_eth)
   const tokenPairs_bsc = await getTokenPairs(tmBsc, totalTokenPairs_bsc)
+  const tokenPairs_avax = await getTokenPairs(tmAvax, totalTokenPairs_bsc)
 
   const result = {
     'WanChain' : {
@@ -131,6 +140,9 @@ async function refreshTMS() {
     },
     'Bsc' : {
       tokenPairs: tokenPairs_bsc,
+    },
+    'Avax' : {
+      tokenPairs: tokenPairs_avax,
     }
   }
   // tmsResult = result;
@@ -206,6 +218,7 @@ async function refreshOracles() {
   const sgs = {}
   const sgs_eth = {}
   const sgs_bsc = {}
+  const sgs_avax = {}
   const sgAll = db.getAllSga();
   for (let i = 0; i<sgAll.length; i++) {
     const sg = sgAll[i];
@@ -213,6 +226,7 @@ async function refreshOracles() {
     const config = await sgaWan.getStoremanGroupConfig(groupId);
     const configEth = await oracleEth.getStoremanGroupConfig(groupId);
     const configBsc = await oracleBsc.getStoremanGroupConfig(groupId);
+    const configAvax = await oracleAvax.getStoremanGroupConfig(groupId);
     const ks = Object.keys(config);
 
     // if (config.gpk1 !== null || configEth.gpk1 !== null) {
@@ -221,10 +235,13 @@ async function refreshOracles() {
         delete config[str];
         delete configEth[str];
         delete configBsc[str];
+        delete configAvax[str];
       }
+      configAvax.isDebtClean = (await oracleAvax.isDebtClean(groupId)).toString()
       configBsc.isDebtClean = (await oracleBsc.isDebtClean(groupId)).toString()
       configEth.isDebtClean = (await oracleEth.isDebtClean(groupId)).toString()
       config.isDebtClean = (await oracleWan.isDebtClean(groupId)).toString()
+      sgs_avax[groupId] = configAvax;
       sgs_bsc[groupId] = configBsc;
       sgs_eth[groupId] = configEth;
       sgs[groupId] = config;
@@ -241,6 +258,10 @@ async function refreshOracles() {
       sgs: sgs_eth,
     },
     'Bsc' : {
+      prices: {},
+      sgs: sgs_bsc,
+    },
+    'Avax' : {
       prices: {},
       sgs: sgs_bsc,
     }
@@ -298,16 +319,20 @@ async function refreshChains() {
   const odAddr = await oracleWanProxy.implementation();
   const odAddr_eth = await oracleEthProxy.implementation();
   const odAddr_bsc = await oracleBscProxy.implementation();
+  const odAddr_avax = await oracleAvaxProxy.implementation();
   const od = new Oracle(chainWan, odAddr);
   const od_eth = new Oracle(chainEth, odAddr_eth);
   const od_bsc = new Oracle(chainBsc, odAddr_bsc);
+  const od_avax = new Oracle(chainAvax, odAddr_avax);
 
   const tmAddr = await tmWanProxy.implementation();
   const tmAddr_eth = await tmEthProxy.implementation();
   const tmAddr_bsc = await tmBscProxy.implementation();
+  const tmAddr_avax = await tmAvaxProxy.implementation();
   const tm = new TokenManager(chainWan, odAddr);
   const tm_eth = new TokenManager(chainEth, odAddr_eth);
   const tm_bsc = new TokenManager(chainBsc, odAddr_bsc);
+  const tm_avax = new TokenManager(chainAvax, odAddr_bsc);
 
   const storeOwner = (await sgaWan.getOwner()).toLowerCase();
   const storeOwnerConfig = sgaWan.pv_address;
@@ -356,6 +381,22 @@ async function refreshChains() {
       oracleDelegatorOwner: await od_bsc.getOwner(),
       tokenManagerProxyOwner: await tmBscProxy.getOwner(),
       tokenManagerDelegatorOwner: await tm_bsc.getOwner(),
+
+      storeManProxy: "no contract",
+      storeManProxyOwner: storeOwner ===  storeOwnerConfig? "equal" : storeOwnerConfig,
+    },
+    'Avax' : {
+      blockNumber: await chainAvax.core.getBlockNumber(),
+
+      oracleProxy: oracleAvaxProxy.address,
+      oracleDelegator: odAddr_avax,
+      tokenManagerProxy: tmAvaxProxy.address,
+      tokenManagerDelegator: tmAddr_avax,
+
+      oracleProxyOwner: await oracleAvaxProxy.getOwner(),
+      oracleDelegatorOwner: await od_avax.getOwner(),
+      tokenManagerProxyOwner: await tmAvaxProxy.getOwner(),
+      tokenManagerDelegatorOwner: await tm_avax.getOwner(),
 
       storeManProxy: "no contract",
       storeManProxyOwner: storeOwner ===  storeOwnerConfig? "equal" : storeOwnerConfig,
