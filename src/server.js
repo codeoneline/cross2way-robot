@@ -129,7 +129,7 @@ async function refreshTMS() {
   const tokenPairs = await getTokenPairs(tmWan, totalTokenPairs)
   const tokenPairs_eth = await getTokenPairs(tmEth, totalTokenPairs_eth)
   const tokenPairs_bsc = await getTokenPairs(tmBsc, totalTokenPairs_bsc)
-  const tokenPairs_avax = await getTokenPairs(tmAvax, totalTokenPairs_bsc)
+  const tokenPairs_avax = await getTokenPairs(tmAvax, totalTokenPairs_avax)
 
   const result = {
     'WanChain' : {
@@ -263,7 +263,7 @@ async function refreshOracles() {
     },
     'Avax' : {
       prices: {},
-      sgs: sgs_bsc,
+      sgs: sgs_avax,
     }
   }
 
@@ -332,7 +332,7 @@ async function refreshChains() {
   const tm = new TokenManager(chainWan, odAddr);
   const tm_eth = new TokenManager(chainEth, odAddr_eth);
   const tm_bsc = new TokenManager(chainBsc, odAddr_bsc);
-  const tm_avax = new TokenManager(chainAvax, odAddr_bsc);
+  const tm_avax = new TokenManager(chainAvax, odAddr_avax);
 
   const storeOwner = (await sgaWan.getOwner()).toLowerCase();
   const storeOwnerConfig = sgaWan.pv_address;
