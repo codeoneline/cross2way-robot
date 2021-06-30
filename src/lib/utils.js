@@ -12,6 +12,7 @@ const chainIds = {
     BSC: 0x800002ca,
     LTC: 0x80000002,
     DOT: 0x80000162,
+    AVAX: 0x80002328,
 }
 
 function privateToAddress(sk) {
