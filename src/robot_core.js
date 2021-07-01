@@ -346,10 +346,10 @@ const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, quota
     // 4. 如果其他链上都debt clean， 则将debt clean状态同步到wanChain的oracle上
     if (isDebtClean_wan && isDebtClean_eth && isDebtClean_bsc && isDebtClean_btc && isDebtClean_xrp && isDebtClean_ltc && isDebtClean_avax && isDebtClean_dev) {
       await oracleWan.setDebtClean(groupId, true);
-      log.info("smgId", groupId, "wan", isDebtClean_wan, "eth", isDebtClean_eth, 
-        "bsc", isDebtClean_bsc, "btc", isDebtClean_btc, "xrp", isDebtClean_xrp, 
-        "ltc", isDebtClean_ltc, "avax", isDebtClean_avax, "moonbeam", isDebtClean_dev)
     }
+    log.info("isDebtClean smgId", groupId, "wan", isDebtClean_wan, "eth", isDebtClean_eth, 
+      "bsc", isDebtClean_bsc, "btc", isDebtClean_btc, "xrp", isDebtClean_xrp, 
+      "ltc", isDebtClean_ltc, "avax", isDebtClean_avax, "moonbeam", isDebtClean_dev)
   }
 }
 
