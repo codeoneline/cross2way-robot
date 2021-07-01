@@ -8,7 +8,7 @@ const { loadContract } = require('./lib/abi_address')
 
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
-const chainBsc = require(`./chain/${process.env.BSC_CHAIN_ENGINE}`);
+const chainBsc = require(`./chain/${process.env.CHAIN_ENGINE_BSC}`);
 // const chainWan = require(`./chain/${process.env.IWAN_WAN_CHAIN_ENGINE}`);
 // const chainEth = require(`./chain/${process.env.IWAN_ETH_CHAIN_ENGINE}`);
 

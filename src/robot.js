@@ -25,8 +25,10 @@ const { loadContract } = require('./lib/abi_address');
 
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
-const chainBsc = require(`./chain/${process.env.BSC_CHAIN_ENGINE}`);
+const chainBsc = require(`./chain/${process.env.CHAIN_ENGINE_BSC}`);
 const chainAvax = require(`./chain/${process.env.AVAX_CHAIN_ENGINE}`);
+const chainDev = require(`./chain/${process.env.CHAIN_ENGINE_DEV}`);
+
 const chainBtc = require(`./chain/${process.env.IWAN_BTC_CHAIN_ENGINE}`);
 const chainXrp = require(`./chain/${process.env.IWAN_XRP_CHAIN_ENGINE}`);
 const chainLtc = require(`./chain/${process.env.IWAN_LTC_CHAIN_ENGINE}`);
@@ -35,11 +37,13 @@ const oracleWan = loadContract(chainWan, 'OracleDelegate')
 const oracleEth = loadContract(chainEth, 'OracleDelegate')
 const oracleBsc = loadContract(chainBsc, 'OracleDelegate')
 const oracleAvax = loadContract(chainAvax, 'OracleDelegate')
+const oracleDev = loadContract(chainDev, 'OracleDelegate')
 
 const quotaWan = loadContract(chainWan, 'QuotaDelegate')
 const quotaEth = loadContract(chainEth, 'QuotaDelegate')
 const quotaBsc = loadContract(chainBsc, 'QuotaDelegate')
 const quotaAvax = loadContract(chainAvax, 'QuotaDelegate')
+const quotaDev = loadContract(chainDev, 'QuotaDelegate')
 
 const sgaWan = loadContract(chainWan, 'StoremanGroupDelegate')
 
@@ -94,7 +98,7 @@ const updateStoreManToChains = async function() {
     if (!scanInst.bScanning) {
       scanInst.bScanning = true
       try{
-        await syncConfigToOtherChain(sgaWan, [oracleEth, oracleBsc, oracleAvax]);
+        await syncConfigToOtherChain(sgaWan, [oracleEth, oracleBsc, oracleAvax, oracleDev]);
       } catch(e) {
         log.error(e)
       } finally {
@@ -114,7 +118,7 @@ const updateStoreManToChainsPart = async function() {
     if (!scanInst.bScanning) {
       scanInst.bScanning = true
       try{
-        await syncConfigToOtherChain(sgaWan, [oracleEth, oracleBsc, oracleAvax], true);
+        await syncConfigToOtherChain(sgaWan, [oracleEth, oracleBsc, oracleAvax, oracleDev], true);
       } catch(e) {
         log.error(e)
       } finally {
@@ -127,7 +131,7 @@ const updateStoreManToChainsPart = async function() {
 const updateDebtCleanToWan = async function() {
   log.info("updateDebtCleanToWan")
   await doSchedule(async () => {
-    await syncIsDebtCleanToWan(oracleWan, quotaWan, quotaEth, quotaBsc, quotaAvax, chainBtc, chainXrp, chainLtc)
+    await syncIsDebtCleanToWan(oracleWan, quotaWan, quotaEth, quotaBsc, quotaAvax, quotaDev, chainBtc, chainXrp, chainLtc)
   })
 }
 const robotSchedules = function() {
@@ -154,6 +158,7 @@ setTimeout(async () => {
     const ethAdminAddress = await oracleEth.admin()
     const bscAdminAddress = await oracleBsc.admin()
     const avaxAdminAddress = await oracleAvax.admin()
+    const devAdminAddress = await oracleDev.admin()
 
     let address = wanAdminAddress.toLowerCase() 
     let sk = getSk(address, `请输入wanchain上oracle合约的admin(${address})的  私钥：`)
@@ -173,6 +178,11 @@ setTimeout(async () => {
     sk = null
     sk = getSk(address, `请输入avax上oracle合约的admin(${address})的  私钥：`)
     oracleAvax.setAdminSk(sk)
+
+    address = devAdminAddress.toLowerCase()
+    sk = null
+    sk = getSk(address, `请输入moonbeam上oracle合约的admin(${address})的  私钥：`)
+    oracleDev.setAdminSk(sk)
   }
   if (process.env.ORACLE_ADMIN_WANCHAIN){
     oracleWan.setAdminSk(process.env.ORACLE_ADMIN_WANCHAIN)

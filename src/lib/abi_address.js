@@ -18,6 +18,7 @@ const wanConfig = require(path.resolve(process.env.DEPLOYED_FOLD, process.env.DE
 const ethConfig = require(path.resolve(process.env.DEPLOYED_FOLD, process.env.DEPLOYED_FILE_ETHEREUM))
 const bscConfig = require(path.resolve(process.env.DEPLOYED_FOLD, process.env.DEPLOYED_FILE_BSC))
 const avaxConfig = require(path.resolve(process.env.DEPLOYED_FOLD, process.env.DEPLOYED_FILE_AVAX))
+const devConfig = require(path.resolve(process.env.DEPLOYED_FOLD, process.env.DEPLOYED_FILE_DEV))
 
 const wanPrivateKey = process.env.OWNER_SK_WANCHAIN
 const wanAddress = privateToAddress(wanPrivateKey);
@@ -30,6 +31,9 @@ const bscAddress = privateToAddress(bscPrivateKey);
 
 const avaxPrivateKey = process.env.OWNER_SK_AVAX
 const avaxAddress = privateToAddress(avaxPrivateKey);
+
+const devPrivateKey = process.env.OWNER_SK_DEV
+const devAddress = privateToAddress(devPrivateKey);
 
 const configs = {}
 configs[process.env.CHAINTYPE_WAN] = {
@@ -51,6 +55,11 @@ configs[process.env.CHAINTYPE_AVAX] = {
   config: avaxConfig,
   ownerPrivateKey: avaxPrivateKey,
   ownerAddress: avaxAddress
+}
+configs[process.env.CHAINTYPE_DEV] = {
+  config: devConfig,
+  ownerPrivateKey: devPrivateKey,
+  ownerAddress: devAddress
 }
 
 const abi2replace = {

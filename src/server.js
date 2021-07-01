@@ -24,8 +24,9 @@ const { web3, sleep } = require('./lib/utils');
 
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
-const chainBsc = require(`./chain/${process.env.BSC_CHAIN_ENGINE}`);
+const chainBsc = require(`./chain/${process.env.CHAIN_ENGINE_BSC}`);
 const chainAvax = require(`./chain/${process.env.AVAX_CHAIN_ENGINE}`);
+const chainDev = require(`./chain/${process.env.CHAIN_ENGINE_DEV}`);
 // const chainWan = require(`./chain/${process.env.IWAN_WAN_CHAIN_ENGINE}`);
 // const chainEth = require(`./chain/${process.env.IWAN_ETH_CHAIN_ENGINE}`);
 
@@ -35,21 +36,25 @@ const oracleWanProxy = loadContract(chainWan, 'OracleProxy')
 const oracleEthProxy = loadContract(chainEth, 'OracleProxy')
 const oracleBscProxy = loadContract(chainBsc, 'OracleProxy')
 const oracleAvaxProxy = loadContract(chainAvax, 'OracleProxy')
+const oracleDevProxy = loadContract(chainDev, 'OracleProxy')
 
 const tmWanProxy = loadContract(chainWan, 'TokenManagerProxy')
 const tmEthProxy = loadContract(chainEth, 'TokenManagerProxy')
 const tmBscProxy = loadContract(chainBsc, 'TokenManagerProxy')
 const tmAvaxProxy = loadContract(chainAvax, 'TokenManagerProxy')
+const tmDevProxy = loadContract(chainDev, 'TokenManagerProxy')
 
 const oracleWan = loadContract(chainWan, 'OracleDelegate')
 const oracleEth = loadContract(chainEth, 'OracleDelegate')
 const oracleBsc = loadContract(chainBsc, 'OracleDelegate')
 const oracleAvax = loadContract(chainAvax, 'OracleDelegate')
+const oracleDev = loadContract(chainDev, 'OracleDelegate')
 
 const tmWan = loadContract(chainWan, 'TokenManagerDelegate')
 const tmEth = loadContract(chainEth, 'TokenManagerDelegate')
 const tmBsc = loadContract(chainBsc, 'TokenManagerDelegate')
 const tmAvax = loadContract(chainAvax, 'TokenManagerDelegate')
+const tmDev = loadContract(chainDev, 'TokenManagerDelegate')
 
 const sgaWan = loadContract(chainWan, 'StoremanGroupDelegate')
 
@@ -93,6 +98,8 @@ function getMapTm(toChainId) {
     return tmBsc
   } else if (tmAvax.core.chainId === toChainId) {
     return tmAvax
+  } else if (tmDev.core.chainId === toChainId) {
+    return tmDev
   } else {
     return null;
   }
@@ -125,11 +132,13 @@ async function refreshTMS() {
   const totalTokenPairs_eth = await tmEth.totalTokenPairs();
   const totalTokenPairs_bsc = await tmBsc.totalTokenPairs();
   const totalTokenPairs_avax = await tmAvax.totalTokenPairs();
+  const totalTokenPairs_dev = await tmDev.totalTokenPairs();
 
   const tokenPairs = await getTokenPairs(tmWan, totalTokenPairs)
   const tokenPairs_eth = await getTokenPairs(tmEth, totalTokenPairs_eth)
   const tokenPairs_bsc = await getTokenPairs(tmBsc, totalTokenPairs_bsc)
   const tokenPairs_avax = await getTokenPairs(tmAvax, totalTokenPairs_avax)
+  const tokenPairs_dev = await getTokenPairs(tmDev, totalTokenPairs_dev)
 
   const result = {
     'WanChain' : {
@@ -143,6 +152,9 @@ async function refreshTMS() {
     },
     'Avax' : {
       tokenPairs: tokenPairs_avax,
+    },
+    'MoonBeam' : {
+      tokenPairs: tokenPairs_dev,
     }
   }
   // tmsResult = result;
@@ -219,6 +231,7 @@ async function refreshOracles() {
   const sgs_eth = {}
   const sgs_bsc = {}
   const sgs_avax = {}
+  const sgs_dev = {}
   const sgAll = db.getAllSga();
   for (let i = 0; i<sgAll.length; i++) {
     const sg = sgAll[i];
@@ -227,6 +240,7 @@ async function refreshOracles() {
     const configEth = await oracleEth.getStoremanGroupConfig(groupId);
     const configBsc = await oracleBsc.getStoremanGroupConfig(groupId);
     const configAvax = await oracleAvax.getStoremanGroupConfig(groupId);
+    const configDev = await oracleDev.getStoremanGroupConfig(groupId);
     const ks = Object.keys(config);
 
     // if (config.gpk1 !== null || configEth.gpk1 !== null) {
@@ -236,11 +250,14 @@ async function refreshOracles() {
         delete configEth[str];
         delete configBsc[str];
         delete configAvax[str];
+        delete configDev[str];
       }
+      configDev.isDebtClean = (await oracleDev.isDebtClean(groupId)).toString()
       configAvax.isDebtClean = (await oracleAvax.isDebtClean(groupId)).toString()
       configBsc.isDebtClean = (await oracleBsc.isDebtClean(groupId)).toString()
       configEth.isDebtClean = (await oracleEth.isDebtClean(groupId)).toString()
       config.isDebtClean = (await oracleWan.isDebtClean(groupId)).toString()
+      sgs_dev[groupId] = configDev;
       sgs_avax[groupId] = configAvax;
       sgs_bsc[groupId] = configBsc;
       sgs_eth[groupId] = configEth;
@@ -264,6 +281,10 @@ async function refreshOracles() {
     'Avax' : {
       prices: {},
       sgs: sgs_avax,
+    },
+    'MoonBeam' : {
+      prices: {},
+      sgs: sgs_dev,
     }
   }
 
@@ -320,19 +341,23 @@ async function refreshChains() {
   const odAddr_eth = await oracleEthProxy.implementation();
   const odAddr_bsc = await oracleBscProxy.implementation();
   const odAddr_avax = await oracleAvaxProxy.implementation();
+  const odAddr_dev = await oracleDevProxy.implementation();
   const od = new Oracle(chainWan, odAddr);
   const od_eth = new Oracle(chainEth, odAddr_eth);
   const od_bsc = new Oracle(chainBsc, odAddr_bsc);
   const od_avax = new Oracle(chainAvax, odAddr_avax);
+  const od_dev = new Oracle(chainDev, odAddr_dev);
 
   const tmAddr = await tmWanProxy.implementation();
   const tmAddr_eth = await tmEthProxy.implementation();
   const tmAddr_bsc = await tmBscProxy.implementation();
   const tmAddr_avax = await tmAvaxProxy.implementation();
+  const tmAddr_dev = await tmDevProxy.implementation();
   const tm = new TokenManager(chainWan, odAddr);
   const tm_eth = new TokenManager(chainEth, odAddr_eth);
   const tm_bsc = new TokenManager(chainBsc, odAddr_bsc);
   const tm_avax = new TokenManager(chainAvax, odAddr_avax);
+  const tm_dev = new TokenManager(chainDev, odAddr_dev);
 
   const storeOwner = (await sgaWan.getOwner()).toLowerCase();
   const storeOwnerConfig = sgaWan.pv_address;
@@ -400,7 +425,24 @@ async function refreshChains() {
 
       storeManProxy: "no contract",
       storeManProxyOwner: storeOwner ===  storeOwnerConfig? "equal" : storeOwnerConfig,
-    }
+    },
+    'MoonBeam' : {
+      blockNumber: await chainDev.core.getBlockNumber(),
+
+      oracleProxy: oracleDevProxy.address,
+      oracleDelegator: odAddr_dev,
+      tokenManagerProxy: tmDevProxy.address,
+      tokenManagerDelegator: tmAddr_dev,
+
+      oracleProxyOwner: await oracleDevProxy.getOwner(),
+      oracleDelegatorOwner: await od_dev.getOwner(),
+      tokenManagerProxyOwner: await tmDevProxy.getOwner(),
+      tokenManagerDelegatorOwner: await tm_dev.getOwner(),
+
+      storeManProxy: "no contract",
+      storeManProxyOwner: storeOwner ===  storeOwnerConfig? "equal" : storeOwnerConfig,
+    },
+
   }
   // chainsResult = result;
 

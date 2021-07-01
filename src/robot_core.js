@@ -305,7 +305,7 @@ const isXrpDebtClean = async function(chainXrp, sg) {
   return true
 }
 
-const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, quotaBsc, quotaAvax, chainBtc, chainXrp, chainLtc) {
+const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, quotaBsc, quotaAvax, quotaDev, chainBtc, chainXrp, chainLtc) {
   const time = parseInt(new Date().getTime() / 1000);
   // 0. 获取 wan chain 上活跃的 store man -- 记录在db里
   const sgs = db.getAllSga();
@@ -322,12 +322,14 @@ const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, quota
     let isDebtClean_eth = false
     let isDebtClean_bsc = false
     let isDebtClean_avax = false
+    let isDebtClean_dev = false
     if (sg.status === 6) {
       console.log('status is 6')
       isDebtClean_wan = await quotaWan.isDebtClean(groupId)
       isDebtClean_eth = await quotaEth.isDebtClean(groupId)
       isDebtClean_bsc = await quotaBsc.isDebtClean(groupId)
       isDebtClean_avax = await quotaAvax.isDebtClean(groupId)
+      isDebtClean_dev = await quotaDev.isDebtClean(groupId)
     }
 
     let isDebtClean_btc = false
@@ -342,9 +344,11 @@ const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, quota
     }
   
     // 4. 如果其他链上都debt clean， 则将debt clean状态同步到wanChain的oracle上
-    if (isDebtClean_wan && isDebtClean_eth && isDebtClean_bsc && isDebtClean_btc && isDebtClean_xrp && isDebtClean_ltc && isDebtClean_avax) {
+    if (isDebtClean_wan && isDebtClean_eth && isDebtClean_bsc && isDebtClean_btc && isDebtClean_xrp && isDebtClean_ltc && isDebtClean_avax && isDebtClean_dev) {
       await oracleWan.setDebtClean(groupId, true);
-      log.info("smgId", groupId, "wan", isDebtClean_wan, "eth", isDebtClean_eth, "bsc", isDebtClean_bsc, "btc", isDebtClean_btc, "xrp", isDebtClean_xrp, "ltc", isDebtClean_ltc, "avax", isDebtClean_avax)
+      log.info("smgId", groupId, "wan", isDebtClean_wan, "eth", isDebtClean_eth, 
+        "bsc", isDebtClean_bsc, "btc", isDebtClean_btc, "xrp", isDebtClean_xrp, 
+        "ltc", isDebtClean_ltc, "avax", isDebtClean_avax, "moonbeam", isDebtClean_dev)
     }
   }
 }

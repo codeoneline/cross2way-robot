@@ -13,6 +13,7 @@ const chainIds = {
     LTC: 0x80000002,
     DOT: 0x80000162,
     AVAX: 0x80002328,
+    [process.env.CHAINTYPE_DEV]: parseInt(process.env.BIP44_DEV),
 }
 
 function privateToAddress(sk) {
