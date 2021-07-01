@@ -125,15 +125,16 @@ function writeToDB(config) {
 async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
   log.info(`syncConfigToOtherChain begin`);
 
-  // // TODO: set current storeMan group 
-  // const curGroupId = '0x4d554c5449434f494e5354414b455f52455345525645445f4b45595f5f5f5f31'
-  // const curConfigs = []
-  // for (let j = 0; j < oracles.length; j++) {
-  //   const config = await oracles[j].getStoremanGroupConfig(curGroupId)
-  //   curConfigs.push(config)
-  // }
-  // const curTimestamp = Math.floor(Date.now() / 1000)
-  // // TODO: end
+  // TODO: set current storeMan group 
+  // const currentGroupIdKey1 = web3.utils.keccak256('MULTICOINSTAKE_RESERVED_KEY____1')
+  // const currentGroupIdKey2 = web3.utils.keccak256('MULTICOINSTAKE_RESERVED_KEY____2')
+  const curConfigs = []
+  for (let j = 0; j < oracles.length; j++) {
+    const configs = await oracles[j].getCurrentGroupIds()
+    curConfigs.push(configs)
+  }
+  const curTimestamp = Math.floor(Date.now() / 1000)
+  // TODO: end
 
   const sgs = db.getAllSga();
   for (let i = 0; i<sgs.length; i++) {
@@ -145,19 +146,15 @@ async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
     const groupIdUint = new BigNumber(sg.groupId).toString(10)
     const config = await sgaContract.getStoremanGroupConfig(groupId);
 
-    if (groupId === '0x000000000000000000000000000000000000000000000000006465765f303235') {
-      console.log('haha')
+    // TODO: is a current group
+    const groupName = web3.utils.hexToString(groupId)
+    let isCurrentConfig = false
+    if (process.env.BTC_NETWORK !== 'testnet' || groupName.startsWith('dev_')) {
+      if (config.startTime <= curTimestamp && config.endTime >= curTimestamp) {
+        isCurrentConfig = true
+      }
     }
-
-    // // TODO: is a current group
-    // const groupName = web3.utils.hexToString(groupId)
-    // let isCurrentConfig = false
-    // if (process.env.BTC_NETWORK !== 'testnet' || groupName.startsWith('dev_')) {
-    //   if (config.startTime <= curTimestamp && config.endTime >= curTimestamp) {
-    //     isCurrentConfig = true
-    //   }
-    // }
-    // // TODO: end
+    // TODO: end
     
     let hasWriteDb = false
     if (config) {
@@ -173,23 +170,13 @@ async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
       
       for(let j = 0; j<oracles.length; j++) {
         const oracle = oracles[j];
-        // // TODO: is need set
-        // if (isCurrentConfig) {
-        //   if (curConfigs[j].chain1 !== groupIdUint && curConfigs[j].chain2 !== groupIdUint) {
-        //     await oracle.setStoremanGroupConfig(
-        //       curGroupId,
-        //       '0',
-        //       '0',
-        //       [groupIdUint, curConfigs[j].chain1],
-        //       ['0', '0'],
-        //       '0x',
-        //       '0x',
-        //       '0',
-        //       '0',
-        //     );
-        //   }
-        // }
-        // // TODO: end
+        // TODO: is need set
+        if (isCurrentConfig) {
+          if (curConfigs[j][0] !== groupIdUint && curConfigs[j][1] !== groupIdUint) {
+            await oracle.setCurrentGroupIds([groupIdUint, curConfigs[j][0]])
+          }
+        }
+        // TODO: end
         const config_eth = await oracle.getStoremanGroupConfig(groupId);
         if (config.curve1 === '1' && config.curve2 === '1') {
           if (!config_eth ||

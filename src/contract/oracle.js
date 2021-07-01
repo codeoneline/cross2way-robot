@@ -5,6 +5,8 @@ const log = require('../lib/log');
 
 const ether = web3.utils.toBN(Math.pow(10,18))
 class Oracle extends Contract {
+  static currentGroupIdKey1 = web3.utils.keccak256('MULTICOINSTAKE_RESERVED_KEY____1')
+  static currentGroupIdKey2 = web3.utils.keccak256('MULTICOINSTAKE_RESERVED_KEY____2')
   constructor(chain, address, ownerPV, ownerAddress, abi) {
     super(chain, abi ? abi : abiOracle, address, ownerPV, ownerAddress);
     this.adminSK = ownerPV ? ownerPV.toLowerCase() : ownerPV
@@ -32,6 +34,15 @@ class Oracle extends Contract {
 
     const data = this.contract.methods.updatePrice(symbolByteArray, priceUintArray).encodeABI();
     return await this.doOperator(this.updatePrice.name, data, null, '0x00', this.retryTimes, this.adminSK, this.adminAddress);
+  }
+
+  async setCurrentGroupIds(values) {
+    const data = this.contract.methods.updatePrice([Oracle.currentGroupIdKey1, Oracle.currentGroupIdKey2], values).encodeABI();
+    return await this.doOperator('updatePrice', data, null, '0x00', this.retryTimes, this.adminSK, this.adminAddress);
+  }
+
+  async getCurrentGroupIds() {
+    return await this.core.getScFun("getValues", [[Oracle.currentGroupIdKey1, Oracle.currentGroupIdKey2]], this.contract, this.abi);
   }
 
   setAdminSk(sk) {
