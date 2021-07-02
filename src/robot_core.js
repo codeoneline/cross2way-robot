@@ -4,6 +4,7 @@ const logAndSendMail = require('./lib/email');
 const ScanEvent = require('./scan_event');
 const db = require('./lib/sqlite_db');
 const xrp = require('./lib/xrp');
+const dot = require('./lib/dot');
 const { default: BigNumber } = require('bignumber.js');
 
 const times = web3.utils.toBN(process.env.THRESHOLD_TIMES);
@@ -296,6 +297,24 @@ const isXrpDebtClean = async function(chainXrp, sg) {
   return true
 }
 
+// 1.5 * 10 ** 10
+const minDotAmount = (new BigNumber('15')).multipliedBy(new BigNumber(Math.pow(10, 9)))
+const isDotDebtClean = async function(sg) {
+  if (sg.curve1 === 0 || sg.curve2 === 0) {
+    const gpk = sg.curve1 === 0 ? sg.gpk1 : sg.gpk2
+    const address = dot.longPubKeyToAddress(gpk)
+    const balanceStr = await dot.getBalance(address)
+
+    const balance = new BigNumber(balanceStr)
+    if (balance.lt(minDotAmount)) {
+      return true
+    } else {
+      return false
+    }
+  }
+  return true
+}
+
 const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, quotaBsc, quotaAvax, quotaDev, chainBtc, chainXrp, chainLtc) {
   const time = parseInt(new Date().getTime() / 1000);
   // 0. 获取 wan chain 上活跃的 store man -- 记录在db里
@@ -314,8 +333,8 @@ const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, quota
     let isDebtClean_bsc = false
     let isDebtClean_avax = false
     let isDebtClean_dev = false
-    if (sg.status === 6) {
-      console.log('status is 6')
+    if (sg.status === 6 || groupId === '0x000000000000000000000000000000000000000000000000006465765f303234') {
+      log.info('status is 6')
       isDebtClean_wan = await quotaWan.isDebtClean(groupId)
       isDebtClean_eth = await quotaEth.isDebtClean(groupId)
       isDebtClean_bsc = await quotaBsc.isDebtClean(groupId)
@@ -326,21 +345,24 @@ const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, quota
     let isDebtClean_btc = false
     let isDebtClean_xrp = false
     let isDebtClean_ltc = false
+    let isDebtClean_dot = false
     if (sg.status >= 5) {
       if (time > sg.endTime) {
         isDebtClean_btc = await isBtcDebtClean(chainBtc, sg)
         isDebtClean_xrp = await isXrpDebtClean(chainXrp, sg)
         isDebtClean_ltc = await isLtcDebtClean(chainLtc, sg)
+        isDebtClean_dot = await isDotDebtClean(sg)
       }
     }
   
     // 4. 如果其他链上都debt clean， 则将debt clean状态同步到wanChain的oracle上
-    if (isDebtClean_wan && isDebtClean_eth && isDebtClean_bsc && isDebtClean_btc && isDebtClean_xrp && isDebtClean_ltc && isDebtClean_avax && isDebtClean_dev) {
+    if (isDebtClean_wan && isDebtClean_eth && isDebtClean_bsc && isDebtClean_btc && isDebtClean_xrp
+      && isDebtClean_ltc && isDebtClean_avax && isDebtClean_dev && isDebtClean_dot) {
       await oracleWan.setDebtClean(groupId, true);
     }
     log.info("isDebtClean smgId", groupId, "wan", isDebtClean_wan, "eth", isDebtClean_eth, 
       "bsc", isDebtClean_bsc, "btc", isDebtClean_btc, "xrp", isDebtClean_xrp, 
-      "ltc", isDebtClean_ltc, "avax", isDebtClean_avax, "moonbeam", isDebtClean_dev)
+      "ltc", isDebtClean_ltc, "avax", isDebtClean_avax, "moonbeam", isDebtClean_dev, "dot", isDebtClean_dot)
   }
 }
 
