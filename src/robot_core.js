@@ -333,7 +333,7 @@ const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, quota
     let isDebtClean_bsc = false
     let isDebtClean_avax = false
     let isDebtClean_dev = false
-    if (sg.status === 6 || groupId === '0x000000000000000000000000000000000000000000000000006465765f303234') {
+    if (sg.status === 6) {
       log.info('status is 6')
       isDebtClean_wan = await quotaWan.isDebtClean(groupId)
       isDebtClean_eth = await quotaEth.isDebtClean(groupId)
