@@ -297,8 +297,8 @@ const isXrpDebtClean = async function(chainXrp, sg) {
   return true
 }
 
-// 1.5 * 10 ** 10
-const minDotAmount = (new BigNumber('15')).multipliedBy(new BigNumber(Math.pow(10, 9)))
+// 10 * 10 ** 10
+const minDotAmount = new BigNumber(process.env.MIN_DEV)
 const isDotDebtClean = async function(sg) {
   if (sg.curve1 === 0 || sg.curve2 === 0) {
     const gpk = sg.curve1 === 0 ? sg.gpk1 : sg.gpk2
