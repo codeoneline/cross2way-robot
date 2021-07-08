@@ -1,15 +1,13 @@
 const IWan = require('../lib/iwan_chain');
 const { ChainHelper } = require('../lib/chain-helper');
 
-class IWanEtc extends IWan {
+class IWanChain extends IWan {
   constructor(chainConfig) {
     super(chainConfig.chainType);
 
     this.signTx = new ChainHelper(chainConfig).signTx
   }
 }
-
-const iWanEtc = new IWanEtc();
 
 const chains = {}
 
@@ -23,8 +21,7 @@ function getChain(name, network) {
       console.error(`${name} ${network} config not exist`)
       return null
     }
-
-    const chain = new Chain(configs[name][network])
+    const chain = new IWanChain(configs[name][network])
     chains[name][network] = {
       core: chain,
       web3: chain.web3,
