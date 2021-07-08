@@ -5,7 +5,7 @@ const { promisify, sleep, web3, chainIds } = require("./utils");
 class IWan {
   static sApiClient = null;
   static getApiClient() {
-    if (this.sApiClient === null) {
+    if (IWan.sApiClient === null) {
       const option = {
         url: process.env.IWAN_URL,
         port: parseInt(process.env.IWAN_PORT),
@@ -13,9 +13,9 @@ class IWan {
         version: process.env.IWAN_VERSION,
         timeout: parseInt(process.env.IWAN_TIMEOUT),
       };
-      this.sApiClient = new iWanClient(process.env.IWAN_APIKEY, process.env.IWAN_SECRETKEY, option);
+      IWan.sApiClient = new iWanClient(process.env.IWAN_APIKEY, process.env.IWAN_SECRETKEY, option);
     }
-    return this.sApiClient;
+    return IWan.sApiClient;
   }
 
   constructor(chainType) {

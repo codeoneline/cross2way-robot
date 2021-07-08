@@ -144,7 +144,6 @@ async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
       continue;
     }
     const groupId = sg.groupId;
-    const groupIdUint = new BigNumber(sg.groupId).toString(10)
     const config = await sgaContract.getStoremanGroupConfig(groupId);
 
     // TODO: is a current group

@@ -18,6 +18,17 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "reg test",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "cwd": "${workspaceRoot}",
+      "program": "${workspaceFolder}/test/_regtest.js",
+      "envFile": "${workspaceFolder}/.env.dev"
+    },
+    {
+      "type": "node",
+      "request": "launch",
       "name": "dev lib wasp",
       "skipFiles": [
         "<node_internals>/**"
