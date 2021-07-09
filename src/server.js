@@ -21,7 +21,7 @@ const Quota = require('./contract/quota');
 const Cross = require('./contract/cross');
 const db = require('./lib/sqlite_db');
 const { web3, sleep } = require('./lib/utils');
-const Web3Chains = require('./lib/web3_chains')
+const { getChains } = require('./lib/web3_chains')
 
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
@@ -31,7 +31,7 @@ const chainDev = require(`./chain/${process.env.CHAIN_ENGINE_DEV}`);
 // const chainWan = require(`./chain/${process.env.IWAN_WAN_CHAIN_ENGINE}`);
 // const chainEth = require(`./chain/${process.env.IWAN_ETH_CHAIN_ENGINE}`);
 
-const web3Chains = Web3Chains.getChains(process.env.NETWORK_TYPE)
+const web3Chains = getChains(process.env.NETWORK_TYPE)
 
 const { loadContract } = require('./lib/abi_address');
 

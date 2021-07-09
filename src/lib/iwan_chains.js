@@ -2,7 +2,6 @@ const IWan = require('./iwan_chain');
 const { ChainHelper } = require('./chain-helper');
 const configs = require('./configs')
 const { privateToAddress } = require('./utils');
-const { getAddressAndABI } = require('./abi_address');
 const assert = require('assert')
 const path = require('path')
 
@@ -17,6 +16,49 @@ const contracts = {
   StoremanGroupDelegate,
   Contract
 } = require('../contract')
+
+
+const getAddressAndABI = (config, contractName) => {
+  let abiPath = null
+  let address = null
+  const ragD = /Delegate$/
+  const ragP = /Proxy$/
+
+  if (ragD.test(contractName)) {
+    // contractName is Delegate? We must use proxy address
+    const proxyContractName = contractName.replace(/Delegate$/,'Proxy')
+
+    assert.ok(config[proxyContractName], `${contractName} has no proxy config`)
+
+    console.log(`getAddressAndABI ${JSON.stringify(proxyContractName)}`)
+    const fileName = (config[contractName] && config[contractName].abi) ? config[contractName].abi : config[proxyContractName].abi
+
+    assert.equal(fileName, `abi.${contractName}.json`, `delegate file name is not abi.${contractName}.json`)
+
+    address = config[proxyContractName].address
+    abiPath = path.resolve(process.env.DEPLOYED_FOLD, fileName)
+  } else if (ragP.test(contractName)) {
+    // contractName is Proxy? use proxy abi
+    const ragProxyJson = /Proxy\.json$/
+    if (!ragProxyJson.test(config[contractName].abi)) {
+      abiPath = abi2replace[contractName]
+      if (!abiPath) {
+        abiPath = path.resolve(process.env.DEPLOYED_FOLD, `abi.${contractName}.json`)
+      }
+    } else {
+      abiPath = path.resolve(process.env.DEPLOYED_FOLD, config[contractName].abi)
+    }
+    address = config[contractName].address
+  } else {
+    address = config[contractName].address
+    abiPath = path.resolve(process.env.DEPLOYED_FOLD, config[contractName].abi)
+  }
+
+  return {
+    address,
+    abiPath
+  }
+}
 
 class IWanChain extends IWan {
   constructor(chainConfig) {

@@ -148,6 +148,7 @@ async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
 
     // TODO: is a current group
     const groupName = web3.utils.hexToString(groupId)
+    const groupIdUint = new BigNumber(sg.groupId).toString(10)
     let isCurrentConfig = false
     if (process.env.NETWORK_TYPE !== 'testnet' || groupName.startsWith('dev_')) {
       if (config.startTime <= curTimestamp && config.endTime >= curTimestamp) {
@@ -208,7 +209,7 @@ async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
             if (!hasWriteDb) writeToDB(config)
           }
         } else {
-          const curve1 = process.env[oracle.chain.core.chainType + '_CURVETYPE']
+          const curve1 = oracle.chain.curveType ?? process.env[oracle.chain.core.chainType + '_CURVETYPE']
           const curve2 = curve1 === config.curve1 ? config.curve2 : config.curve1
           const gpk1 = config.curve1 === curve1 ? config.gpk1 : config.gpk2
           const gpk2 = gpk1 === config.gpk1 ? config.gpk2 : config.gpk1

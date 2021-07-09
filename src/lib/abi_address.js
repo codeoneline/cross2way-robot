@@ -1,7 +1,7 @@
 const path = require('path')
 const { privateToAddress } = require('./utils');
 const assert = require('assert')
-const Web3Chains = require('./web3_chain')
+const { getChains } = require('./web3_chains')
 
 const contracts = {
   TokenManagerProxy,
@@ -21,7 +21,7 @@ const bscConfig = require(path.resolve(process.env.DEPLOYED_FOLD, process.env.DE
 const avaxConfig = require(path.resolve(process.env.DEPLOYED_FOLD, process.env.DEPLOYED_FILE_AVAX))
 const devConfig = require(path.resolve(process.env.DEPLOYED_FOLD, process.env.DEPLOYED_FILE_DEV))
 
-const web3Chains = Web3Chains.getChains(process.env.NETWORK_TYPE)
+const web3Chains = getChains(process.env.NETWORK_TYPE)
 
 const wanPrivateKey = process.env.OWNER_SK_WANCHAIN
 const wanAddress = privateToAddress(wanPrivateKey);
@@ -65,7 +65,7 @@ configs[process.env.CHAINTYPE_DEV] = {
   ownerAddress: devAddress
 }
 
-web3Chains.foreach(web3Chain => {
+web3Chains.forEach(web3Chain => {
   if (!!web3Chain.deployConfig ) {
     configs[web3Chain.chainType] = {
       config: web3Chain.deployConfig,
@@ -151,5 +151,4 @@ function loadContractAt(chain, contractName, address) {
 module.exports = {
   loadContract,
   loadContractAt,
-  getAddressAndABI,
 };

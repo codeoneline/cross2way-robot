@@ -6,7 +6,7 @@ const getPrices_crypto = require("./lib/crypto_compare");
 const getPrices_coingecko = require("./lib/coingecko");
 const readlineSync = require('readline-sync');
 const keythereum = require("keythereum");
-const Web3Chains = require("./lib/web3_chains")
+const { getChains } = require("./lib/web3_chains")
 
 function readSyncByfs(tips) {
   tips = tips || '> ';
@@ -31,7 +31,7 @@ const chainBsc = require(`./chain/${process.env.CHAIN_ENGINE_BSC}`);
 const chainAvax = require(`./chain/${process.env.AVAX_CHAIN_ENGINE}`);
 const chainDev = require(`./chain/${process.env.CHAIN_ENGINE_DEV}`);
 
-const web3Chains = Web3Chains.getChains(process.env.NETWORK_TYPE)
+const web3Chains = getChains(process.env.NETWORK_TYPE)
 
 const chainBtc = require(`./chain/${process.env.IWAN_BTC_CHAIN_ENGINE}`);
 const chainXrp = require(`./chain/${process.env.IWAN_XRP_CHAIN_ENGINE}`);
@@ -46,13 +46,13 @@ const web3Oracles = []
 const web3Quotas = []
 web3Chains.forEach(web3Chain => {
   if (!!web3Chain.deployedFile) {
-    const oracle = loadContract(web3Chain, 'OracleDelegate')
+    const oracle = web3Chain.loadContract('OracleDelegate')
     if (!oracle) {
       log.error(`${web3Chain.chainType} has not deployed Oracle`)
     }
     web3Oracles.push(oracle)
 
-    const quota = loadContract(web3Chain, 'QuotaDelegate')
+    const quota = web3Chain.loadContract('QuotaDelegate')
     if (!quota) {
       log.error(`${web3Chain.chainType} has not deployed Quota`)
     }
@@ -222,6 +222,8 @@ setTimeout(async () => {
   setTimeout(scanNewStoreMan, 0);
 
   robotSchedules();
+
+  // setTimeout(updateStoreManToChainsPart, 0);
 }, 0)
 
 

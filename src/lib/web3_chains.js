@@ -4,7 +4,6 @@ const BaseChain = require('./web3_chain');
 const { ChainHelper } = require('./chain-helper');
 const configs = require('./configs')
 const { privateToAddress } = require('./utils');
-const { getAddressAndABI } = require('./abi_address');
 const assert = require('assert')
 const path = require('path')
 
@@ -20,13 +19,60 @@ const contracts = {
   Contract
 } = require('../contract')
 
+const abi2replace = {
+  'TokenManagerProxy': '../../abi/token-manager-proxy.json',
+  'OracleProxy': '../../abi/oracle-proxy.json',
+}
+
+const getAddressAndABI = (config, contractName) => {
+  let abiPath = null
+  let address = null
+  const ragD = /Delegate$/
+  const ragP = /Proxy$/
+
+  if (ragD.test(contractName)) {
+    // contractName is Delegate? We must use proxy address
+    const proxyContractName = contractName.replace(/Delegate$/,'Proxy')
+
+    assert.ok(config[proxyContractName], `${contractName} has no proxy config`)
+
+    console.log(`getAddressAndABI ${JSON.stringify(proxyContractName)}`)
+    const fileName = (config[contractName] && config[contractName].abi) ? config[contractName].abi : config[proxyContractName].abi
+
+    assert.equal(fileName, `abi.${contractName}.json`, `delegate file name is not abi.${contractName}.json`)
+
+    address = config[proxyContractName].address
+    abiPath = path.resolve(process.env.DEPLOYED_FOLD, fileName)
+  } else if (ragP.test(contractName)) {
+    // contractName is Proxy? use proxy abi
+    const ragProxyJson = /Proxy\.json$/
+    if (!ragProxyJson.test(config[contractName].abi)) {
+      abiPath = abi2replace[contractName]
+      if (!abiPath) {
+        abiPath = path.resolve(process.env.DEPLOYED_FOLD, `abi.${contractName}.json`)
+      }
+    } else {
+      abiPath = path.resolve(process.env.DEPLOYED_FOLD, config[contractName].abi)
+    }
+    address = config[contractName].address
+  } else {
+    address = config[contractName].address
+    abiPath = path.resolve(process.env.DEPLOYED_FOLD, config[contractName].abi)
+  }
+
+  return {
+    address,
+    abiPath
+  }
+}
+
 class Chain extends BaseChain {
   constructor(chainConfig) {
     super(chainConfig.rpc, chainConfig.chainType);
   
     Object.assign(this, chainConfig)
 
-    if (chainKind === 'eth') {
+    if (chainConfig.chainKind === 'eth') {
       this.signTx = new ChainHelper(chainConfig).signTx
     }
     if (!!chainConfig.deployedFile) {
@@ -35,6 +81,8 @@ class Chain extends BaseChain {
     if (!!chainConfig.ownerSk) {
       this.ownerAddress = privateToAddress(chainConfig.ownerSk)
     }
+
+    this.core = this
   }
 
   loadContract = (contractName) => {
@@ -46,9 +94,9 @@ class Chain extends BaseChain {
     const abi = require(abiPath)
     assert.ok(abi, `${contractName}, no valid abi file at ${abiPath}`)
     if (contracts[contractName]) {
-      return new contracts[contractName](chain, address, ownerPrivateKey, ownerAddress, abi)
+      return new contracts[contractName](this, address, ownerPrivateKey, ownerAddress, abi)
     } else {
-      return new Contract(chain, address, ownerPrivateKey, ownerAddress, abi)
+      return new Contract(this, address, ownerPrivateKey, ownerAddress, abi)
     }
   }
   
@@ -59,9 +107,9 @@ class Chain extends BaseChain {
     const abi = require(abiPath)
     assert.ok(abi, `${contractName}, no valid abi file at ${abiPath}`)
     if (contracts[contractName]) {
-      return new contracts[contractName](chain, address, null, null, abi)
+      return new contracts[contractName](this, address, null, null, abi)
     } else {
-      return new Contract(chain, address, null, null, abi)
+      return new Contract(this, address, null, null, abi)
     }
   }
 }
@@ -74,17 +122,18 @@ function getChain(name, network) {
     chains[name] = {}
   }
   if (!chains[name].hasOwnProperty(network)) {
-    if (!configs.hasOwnProperty(name) || !configs.hasOwnProperty(network)) {
+    if (!configs.hasOwnProperty(name) || !configs[name].hasOwnProperty(network)) {
       console.error(`${name} ${network} config not exist`)
       return null
     }
 
     const chain = new Chain(configs[name][network])
-    chains[name][network] = {
-      core: chain,
-      web3: chain.web3,
-      signTx: chain.signTx,
-    }
+    chains[name][network] = chain
+    // chains[name][network] = {
+    //   core: chain,
+    //   web3: chain.web3,
+    //   signTx: chain.signTx,
+    // }
   }
 
   return chains[name][network]
