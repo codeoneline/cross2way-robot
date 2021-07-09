@@ -2,6 +2,7 @@ const Web3 = require('web3');
 const web3 = new Web3();
 const wanUtil = require('wanchainjs-util');
 
+// TODO: delete chainIds
 const chainIds = {
     ETH: 0x8000003c,
     WAN: 0x8057414e,

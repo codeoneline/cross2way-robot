@@ -21,6 +21,7 @@ const Quota = require('./contract/quota');
 const Cross = require('./contract/cross');
 const db = require('./lib/sqlite_db');
 const { web3, sleep } = require('./lib/utils');
+const Web3Chains = require('./lib/web3_chains')
 
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
 const chainEth = require(`./chain/${process.env.ETH_CHAIN_ENGINE}`);
@@ -29,6 +30,8 @@ const chainAvax = require(`./chain/${process.env.AVAX_CHAIN_ENGINE}`);
 const chainDev = require(`./chain/${process.env.CHAIN_ENGINE_DEV}`);
 // const chainWan = require(`./chain/${process.env.IWAN_WAN_CHAIN_ENGINE}`);
 // const chainEth = require(`./chain/${process.env.IWAN_ETH_CHAIN_ENGINE}`);
+
+const web3Chains = Web3Chains.getChains(process.env.NETWORK_TYPE)
 
 const { loadContract } = require('./lib/abi_address');
 
@@ -55,6 +58,39 @@ const tmEth = loadContract(chainEth, 'TokenManagerDelegate')
 const tmBsc = loadContract(chainBsc, 'TokenManagerDelegate')
 const tmAvax = loadContract(chainAvax, 'TokenManagerDelegate')
 const tmDev = loadContract(chainDev, 'TokenManagerDelegate')
+
+const web3Oracles = []
+const web3OracleProxies = []
+const web3Tms = []
+const web3TmProxies = []
+
+web3Chains.forEach(web3Chain => {
+  if (!!web3Chain.deployedFile) {
+    const oracleProxy = web3Chain.loadContract('OracleProxy')
+    if (!oracleProxy) {
+      log.error(`${web3Chain.chainType} has not deployed OracleProxy`)
+    }
+    web3OracleProxies.push(oracleProxy)
+  
+    const oracle = web3Chain.loadContract('OracleDelegate')
+    if (!oracle) {
+      log.error(`${web3Chain.chainType} has not deployed OracleDelegate`)
+    }
+    web3Oracles.push(oracle)
+
+    const tmProxy = web3Chain.loadContract('TokenManagerProxy')
+    if (!tmProxy) {
+      log.error(`${web3Chain.chainType} has not deployed TokenManagerProxy`)
+    }
+    web3TmProxies.push(tmProxy)
+
+    const tm = web3Chain.loadContract('TokenManagerDelegate')
+    if (!tm) {
+      log.error(`${web3Chain.chainType} has not deployed TokenManagerDelegate`)
+    }
+    web3Tms.push(tm)
+  }
+})
 
 const sgaWan = loadContract(chainWan, 'StoremanGroupDelegate')
 
@@ -101,7 +137,13 @@ function getMapTm(toChainId) {
   } else if (tmDev.core.chainId === toChainId) {
     return tmDev
   } else {
-    return null;
+    const tm = web3Tms.find(tm => {
+      return tm.core.chainId === toChainId
+    })
+    if (!tm) {
+      return null
+    }
+    return tm;
   }
 }
 async function getTokenPairs(tm, _total) {
@@ -156,6 +198,13 @@ async function refreshTMS() {
     'MoonBeam' : {
       tokenPairs: tokenPairs_dev,
     }
+  }
+
+  for (let i = 0; i < web3Tms.length; i++) {
+    const tm = web3Tms[i]
+    const total = await tm.totalTokenPairs()
+    const tokenPairs = await getTokenPairs(tm, total)
+    result[tm.chain.chainName] = tokenPairs
   }
   // tmsResult = result;
   const chainNames = Object.keys(result);
@@ -285,6 +334,27 @@ async function refreshOracles() {
     'MoonBeam' : {
       prices: {},
       sgs: sgs_dev,
+    }
+  }
+
+  for (let i = 0; i < web3Oracles.length; i++) {
+    const oracle = web3Oracles[i]
+    const web3Sgs = {}
+    for (let i = 0; i<sgAll.length; i++) {
+      const sg = sgAll[i];
+      const groupId = sg.groupId;
+      const config = await oracle.getStoremanGroupConfig(groupId);
+      const ks = Object.keys(config);
+      for (let j = 0; j < ks.length/2; j++) {
+        const str = j.toString();
+        delete config[str];
+      }
+      config.isDebtClean = (await oracle.isDebtClean(groupId)).toString()
+      web3Sgs[groupId] = config
+    }
+    result[oracle.chain.chainName] = {
+      prices: {},
+      sgs: web3Sgs
     }
   }
 
@@ -443,6 +513,26 @@ async function refreshChains() {
       storeManProxyOwner: storeOwner ===  storeOwnerConfig? "equal" : storeOwnerConfig,
     },
 
+  }
+
+  for (let i = 0; i < web3Chains.length; i++) {
+    const chain = web3Chains[i]
+    result[oracle.chain.chainName] = {
+      blockNumber: await chain.core.getBlockNumber(),
+
+      oracleProxy: await web3OracleProxies[i].address,
+      oracleDelegator: await web3OracleProxies[i].implementation(),
+      tokenManagerProxy: await web3TmProxies[i].address,
+      tokenManagerDelegator: await web3TmProxies[i].implementation(),
+
+      oracleProxyOwner: await web3OracleProxies[i].getOwner(),
+      oracleDelegatorOwner: await web3Oracles[i].getOwner(),
+      tokenManagerProxyOwner: await web3TmProxies[i].getOwner(),
+      tokenManagerDelegatorOwner: await web3Tms[i].getOwner(),
+
+      storeManProxy: "no contract",
+      storeManProxyOwner: storeOwner ===  storeOwnerConfig? "equal" : storeOwnerConfig,
+    }
   }
   // chainsResult = result;
 

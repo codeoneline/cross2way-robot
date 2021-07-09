@@ -149,7 +149,7 @@ async function syncConfigToOtherChain(sgaContract, oracles, isPart = false) {
     // TODO: is a current group
     const groupName = web3.utils.hexToString(groupId)
     let isCurrentConfig = false
-    if (process.env.BTC_NETWORK !== 'testnet' || groupName.startsWith('dev_')) {
+    if (process.env.NETWORK_TYPE !== 'testnet' || groupName.startsWith('dev_')) {
       if (config.startTime <= curTimestamp && config.endTime >= curTimestamp) {
         isCurrentConfig = true
       }
@@ -314,7 +314,7 @@ const isDotDebtClean = async function(sg) {
   return true
 }
 
-const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, quotaBsc, quotaAvax, quotaDev, chainBtc, chainXrp, chainLtc) {
+const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, quotaBsc, quotaAvax, quotaDev, web3Quotas, chainBtc, chainXrp, chainLtc) {
   const time = parseInt(new Date().getTime() / 1000);
   // 0. 获取 wan chain 上活跃的 store man -- 记录在db里
   const sgs = db.getAllSga();
@@ -325,6 +325,19 @@ const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, quota
     const isDebtClean = await oracleWan.isDebtClean(groupId)
     if (isDebtClean) {
       continue
+    }
+
+    const isDebtCleans = []
+    let totalClean = 0
+    let logStr = ''
+    for (let i = 0; i < web3Quotas.length; i++) {
+      const quota = web3Quotas[i]
+      const isDebtClean = await quota.isDebtClean(groupId)
+      isDebtCleans.push(isDebtClean)
+      if (isDebtClean) {
+        totalClean ++
+      }
+      logStr = `${quota.chain.chainName} ${isDebtClean}`
     }
 
     let isDebtClean_wan = false
@@ -356,12 +369,12 @@ const syncIsDebtCleanToWan = async function(oracleWan, quotaWan, quotaEth, quota
   
     // 4. 如果其他链上都debt clean， 则将debt clean状态同步到wanChain的oracle上
     if (isDebtClean_wan && isDebtClean_eth && isDebtClean_bsc && isDebtClean_btc && isDebtClean_xrp
-      && isDebtClean_ltc && isDebtClean_avax && isDebtClean_dev && isDebtClean_dot) {
+      && isDebtClean_ltc && isDebtClean_avax && isDebtClean_dev && isDebtClean_dot && totalClean === web3Quotas.length) {
       await oracleWan.setDebtClean(groupId, true);
     }
     log.info("isDebtClean smgId", groupId, "wan", isDebtClean_wan, "eth", isDebtClean_eth, 
       "bsc", isDebtClean_bsc, "btc", isDebtClean_btc, "xrp", isDebtClean_xrp, 
-      "ltc", isDebtClean_ltc, "avax", isDebtClean_avax, "moonbeam", isDebtClean_dev, "dot", isDebtClean_dot)
+      "ltc", isDebtClean_ltc, "avax", isDebtClean_avax, "moonbeam", isDebtClean_dev, "dot", isDebtClean_dot, logStr)
   }
 }
 

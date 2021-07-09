@@ -1,6 +1,7 @@
 const path = require('path')
 const { privateToAddress } = require('./utils');
 const assert = require('assert')
+const Web3Chains = require('./web3_chain')
 
 const contracts = {
   TokenManagerProxy,
@@ -19,6 +20,8 @@ const ethConfig = require(path.resolve(process.env.DEPLOYED_FOLD, process.env.DE
 const bscConfig = require(path.resolve(process.env.DEPLOYED_FOLD, process.env.DEPLOYED_FILE_BSC))
 const avaxConfig = require(path.resolve(process.env.DEPLOYED_FOLD, process.env.DEPLOYED_FILE_AVAX))
 const devConfig = require(path.resolve(process.env.DEPLOYED_FOLD, process.env.DEPLOYED_FILE_DEV))
+
+const web3Chains = Web3Chains.getChains(process.env.NETWORK_TYPE)
 
 const wanPrivateKey = process.env.OWNER_SK_WANCHAIN
 const wanAddress = privateToAddress(wanPrivateKey);
@@ -61,6 +64,16 @@ configs[process.env.CHAINTYPE_DEV] = {
   ownerPrivateKey: devPrivateKey,
   ownerAddress: devAddress
 }
+
+web3Chains.foreach(web3Chain => {
+  if (!!web3Chain.deployConfig ) {
+    configs[web3Chain.chainType] = {
+      config: web3Chain.deployConfig,
+      ownerPrivateKey: web3Chain.ownerSk,
+      ownerAddress: web3Chain.ownerAddress,
+    }
+  }
+})
 
 const abi2replace = {
   'TokenManagerProxy': '../../abi/token-manager-proxy.json',
@@ -138,4 +151,5 @@ function loadContractAt(chain, contractName, address) {
 module.exports = {
   loadContract,
   loadContractAt,
+  getAddressAndABI,
 };

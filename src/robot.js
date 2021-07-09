@@ -6,6 +6,7 @@ const getPrices_crypto = require("./lib/crypto_compare");
 const getPrices_coingecko = require("./lib/coingecko");
 const readlineSync = require('readline-sync');
 const keythereum = require("keythereum");
+const Web3Chains = require("./lib/web3_chains")
 
 function readSyncByfs(tips) {
   tips = tips || '> ';
@@ -30,6 +31,8 @@ const chainBsc = require(`./chain/${process.env.CHAIN_ENGINE_BSC}`);
 const chainAvax = require(`./chain/${process.env.AVAX_CHAIN_ENGINE}`);
 const chainDev = require(`./chain/${process.env.CHAIN_ENGINE_DEV}`);
 
+const web3Chains = Web3Chains.getChains(process.env.NETWORK_TYPE)
+
 const chainBtc = require(`./chain/${process.env.IWAN_BTC_CHAIN_ENGINE}`);
 const chainXrp = require(`./chain/${process.env.IWAN_XRP_CHAIN_ENGINE}`);
 const chainLtc = require(`./chain/${process.env.IWAN_LTC_CHAIN_ENGINE}`);
@@ -39,6 +42,23 @@ const oracleEth = loadContract(chainEth, 'OracleDelegate')
 const oracleBsc = loadContract(chainBsc, 'OracleDelegate')
 const oracleAvax = loadContract(chainAvax, 'OracleDelegate')
 const oracleDev = loadContract(chainDev, 'OracleDelegate')
+const web3Oracles = []
+const web3Quotas = []
+web3Chains.forEach(web3Chain => {
+  if (!!web3Chain.deployedFile) {
+    const oracle = loadContract(web3Chain, 'OracleDelegate')
+    if (!oracle) {
+      log.error(`${web3Chain.chainType} has not deployed Oracle`)
+    }
+    web3Oracles.push(oracle)
+
+    const quota = loadContract(web3Chain, 'QuotaDelegate')
+    if (!quota) {
+      log.error(`${web3Chain.chainType} has not deployed Quota`)
+    }
+    web3Quotas.push(quota)
+  }
+})
 
 const quotaWan = loadContract(chainWan, 'QuotaDelegate')
 const quotaEth = loadContract(chainEth, 'QuotaDelegate')
@@ -99,7 +119,7 @@ const updateStoreManToChains = async function() {
     if (!scanInst.bScanning) {
       scanInst.bScanning = true
       try{
-        await syncConfigToOtherChain(sgaWan, [oracleEth, oracleBsc, oracleAvax, oracleDev]);
+        await syncConfigToOtherChain(sgaWan, [oracleEth, oracleBsc, oracleAvax, oracleDev, ...web3Oracles]);
       } catch(e) {
         log.error(e)
       } finally {
@@ -119,7 +139,7 @@ const updateStoreManToChainsPart = async function() {
     if (!scanInst.bScanning) {
       scanInst.bScanning = true
       try{
-        await syncConfigToOtherChain(sgaWan, [oracleEth, oracleBsc, oracleAvax, oracleDev], true);
+        await syncConfigToOtherChain(sgaWan, [oracleEth, oracleBsc, oracleAvax, oracleDev, ...web3Oracles], true);
       } catch(e) {
         log.error(e)
       } finally {
@@ -132,7 +152,7 @@ const updateStoreManToChainsPart = async function() {
 const updateDebtCleanToWan = async function() {
   log.info("updateDebtCleanToWan")
   await doSchedule(async () => {
-    await syncIsDebtCleanToWan(oracleWan, quotaWan, quotaEth, quotaBsc, quotaAvax, quotaDev, chainBtc, chainXrp, chainLtc)
+    await syncIsDebtCleanToWan(oracleWan, quotaWan, quotaEth, quotaBsc, quotaAvax, quotaDev, web3Quotas, chainBtc, chainXrp, chainLtc)
   })
 }
 const robotSchedules = function() {
@@ -161,28 +181,37 @@ setTimeout(async () => {
     const avaxAdminAddress = await oracleAvax.admin()
     const devAdminAddress = await oracleDev.admin()
 
+    for (let i = 0; i < web3Oracles.length; i++) {
+      const oracle = web3Oracles[i]
+      const adminAddress = await oracle.admin()
+      
+      let address = adminAddress.toLowerCase() 
+      let sk = getSk(address, `请输入${oracle.chain.chainName} 上 oracle 合约的 admin (${address})的  密码：`)
+      oracle.setAdminSk(sk)
+    }
+
     let address = wanAdminAddress.toLowerCase() 
-    let sk = getSk(address, `请输入wanchain上oracle合约的admin(${address})的  私钥：`)
+    let sk = getSk(address, `请输入wanchain上oracle合约的admin(${address})的  密码：`)
     oracleWan.setAdminSk(sk)
 
     address = ethAdminAddress.toLowerCase()
     sk = null
-    sk = getSk(address, `请输入ethereum上oracle合约的admin(${address})的  私钥：`)
+    sk = getSk(address, `请输入ethereum上oracle合约的admin(${address})的  密码：`)
     oracleEth.setAdminSk(sk)
 
     address = bscAdminAddress.toLowerCase()
     sk = null
-    sk = getSk(address, `请输入bsc上oracle合约的admin(${address})的  私钥：`)
+    sk = getSk(address, `请输入bsc上oracle合约的admin(${address})的  密码：`)
     oracleBsc.setAdminSk(sk)
 
     address = avaxAdminAddress.toLowerCase()
     sk = null
-    sk = getSk(address, `请输入avax上oracle合约的admin(${address})的  私钥：`)
+    sk = getSk(address, `请输入avax上oracle合约的admin(${address})的  密码：`)
     oracleAvax.setAdminSk(sk)
 
     address = devAdminAddress.toLowerCase()
     sk = null
-    sk = getSk(address, `请输入moonbeam上oracle合约的admin(${address})的  私钥：`)
+    sk = getSk(address, `请输入moonbeam上oracle合约的admin(${address})的  密码：`)
     oracleDev.setAdminSk(sk)
   }
   if (process.env.ORACLE_ADMIN_WANCHAIN){
