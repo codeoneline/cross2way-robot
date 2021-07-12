@@ -125,10 +125,10 @@ async function getPrices(symbolsStr, idsStr) {
   return priceMap
 }
 
-// setTimeout(async () => {
-//   const symbolsStr = "ETH,USDC,TUSD,GUSD,LINK,MKR,ZXC,EURS,USDT,WAN,FNX,BTC,EOS,UNI,SUSHI,WASP,XRP,ZCN,VIBE,LTC"
-//   await printIDs("https://api.coingecko.com/api/v3/coins/list", symbolsStr)
-// }, 0);
+setTimeout(async () => {
+  const symbolsStr = "MATIC"
+  await printIDs("https://api.coingecko.com/api/v3/coins/list", symbolsStr)
+}, 0);
 
 // https://api.coingecko.com/api/v3/coins/list
 // https://api.coingecko.com/api/v3/simple/price?ids=<coin>&vs_currencies=usd
