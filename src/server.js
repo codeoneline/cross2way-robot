@@ -587,16 +587,11 @@ async function refreshCross() {
   // }
 }
 
+let gTip = false
 setTimeout(async function() {
-  await refreshTMS();
-  await refreshOracles();
-  await refreshChains();
-  await refreshQuota();
-  await refreshCross();
-}, 0);
-
-setInterval(async function() {
   try {
+    if (gTip) return
+    gTip = true
     await refreshTMS();
     await refreshOracles();
     await refreshChains();
@@ -605,7 +600,22 @@ setInterval(async function() {
   } catch(e) {
     console.log(e);
   }
-}, 600000);
+}, 0);
+
+
+setInterval(async function() {
+  try {
+    if (gTip) return
+    gTip = true
+    await refreshTMS();
+    await refreshOracles();
+    await refreshChains();
+    await refreshQuota();
+    await refreshCross();
+  } catch(e) {
+    console.log(e);
+  }
+}, 60000);
 
 app.get('/tms', (req, res) => {
   res.send(tmsResult);
