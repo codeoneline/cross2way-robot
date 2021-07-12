@@ -138,7 +138,7 @@ function getMapTm(toChainId) {
     return tmDev
   } else {
     const tm = web3Tms.find(tm => {
-      return tm.core.chainId === toChainId
+      return tm.core.bip44 === toChainId
     })
     if (!tm) {
       return null
