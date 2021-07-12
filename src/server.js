@@ -519,7 +519,7 @@ async function refreshChains() {
 
   for (let i = 0; i < web3Chains.length; i++) {
     const chain = web3Chains[i]
-    result[oracle.chain.chainName] = {
+    result[chain.chainName] = {
       blockNumber: await chain.core.getBlockNumber(),
 
       oracleProxy: await web3OracleProxies[i].address,
