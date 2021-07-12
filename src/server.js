@@ -203,8 +203,10 @@ async function refreshTMS() {
   for (let i = 0; i < web3Tms.length; i++) {
     const tm = web3Tms[i]
     const total = await tm.totalTokenPairs()
-    const tokenPairs = await getTokenPairs(tm, total)
-    result[tm.chain.chainName] = tokenPairs
+    const tokenPairsWeb3 = await getTokenPairs(tm, total)
+    result[tm.chain.chainName] = {
+      tokenPairs : tokenPairsWeb3
+    }
   }
   // tmsResult = result;
   const chainNames = Object.keys(result);
@@ -587,23 +589,23 @@ async function refreshCross() {
 
 setTimeout(async function() {
   await refreshTMS();
-  await refreshOracles();
-  await refreshChains();
-  await refreshQuota();
-  await refreshCross();
+  // await refreshOracles();
+  // await refreshChains();
+  // await refreshQuota();
+  // await refreshCross();
 }, 0);
 
-setInterval(async function() {
-  try {
-    await refreshTMS();
-    await refreshOracles();
-    await refreshChains();
-    await refreshQuota();
-    await refreshCross();
-  } catch(e) {
-    console.log(e);
-  }
-}, 60000);
+// setInterval(async function() {
+//   try {
+//     await refreshTMS();
+//     await refreshOracles();
+//     await refreshChains();
+//     await refreshQuota();
+//     await refreshCross();
+//   } catch(e) {
+//     console.log(e);
+//   }
+// }, 60000);
 
 app.get('/tms', (req, res) => {
   res.send(tmsResult);
