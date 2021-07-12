@@ -597,8 +597,10 @@ setTimeout(async function() {
     await refreshChains();
     await refreshQuota();
     await refreshCross();
+    gTip = false
   } catch(e) {
     console.log(e);
+    gTip = false
   }
 }, 0);
 
@@ -612,8 +614,10 @@ setInterval(async function() {
     await refreshChains();
     await refreshQuota();
     await refreshCross();
+    gTip = false
   } catch(e) {
     console.log(e);
+    gTip = false
   }
 }, 60000);
 
