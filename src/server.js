@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 const port = parseInt(process.env.SERVER_PORT)
+const { default: BigNumber } = require('bignumber.js');
 
 app.all('*', (req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -286,7 +287,7 @@ async function refreshOracles() {
   const sgAll = db.getAllSga();
   for (let i = 0; i<sgAll.length; i++) {
     const sg = sgAll[i];
-    const groupId = sg.groupId;
+    const groupId = web3.utils.hexToString(sg.groupId);
     const config = await sgaWan.getStoremanGroupConfig(groupId);
     const configEth = await oracleEth.getStoremanGroupConfig(groupId);
     const configBsc = await oracleBsc.getStoremanGroupConfig(groupId);
@@ -344,7 +345,7 @@ async function refreshOracles() {
     const web3Sgs = {}
     for (let i = 0; i<sgAll.length; i++) {
       const sg = sgAll[i];
-      const groupId = sg.groupId;
+      const groupId = web3.utils.hexToString(sg.groupId);
       const config = await oracle.getStoremanGroupConfig(groupId);
       const ks = Object.keys(config);
       for (let j = 0; j < ks.length/2; j++) {
@@ -462,8 +463,8 @@ async function refreshChains() {
       storeManProxy: sgaWan.address,
       storeManProxyOwner: await sgaWan.getOwner(),
 
-      currentStoreman0: curIdsWan[0],
-      currentStoreman1: curIdsWan[1],
+      currentStoreman0: web3.utils.toHex(curIdsWan[0]),
+      currentStoreman1: web3.utils.toHex(curIdsWan[1]),
     },
     'Ethereum' : {
       blockNumber: await chainEth.core.getBlockNumber(),
@@ -481,8 +482,8 @@ async function refreshChains() {
       storeManProxy: "no contract",
       storeManProxyOwner: storeOwner ===  storeOwnerConfig? "equal" : storeOwnerConfig,
 
-      currentStoreman0: curIdsEth[0],
-      currentStoreman1: curIdsEth[1],
+      currentStoreman0: web3.utils.toHex(curIdsEth[0]),
+      currentStoreman1: web3.utils.toHex(curIdsEth[1]),
     },
     'Bsc' : {
       blockNumber: await chainBsc.core.getBlockNumber(),
@@ -500,8 +501,8 @@ async function refreshChains() {
       storeManProxy: "no contract",
       storeManProxyOwner: storeOwner ===  storeOwnerConfig? "equal" : storeOwnerConfig,
 
-      currentStoreman0: curIdsBsc[0],
-      currentStoreman1: curIdsBsc[1],
+      currentStoreman0: web3.utils.toHex(curIdsBsc[0]),
+      currentStoreman1: web3.utils.toHex(curIdsBsc[1]),
     },
     'Avax' : {
       blockNumber: await chainAvax.core.getBlockNumber(),
@@ -519,8 +520,8 @@ async function refreshChains() {
       storeManProxy: "no contract",
       storeManProxyOwner: storeOwner ===  storeOwnerConfig? "equal" : storeOwnerConfig,
 
-      currentStoreman0: curIdsAvax[0],
-      currentStoreman1: curIdsAvax[1],
+      currentStoreman0: web3.utils.toHex(curIdsAvax[0]),
+      currentStoreman1: web3.utils.toHex(curIdsAvax[1]),
     },
     'MoonBeam' : {
       blockNumber: await chainDev.core.getBlockNumber(),
@@ -538,8 +539,8 @@ async function refreshChains() {
       storeManProxy: "no contract",
       storeManProxyOwner: storeOwner ===  storeOwnerConfig? "equal" : storeOwnerConfig,
 
-      currentStoreman0: curIdsDev[0],
-      currentStoreman1: curIdsDev[1],
+      currentStoreman0: web3.utils.toHex(curIdsDev[0]),
+      currentStoreman1: web3.utils.toHex(curIdsDev[1]),
     },
 
   }
@@ -563,8 +564,8 @@ async function refreshChains() {
       storeManProxy: "no contract",
       storeManProxyOwner: storeOwner ===  storeOwnerConfig? "equal" : storeOwnerConfig,
 
-      currentStoreman0: curIds[0],
-      currentStoreman1: curIds[1],
+      currentStoreman0: web3.utils.toHex(curIds[0]),
+      currentStoreman1: web3.utils.toHex(curIds[1]), 
     }
   }
   // chainsResult = result;
