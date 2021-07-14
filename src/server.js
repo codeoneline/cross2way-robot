@@ -449,6 +449,9 @@ async function refreshChains() {
 
       storeManProxy: sgaWan.address,
       storeManProxyOwner: await sgaWan.getOwner(),
+
+      currentStoreman0: await od.getCurrentGroupIds()[0],
+      currentStoreman1: await od.getCurrentGroupIds()[1],
     },
     'Ethereum' : {
       blockNumber: await chainEth.core.getBlockNumber(),
@@ -465,6 +468,9 @@ async function refreshChains() {
 
       storeManProxy: "no contract",
       storeManProxyOwner: storeOwner ===  storeOwnerConfig? "equal" : storeOwnerConfig,
+
+      currentStoreman0: await od_eth.getCurrentGroupIds()[0],
+      currentStoreman1: await od_eth.getCurrentGroupIds()[1],
     },
     'Bsc' : {
       blockNumber: await chainBsc.core.getBlockNumber(),
@@ -481,6 +487,9 @@ async function refreshChains() {
 
       storeManProxy: "no contract",
       storeManProxyOwner: storeOwner ===  storeOwnerConfig? "equal" : storeOwnerConfig,
+
+      currentStoreman0: await od_bsc.getCurrentGroupIds()[0],
+      currentStoreman1: await od_bsc.getCurrentGroupIds()[1],
     },
     'Avax' : {
       blockNumber: await chainAvax.core.getBlockNumber(),
@@ -497,6 +506,9 @@ async function refreshChains() {
 
       storeManProxy: "no contract",
       storeManProxyOwner: storeOwner ===  storeOwnerConfig? "equal" : storeOwnerConfig,
+
+      currentStoreman0: await od_avax.getCurrentGroupIds()[0],
+      currentStoreman1: await od_avax.getCurrentGroupIds()[1],
     },
     'MoonBeam' : {
       blockNumber: await chainDev.core.getBlockNumber(),
@@ -513,6 +525,9 @@ async function refreshChains() {
 
       storeManProxy: "no contract",
       storeManProxyOwner: storeOwner ===  storeOwnerConfig? "equal" : storeOwnerConfig,
+
+      currentStoreman0: await od_dev.getCurrentGroupIds()[0],
+      currentStoreman1: await od_dev.getCurrentGroupIds()[1],
     },
 
   }
@@ -534,6 +549,9 @@ async function refreshChains() {
 
       storeManProxy: "no contract",
       storeManProxyOwner: storeOwner ===  storeOwnerConfig? "equal" : storeOwnerConfig,
+
+      currentStoreman0: await web3Oracles[i].getCurrentGroupIds()[0],
+      currentStoreman1: await web3Oracles[i].getCurrentGroupIds()[1],
     }
   }
   // chainsResult = result;
