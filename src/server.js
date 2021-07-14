@@ -1,7 +1,6 @@
 const express = require('express')
 const app = express()
 const port = parseInt(process.env.SERVER_PORT)
-const { default: BigNumber } = require('bignumber.js');
 
 app.all('*', (req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
@@ -13,6 +12,7 @@ app.all('*', (req, res, next) => {
 });
 
 const log = require('./lib/log');
+const { web3, sleep } = require('./lib/utils');
 const Oracle = require('./contract/oracle');
 const TokenManager = require('./contract/token_manager');
 const OracleProxy = require('./contract/oracle_proxy');
@@ -21,7 +21,6 @@ const SGA = require('./contract/storeman_group_admin');
 const Quota = require('./contract/quota');
 const Cross = require('./contract/cross');
 const db = require('./lib/sqlite_db');
-const { web3, sleep } = require('./lib/utils');
 const { getChains } = require('./lib/web3_chains')
 
 const chainWan = require(`./chain/${process.env.WAN_CHAIN_ENGINE}`);
@@ -287,7 +286,7 @@ async function refreshOracles() {
   const sgAll = db.getAllSga();
   for (let i = 0; i<sgAll.length; i++) {
     const sg = sgAll[i];
-    const groupId = web3.utils.hexToString(sg.groupId);
+    const groupId = sg.groupId;
     const config = await sgaWan.getStoremanGroupConfig(groupId);
     const configEth = await oracleEth.getStoremanGroupConfig(groupId);
     const configBsc = await oracleBsc.getStoremanGroupConfig(groupId);
@@ -304,6 +303,12 @@ async function refreshOracles() {
         delete configAvax[str];
         delete configDev[str];
       }
+      config.groupId = web3.utils.hexToString(groupId)
+      configEth.groupId = web3.utils.hexToString(groupId)
+      configBsc.groupId = web3.utils.hexToString(groupId)
+      configAvax.groupId = web3.utils.hexToString(groupId)
+      configDev.groupId = web3.utils.hexToString(groupId)
+
       configDev.isDebtClean = (await oracleDev.isDebtClean(groupId)).toString()
       configAvax.isDebtClean = (await oracleAvax.isDebtClean(groupId)).toString()
       configBsc.isDebtClean = (await oracleBsc.isDebtClean(groupId)).toString()
@@ -345,13 +350,14 @@ async function refreshOracles() {
     const web3Sgs = {}
     for (let i = 0; i<sgAll.length; i++) {
       const sg = sgAll[i];
-      const groupId = web3.utils.hexToString(sg.groupId);
+      const groupId = sg.groupId;
       const config = await oracle.getStoremanGroupConfig(groupId);
       const ks = Object.keys(config);
       for (let j = 0; j < ks.length/2; j++) {
         const str = j.toString();
         delete config[str];
       }
+      config.groupId = web3.utils.hexToString(groupId)
       config.isDebtClean = (await oracle.isDebtClean(groupId)).toString()
       web3Sgs[groupId] = config
     }
@@ -624,11 +630,11 @@ setTimeout(async function() {
   try {
     if (gTip) return
     gTip = true
-    await refreshTMS();
+    // await refreshTMS();
     await refreshOracles();
-    await refreshChains();
-    await refreshQuota();
-    await refreshCross();
+    // await refreshChains();
+    // await refreshQuota();
+    // await refreshCross();
     gTip = false
   } catch(e) {
     console.log(e);
@@ -637,21 +643,21 @@ setTimeout(async function() {
 }, 0);
 
 
-setInterval(async function() {
-  try {
-    if (gTip) return
-    gTip = true
-    await refreshTMS();
-    await refreshOracles();
-    await refreshChains();
-    await refreshQuota();
-    await refreshCross();
-    gTip = false
-  } catch(e) {
-    console.log(e);
-    gTip = false
-  }
-}, 60000);
+// setInterval(async function() {
+//   try {
+//     if (gTip) return
+//     gTip = true
+//     await refreshTMS();
+//     await refreshOracles();
+//     await refreshChains();
+//     await refreshQuota();
+//     await refreshCross();
+//     gTip = false
+//   } catch(e) {
+//     console.log(e);
+//     gTip = false
+//   }
+// }, 60000);
 
 app.get('/tms', (req, res) => {
   res.send(tmsResult);
@@ -675,3 +681,7 @@ app.get('/crosses', async (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 })
+
+process.on('unhandledRejection', (err) => {
+  log.error(`unhandledRejection ${err}`);
+});
