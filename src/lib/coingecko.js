@@ -27,7 +27,9 @@ const printIDs = async (url, symbolsStr) => {
     const response = (await axios.get(url))
     const data = response.data
     data.forEach(item => {
-      if (symbolsMap.hasOwnProperty(item.symbol)) {
+      if (item.symbol === 'AVAX') {
+        symbolsMap['avax'].push(item.id)
+      } else if (symbolsMap.hasOwnProperty(item.symbol)) {
         symbolsMap[item.symbol].push(item.id)
       }
     })
@@ -125,10 +127,10 @@ async function getPrices(symbolsStr, idsStr) {
   return priceMap
 }
 
-// setTimeout(async () => {
-//   const symbolsStr = "MATIC"
-//   await printIDs("https://api.coingecko.com/api/v3/coins/list", symbolsStr)
-// }, 0);
+setTimeout(async () => {
+  const symbolsStr = "ETH,USDC,TUSD,GUSD,LINK,MKR,ZXC,EURS,USDT,WAN,FNX,BTC,EOS,UNI,SUSHI,WASP,XRP,ZCN,VIBE,LTC,AVAX,MATIC"
+  await printIDs("https://api.coingecko.com/api/v3/coins/list", symbolsStr)
+}, 0);
 
 // https://api.coingecko.com/api/v3/coins/list
 // https://api.coingecko.com/api/v3/simple/price?ids=<coin>&vs_currencies=usd
