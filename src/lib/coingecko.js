@@ -128,7 +128,7 @@ async function getPrices(symbolsStr, idsStr) {
 }
 
 setTimeout(async () => {
-  const symbolsStr = "ETH,USDC,TUSD,GUSD,LINK,MKR,ZXC,EURS,USDT,WAN,FNX,BTC,EOS,UNI,SUSHI,WASP,XRP,ZCN,VIBE,LTC,AVAX,MATIC"
+  const symbolsStr = "ETH,USDC,TUSD,GUSD,LINK,MKR,ZXC,EURS,USDT,WAN,FNX,BTC,EOS,UNI,SUSHI,WASP,XRP,ZCN,VIBE,LTC,AVAX,DOT,MATIC"
   await printIDs("https://api.coingecko.com/api/v3/coins/list", symbolsStr)
 }, 0);
 
